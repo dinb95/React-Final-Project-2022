@@ -8,6 +8,7 @@ export default function Home({navigation}) {
     <View>
       <Text>
           Timely Hadar!!!
+          Timely Din!!!
       </Text>
       <Button title='Look For a ride'  onPress={()=> navigation.navigate('Map')}/>
 
