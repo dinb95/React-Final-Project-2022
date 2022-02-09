@@ -7,7 +7,7 @@ export default function Home({navigation}) {
   return (
     <View>
       <Text>
-          Timely
+          _Timely_
       </Text>
       <Button title='Look For a ride'  onPress={()=> navigation.navigate('Map')}/>
 
