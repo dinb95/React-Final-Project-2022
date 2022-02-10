@@ -1,12 +1,8 @@
 import { View, Text, Button, StyleSheet,ImageBackground } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import NavigationBar from 'react-native-navbar-color'
-
-
 
 
 export default function Home({navigation}) {
- 
   return (
     <View style={styles.container}>
        <ImageBackground source={require('../images/way.jpeg')} resizeMode="cover" style={styles.image}>
@@ -30,7 +26,6 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignContent: 'center',
     fontWeight:'bold',
-    fontFamily:'"Steelfish Rg", "helvetica neue", helvetica, arial, sans-serif',
     color:'white',
     fontSize: 50,
     marginBottom:20
@@ -41,7 +36,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     color:'white',
     fontWeight:'bold',
-    fontFamily:'"Steelfish Rg", "helvetica neue", helvetica, arial, sans-serif',
     fontSize: 20,
     marginBottom:20
   },

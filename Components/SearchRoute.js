@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     input: {
-      height: 40,
+      height: 50,
       width: '70%',
       margin: 12,
       borderWidth: 1,

@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
+import axios from 'axios';
 
 export default function Route({data}) {
 
@@ -18,14 +19,14 @@ export default function Route({data}) {
             Rain: data.rain,
             Hour: data.hour
         }
-
-        let api = "http://localhost:58913/api/RouteRequest"
+        let api = "http://192.168.1.61:58913/api/RouteRequest"
         fetch(api, {
         method: 'POST',
         body: JSON.stringify(route),
-        headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-        }
+        headers: new Headers({
+            'Content-type': 'application/json; charset=UTF-8', //very important to add the 'charset=UTF-8'!!!!
+            'Accept': 'application/json; charset=UTF-8'
+          })
         })
         .then(res => {
             return res.json()
@@ -34,8 +35,12 @@ export default function Route({data}) {
             (result) => { //add test time to route
                 console.log(result)
             })
+        .catch(function(error) {
+          console.log('There has been a problem with your fetch operation: ' + error.message);
+           // ADD THIS THROW error
+            throw error;
+          });
     }
-    
   return (
     <View style={styles.container}>
       <Text>Arrival: {data.arrival}</Text>

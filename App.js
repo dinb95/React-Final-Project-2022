@@ -1,23 +1,19 @@
-import { NavigationContainer, StackActions } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { StyleSheet, Text, View } from 'react-native';
-import Home from './Components/Home';
-import Map from './Components/Map';
-import SearchRoute from './Components/SearchRoute';
-import RouteResults from './Components/RouteResults';
+import LoginScreen from './screens/LoginScreen';
+import NavigationComp from './Components/NavigationComp';
+
 
 export default function App() {
-  const Stack = createNativeStackNavigator();
+  const Drawer = createDrawerNavigator();
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={Home}/>
-      <Stack.Screen name="Search Route" component={SearchRoute}/>
-      <Stack.Screen name="Route Results" component={RouteResults}/>
-      <Stack.Screen name="Map" component={Map}/>
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      </Stack.Navigator>
+      <Drawer.Navigator initialRouteName="Main">
+        <Drawer.Screen name="Search Route" component={NavigationComp} />
+        <Drawer.Screen name="Login" component={LoginScreen} />
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 }
