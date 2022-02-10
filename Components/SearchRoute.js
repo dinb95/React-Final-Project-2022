@@ -2,7 +2,6 @@ import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
 import axios from 'axios';
 import React, {useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { NavigationContainer } from '@react-navigation/native';
 
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
 
@@ -44,7 +43,6 @@ export default function SearchRoute({navigation}) {
     const getDirections = () => {
         //get route directions according to user's origin, destination and date
         let arrival = Math.ceil(date.getTime() / 1000)
-        console.log(arrival)
 
         var config = {
             method: 'get',
@@ -114,7 +112,5 @@ const styles = StyleSheet.create({
     btn: {
         marginTop:10,
         width: '50%'
-        
     }
-
   });

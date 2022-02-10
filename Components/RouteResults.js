@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Route from './Route'
 import React from 'react';
 
@@ -71,8 +71,15 @@ export default function RouteResults({route, navigation}) {
     }
 
   return (
-    <View>
+    <View style={styles.container}>
       {routes}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        width:'100%',
+        height: '100%'
+    }
+})
