@@ -15,6 +15,8 @@ export default function App() {
       <Stack.Screen name="Search Route" component={SearchRoute}/>
       <Stack.Screen name="Route Results" component={RouteResults}/>
       <Stack.Screen name="Map" component={Map}/>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

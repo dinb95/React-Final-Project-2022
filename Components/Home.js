@@ -1,5 +1,7 @@
 import { View, Text, Button, StyleSheet,ImageBackground } from 'react-native';
 import React, {useState, useEffect} from 'react';
+import NavigationBar from 'react-native-navbar-color'
+
 
 
 

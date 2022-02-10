@@ -18,14 +18,19 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier":"com.Timely.app"
+      "bundleIdentifier":"host.exp.exponent",
+      "config":{
+        "googleSignIn":{
+          "reservedClientId":"com.googleusercontent.apps.573877279106-nfjo7fbe6g6thvju60uv3u2286oov7e2"
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package":"com.Timely.app"
+      "package":"host.exp.exponent"
     },
     "web": {
       "favicon": "./assets/favicon.png"
