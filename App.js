@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, Text, View } from 'react-native';
 import Home from './Components/Home';
 import Map from './Components/Map';
-import MapView from 'react-native-maps';
 import SearchRoute from './Components/SearchRoute';
 import RouteResults from './Components/RouteResults';
 

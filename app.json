@@ -18,12 +18,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier":"com.Timely.app",
-      "config":{
-        "googlesignIn":{
-          "reservedClientId":"com.googleusercontent.apps.573877279106-nfjo7fbe6g6thvju60uv3u2286oov7e2"
-        }
-      }
+      "bundleIdentifier":"com.Timely.app"
     },
     "android": {
       "adaptiveIcon": {

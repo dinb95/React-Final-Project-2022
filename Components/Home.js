@@ -1,6 +1,5 @@
 import { View, Text, Button, StyleSheet } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import * as Location from 'expo-location';
 
 export default function Home({navigation}) {
   
