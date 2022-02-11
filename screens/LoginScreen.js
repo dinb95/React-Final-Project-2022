@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View, Button } from "react-native";
 import * as Google from "expo-google-app-auth";
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({setLogged}) => {
   const signInAsync = async () => {
     console.log("LoginScreen.js 6 | loggin in");
     try {
@@ -14,7 +14,8 @@ const LoginScreen = ({ navigation }) => {
       if (type === "success") {
         // Then you can use the Google REST API
         console.log("LoginScreen.js 17 | success, navigating to profile");
-        navigation.navigate("Profile", { user });
+        setLogged(user)
+        //navigation.navigate("Profile", { user });
       }
     } catch (error) {
       console.log("LoginScreen.js 19 | error with login", error);
@@ -30,4 +31,11 @@ const LoginScreen = ({ navigation }) => {
 
 export default LoginScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    alignContent: 'center',
+    justifyContent: 'center',
+    height:'100%',
+    width: '100%'
+  }
+});
