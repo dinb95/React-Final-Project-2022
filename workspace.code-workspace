@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "images",
+			"path": "..\\..\\Timely_16.01\\images"
+		},
+		{
+			"name": "final_project",
+			"path": "."
+		},
+		{
+			"name": "screens",
+			"path": "..\\..\\..\\proj\\screens"
+		}
+	],
+	"settings": {}
+}

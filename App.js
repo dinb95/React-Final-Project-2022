@@ -19,10 +19,22 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    //flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
   },
-});
+  drawerHeader: {
+    height: 100,
+    backgroundColor: 'white',
+    flexDirection: 'row'
+  },
+  drawerImage: {
+    height: 50,
+    width: 50,
+    borderRadius: 75
+  }
+
+})
