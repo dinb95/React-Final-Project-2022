@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
     marginBottom:20
   },
   image: {
-    
     flex: 1,
     justifyContent: "center"
   }
