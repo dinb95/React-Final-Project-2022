@@ -11,7 +11,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator initialRouteName="Main">
-        <Drawer.Screen name="Search Route" component={NavigationComp} />
+        <Drawer.Screen name="Search Menu" component={NavigationComp} />
         <Drawer.Screen name="Login" component={LoginScreen} />
       </Drawer.Navigator>
     </NavigationContainer>

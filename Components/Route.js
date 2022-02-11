@@ -2,7 +2,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 import axios from 'axios';
 
-export default function Route({data}) {
+export default function Route({data, navigation}) {
+    console.log(data)
 
     const getPrediction = () => {
         var route = {
@@ -16,10 +17,11 @@ export default function Route({data}) {
             RouteDistance: data.routeDistance,
             Origin: data.origin,
             Destination: data.destination,
-            Rain: data.rain,
+            Rain: 0,
             Hour: data.hour
         }
-        let api = "http://192.168.1.61:58913/api/RouteRequest"
+        console.log(route)
+        let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/RouteRequest"
         fetch(api, {
         method: 'POST',
         body: JSON.stringify(route),
@@ -34,6 +36,13 @@ export default function Route({data}) {
         .then(
             (result) => { //add test time to route
                 console.log(result)
+                data["date"] = data.date.getTime()
+                console.log("Result: ",result, "Data: ", data)
+                navigation.navigate({
+                  name: 'Prediction Process',
+                  params: {predParams: result, route_data: data}
+  
+              })
             })
         .catch(function(error) {
           console.log('There has been a problem with your fetch operation: ' + error.message);

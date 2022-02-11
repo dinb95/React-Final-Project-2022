@@ -40,7 +40,7 @@ export default function RouteResults({route, navigation}) {
             timeTarget: route_data.TimeTarget,
             alarmClock: 0,
         }
-        return <Route data={bus_data} key={index}/>
+        return <Route data={bus_data} key={index} navigation={navigation}/>
     })
     function getLines(route) {
         let lines = ""
