@@ -18,7 +18,6 @@ export default function NavigationComp() {
       <Stack.Screen name="Route Results" component={RouteResults}/>
       <Stack.Screen name="Prediction Process" component={Prediction}/>
       <Stack.Screen name="Map" component={Map}/>
-      <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
     </Stack.Navigator>
   )
