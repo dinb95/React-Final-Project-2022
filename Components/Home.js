@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react';
 
 
 export default function Home({navigation}) {
+  
   return (
     <View style={styles.container}>
        <ImageBackground source={require('../images/way.jpeg')} resizeMode="cover" style={styles.image}>
@@ -40,7 +41,6 @@ const styles = StyleSheet.create({
     marginBottom:20
   },
   image: {
-    
     flex: 1,
     justifyContent: "center"
   }
