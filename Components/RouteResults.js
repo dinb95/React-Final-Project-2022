@@ -2,11 +2,11 @@ import { View, Text, StyleSheet } from 'react-native';
 import Route from './Route'
 import React from 'react';
 
-export default function RouteResults({route, navigation}) {
-    let route_data = route.params.route_data;
+export default function RouteResults({route_results, navigation}) {
+    let route_data = route_results.route_data;
     let route_dateTime = new Date(route_data.date)
 
-    var routes = route.params.results.routes.map((direction, index) => {
+    var routes = route_results.results.routes.map((direction, index) => {
         current_route = direction.legs[0]
     
         let lines = getLines(current_route);
