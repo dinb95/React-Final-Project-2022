@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -13,8 +13,28 @@ import {
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const CustomDrawer = props => {
+
+  const [username, setUsername] = useState();
+  const [userid, setUserid] = useState();
+  const [userpic, setUserpic] = useState();
+
+  const getUser = async() => {
+    const name = await AsyncStorage.getItem('username');
+    const id = await AsyncStorage.getItem('userid');
+    const pic = await AsyncStorage.getItem('userpic');
+    if(name !== null)
+      setUsername(name)
+    if(id !== null){
+      setUserid(id)
+    }
+    if(pic !== null)
+    setUserpic(pic)
+  }
+  getUser();
   return (
     <View style={{flex: 1}}>
       <DrawerContentScrollView
@@ -24,7 +44,7 @@ const CustomDrawer = props => {
           source={require('../images/menu-bg.jpeg')}
           style={{padding: 20}}>
           <Image
-            source={require('../images/user-profile.jpg')}
+            source={{uri: userpic}}
             style={{height: 80, width: 80, borderRadius: 40, marginBottom: 10}}
           />
           <Text
@@ -34,7 +54,7 @@ const CustomDrawer = props => {
             //   fontFamily: 'Roboto-Medium',
               marginBottom: 5,
             }}>
-            John Doe
+            {username}
           </Text>
         </ImageBackground>
         <View style={{flex: 1, backgroundColor: '#fff', paddingTop: 10}}>

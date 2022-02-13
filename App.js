@@ -1,8 +1,9 @@
 import 'react-native-gesture-handler';
+import React, {useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { StyleSheet, Text, View } from 'react-native';
-import CustomDrower from  './screens/CustomDrower'
+import CustomDrawer from  './screens/CustomDrawer'
 import LoginScreen from './screens/LoginScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import ReservedTravel from  './screens/ReservedTravel'
@@ -14,13 +15,23 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 export default function App() {
+  const [isLogged, setLogged] = useState(false);
+  const [LoggedUser, setUser] = useState();
+  const logUser = (user) => {
+    setUser(user);
+    setLogged(true)
+  }
+
   const Drawer = createDrawerNavigator();
-  return (
+  if(!isLogged){
+    return <LoginScreen setLogged={logUser}/>
+  }
+  else return (
     <NavigationContainer>
-      <Drawer.Navigator drawerContent={props=> <CustomDrower{...props} />} screenOptions={{headerShown: false}} initialRouteName="Main">
-        <Drawer.Screen name="Search Menu" component={NavigationComp}  options={{
+      <Drawer.Navigator drawerContent={props=> <CustomDrawer {...props} />} screenOptions={{headerShown: false}} initialRouteName="Main">
+        <Drawer.Screen name="Search Menu" component={NavigationComp} options={{
           drawerIcon: ({color}) => (
-            <Ionicons name="search-circle-outline" size={22} color={color} /> ), 
+            <Ionicons name="search-circle-outline" size={22} color={color} /> ),
             }}/>
         <Drawer.Screen name="Login" component={LoginScreen}  
         options={{
