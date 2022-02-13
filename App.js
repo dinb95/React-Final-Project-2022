@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler';
 import React, {useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import React, {useState} from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { StyleSheet, Text, View } from 'react-native';
 import CustomDrawer from  './screens/CustomDrawer'
