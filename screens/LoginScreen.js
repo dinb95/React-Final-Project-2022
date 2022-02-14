@@ -1,9 +1,14 @@
 import React from "react";
-import { StyleSheet, View, Button, ImageBackground, Text} from "react-native";
+import { StyleSheet, View, Button, ImageBackground,TouchableOpacity, Text} from "react-native";
 import * as Google from "expo-google-app-auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { blue } from "@mui/material/colors";
+import Icon from 'react-native-vector-icons/FontAwesome';
+import SignInScreen from "./SignInScreen";
+import LoginUser from "./LoginUser";
 
-const LoginScreen = ({ setLogged }) => {
+
+const LoginScreen = ({ setLogged}) => {
   const signInAsync = async () => {
     console.log("LoginScreen.js 6 | loggin in");
     try {
@@ -31,7 +36,21 @@ const LoginScreen = ({ setLogged }) => {
     <View style={styles.container}>
       <ImageBackground source={require('../images/way.jpeg')} resizeMode="cover" style={styles.image}>
       <Text style={styles.timely_title}>Timely</Text>
-      <Button style={styles.button} title="Login with Google" onPress={signInAsync} />
+      <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity
+              style={styles.signInBtn}>
+              <Text>Sing In</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.LoginBtn}>
+              <Text>Login</Text>
+            </TouchableOpacity>
+        </View>
+        <TouchableOpacity onPress={signInAsync}
+          style={styles.googleBtn} >  
+<Icon name="google" size={20} />
+          <Text>Quick login with Google</Text>
+        </TouchableOpacity>
       </ImageBackground>
 
     </View>
@@ -64,5 +83,38 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     justifyContent: "center"
+  },
+  signInBtn:{
+    width: 150,
+    fontSize: 60,
+    alignItems: 'center',
+    backgroundColor: '#adb9ca',
+    padding: 10 ,     
+    borderRadius: 25,
+    marginLeft:20
+
+  },
+  LoginBtn:{
+    width: 150,
+    fontSize: 60,
+    alignItems: 'center',
+    backgroundColor: '#adb9ca',
+    padding: 10 ,
+    borderRadius: 25,
+    marginLeft:20
+  },
+  googleBtn:{
+    width: 220,
+    fontSize: 60,
+    alignItems: 'center',
+    backgroundColor: '#7fa7e3',
+    padding: 10 ,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    color:'blue',
+    margin:10
+
+
   }
 })
