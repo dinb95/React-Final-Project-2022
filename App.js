@@ -10,9 +10,10 @@ import ReservedTravel from  './screens/ReservedTravel'
 import History from  './screens/History'
 import SearchRoute from  './Components/SearchRoute'
 import ProfTop from  './Components/ProfTop'
+import LoginUser from './screens/LoginUser'
 
 import AlarmClock from  './screens/AlarmClock'
-import NavigationComp from './Components/NavigationComp';
+import NavigationComp from './Components/NavigationComp'; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
@@ -37,6 +38,10 @@ export default function App() {
             <Ionicons name="home-outline" size={22} color={color} /> ),
             }}/>
          <Drawer.Screen name="Search Route" component={SearchRoute} options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="search-circle-outline" size={22} color={color} /> ),
+            }}/>
+          <Drawer.Screen name="LoginUser" component={LoginUser} options={{
           drawerIcon: ({color}) => (
             <Ionicons name="search-circle-outline" size={22} color={color} /> ),
             }}/>

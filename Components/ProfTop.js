@@ -1,8 +1,8 @@
-import { View, Text ,ImageBackground, Image,TouchableOpacity, } from 'react-native'
+import { View, Text ,ImageBackground, Image,TouchableOpacity,SafeAreaView, StyleSheet, TextInput } from 'react-native'
 import React from 'react'
 import {useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import UselessTextInput from './UselessTextInput'
 
 export default function ProfTop() {
     const [username, setUsername] = useState();
@@ -11,9 +11,9 @@ export default function ProfTop() {
         const name = await AsyncStorage.getItem('username');
         const pic = await AsyncStorage.getItem('userpic'); 
         if(name !== null)
-          setUsername(name)
+            setUsername(name)        
         if(pic !== null)
-        setUserpic(pic)
+            setUserpic(pic)
       }
       getUser();
      
@@ -37,6 +37,7 @@ export default function ProfTop() {
             {username}
           </Text>
         </ImageBackground>
+       <UselessTextInput></UselessTextInput>
     </View>
   )
 }
