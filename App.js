@@ -11,6 +11,7 @@ import History from  './screens/History'
 import SearchRoute from  './Components/SearchRoute'
 import ProfTop from  './Components/ProfTop'
 import LoginUser from './screens/LoginUser'
+import SignInScreen from './screens/SignInScreen'
 
 import AlarmClock from  './screens/AlarmClock'
 import NavigationComp from './Components/NavigationComp'; 
@@ -42,6 +43,10 @@ export default function App() {
             <Ionicons name="search-circle-outline" size={22} color={color} /> ),
             }}/>
           <Drawer.Screen name="LoginUser" component={LoginUser} options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="search-circle-outline" size={22} color={color} /> ),
+            }}/>
+             <Drawer.Screen name="SignIn Screen" component={SignInScreen} options={{
           drawerIcon: ({color}) => (
             <Ionicons name="search-circle-outline" size={22} color={color} /> ),
             }}/>
