@@ -3,6 +3,7 @@ import axios from 'axios';
 import React, {useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RouteResults from './RouteResults';
+import { ScrollView } from 'react-native-gesture-handler';
 
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
 
@@ -15,7 +16,7 @@ export default function SearchRoute({navigation}) {
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
 
-    const [results, setResults] = useState();
+    const [results, setResults] = useState("");
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -72,10 +73,14 @@ export default function SearchRoute({navigation}) {
           });
     }
     const renderResults = () => {
-      console.log(results)
-      if(results === null)
-        return "";
-      return <RouteResults route_results={results}/>
+      console.log('rendering')
+      if(results === "")
+        return <Text></Text>;
+      return (
+        <ScrollView style={styles.scrollView}>
+         <RouteResults route_results={results} navigation={navigation}/>
+        </ScrollView>
+      )
     }
   return (
     <View style={styles.container}>
@@ -100,7 +105,7 @@ export default function SearchRoute({navigation}) {
         />
       )}
         <Button title='Search' onPress={getDirections}/>
-        {renderResults}
+        {renderResults()}
     </View>
   );
 }
@@ -122,5 +127,9 @@ const styles = StyleSheet.create({
     btn: {
         marginTop:10,
         width: '50%'
+    },
+    scrollView: {
+      height: '100%',
+      width: '100%'
     }
   });
