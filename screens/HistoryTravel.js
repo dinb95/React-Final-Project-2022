@@ -59,10 +59,4 @@ export default function HistoryTravel() {
       </View>
   
     )
-  }
-  return (
-    <View>
-      <Text>HistoryTravel</Text>
-    </View>
-  )
 }

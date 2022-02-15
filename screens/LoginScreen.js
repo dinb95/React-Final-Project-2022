@@ -16,7 +16,6 @@ const LoginScreen = ({ route, navigation}) => {
         iosClientId: `573877279106-nfjo7fbe6g6thvju60uv3u2286oov7e2.apps.googleusercontent.com`,
         androidClientId: `573877279106-ev0q9g82ln8lieu30pldlgmmgioo5a0k.apps.googleusercontent.com`,
       });
-
       if (type === "success") {
         // Then you can use the Google REST API
         console.log("LoginScreen.js 17 | success, navigating to profile");
@@ -25,7 +24,6 @@ const LoginScreen = ({ route, navigation}) => {
         await AsyncStorage.setItem('username', user.name)
         await AsyncStorage.setItem('userid', user.id)
         await AsyncStorage.setItem('userpic', user.photoUrl)
-
       }
     } catch (error) {
       console.log("LoginScreen.js 19 | error with login", error);
@@ -44,7 +42,9 @@ const LoginScreen = ({ route, navigation}) => {
               <Text>Sign Up</Text>
             </TouchableOpacity>
             <TouchableOpacity 
-              style={styles.LoginBtn}>
+              style={styles.LoginBtn}
+              onPress={() => {navigation.navigate('LoginUser')}}
+              >
               <Text>Login</Text>
             </TouchableOpacity>
         </View>

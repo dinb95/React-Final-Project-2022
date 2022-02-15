@@ -34,7 +34,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login Screen">
         <Stack.Screen name="Login Screen" component={LoginScreen} initialParams={{setLogged: logUser}}/>
-        <Stack.Screen name="Login" component={LoginUser}/>
+        <Stack.Screen name="LoginUser" component={LoginUser}/>
         <Stack.Screen name="SignUp" component={SignUpScreen}/>
         </Stack.Navigator>
       </NavigationContainer>
@@ -48,14 +48,6 @@ export default function App() {
             <Ionicons name="home-outline" size={22} color={color} /> ),
             }}/>
          <Drawer.Screen name="Search Route" component={SearchRoute} options={{
-          drawerIcon: ({color}) => (
-            <Ionicons name="search-circle-outline" size={22} color={color} /> ),
-            }}/>
-          <Drawer.Screen name="LoginUser" component={LoginUser} options={{
-          drawerIcon: ({color}) => (
-            <Ionicons name="search-circle-outline" size={22} color={color} /> ),
-            }}/>
-             <Drawer.Screen name="SignIn Screen" component={SignInScreen} options={{
           drawerIcon: ({color}) => (
             <Ionicons name="search-circle-outline" size={22} color={color} /> ),
             }}/>
