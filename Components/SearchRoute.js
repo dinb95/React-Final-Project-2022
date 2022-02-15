@@ -2,6 +2,8 @@ import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
 import axios from 'axios';
 import React, {useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import RouteResults from './RouteResults';
+import { ScrollView } from 'react-native-gesture-handler';
 
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
 
@@ -13,6 +15,8 @@ export default function SearchRoute({navigation}) {
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
+
+    const [results, setResults] = useState("");
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -58,15 +62,25 @@ export default function SearchRoute({navigation}) {
                 date: date.getTime(),
                 TimeTarget: getTime()
             }
-            navigation.navigate({
-                name: 'Route Results',
-                params: {results: response.data, route_data: route_data}
-
-            })
+            let route_result = {
+              route_data:route_data,
+              results: response.data
+            }
+            setResults(route_result)
           })
           .catch(function (error) {
             console.log(error);
           });
+    }
+    const renderResults = () => {
+      console.log('rendering')
+      if(results === "")
+        return <Text></Text>;
+      return (
+        <ScrollView style={styles.scrollView}>
+         <RouteResults route_results={results} navigation={navigation}/>
+        </ScrollView>
+      )
     }
   return (
     <View style={styles.container}>
@@ -91,6 +105,7 @@ export default function SearchRoute({navigation}) {
         />
       )}
         <Button title='Search' onPress={getDirections}/>
+        {renderResults()}
     </View>
   );
 }
@@ -100,7 +115,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height:'100%',
         alignItems: 'center',
-        justifyContent: 'center',
+        position:'absolute'
     },
     input: {
       height: 50,
@@ -112,5 +127,9 @@ const styles = StyleSheet.create({
     btn: {
         marginTop:10,
         width: '50%'
+    },
+    scrollView: {
+      height: '100%',
+      width: '100%'
     }
   });

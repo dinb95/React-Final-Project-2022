@@ -1,16 +1,33 @@
-import { View, Text } from 'react-native'
-import React, {useEffect} from 'react'
+import { View, Text, Button } from 'react-native'
+import React, {useState, useEffect} from 'react'
 import axios from 'axios';
+import PredictionCard from './PredictionCard';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
 let loopCounter = 0;
 
-export default function Prediction({route}) {
+export default function Prediction({route, navigation}) {
+    const [pref, setPref] = useState()
+    const [cards, setCards] = useState();
+    const [userid, setUserid] = useState();
+    const [btn, setBtn] = useState()
+
+    var ProcessArr = [];
+
     var route_data = route.params.route_data
 
     useEffect(() => {
+        console.log('useEffect')
+        getUserId()
         getPrediction(route_data);
-    })
+    }, [])
+    const getUserId = async() => {
+        const id = await AsyncStorage.getItem('userid');
+        if(id !== null){
+            setUserid(id)
+          }
+    }
 
     const getPrediction = (route_data) => {
         var route = {
@@ -71,13 +88,20 @@ export default function Prediction({route}) {
             if (p[3] == 0) {
                 console.log("t test failed, searching previous route")
                 //render route
+                let all_route_data = {arrival: route_arrival, route_data: route_data, status: 1}
+                ProcessArr.push(all_route_data)
+
                 searchPrevRoute(route_data)
             }
             else {
                 console.log("route good, saving route")
                 //render route and finish
+                let all_route_data = {arrival: route_arrival, route_data: route_data, status: 0}
+                ProcessArr.push(all_route_data)
+                renderCards(ProcessArr)
+                setPref({p: p, route:route_data, arrival:route_arrival})
 
-                //render on map
+                setBtn(<Button title={'Show on Map'} onPress={() => {navigation.navigate({name:'Map'})}} />)
                 //save route for user
             }
         }
@@ -87,17 +111,17 @@ export default function Prediction({route}) {
             //search for an earlier bus and predict route's arrival time again
             //////////////+=///////////////////////
             //render route
+            let all_route_data = {arrival: route_arrival, route_data: route_data, status: 2}
+            ProcessArr.push(all_route_data)
+
             searchPrevRoute(route_data)
         }
-
     }
     function searchPrevRoute(route){
         loopCounter++;
         var origin = route.origin;
         var destination = route.destination;
         var arrival = Math.ceil((route.date - (loopCounter * 10 * 60000)) / 1000)
-
-        console.log(origin, destination, arrival)
 
         var config = {
             method: 'get',
@@ -115,7 +139,6 @@ export default function Prediction({route}) {
                 TimeTarget: route.timeTarget
             }
             let new_route = getRouteParams(response.data, user_route_input) //get the relevant parameters for route arrival time prediction
-            console.log("new route:",new_route)
             getPrediction(new_route);
             })
     }
@@ -185,10 +208,70 @@ export default function Prediction({route}) {
         else 
             return `${h}:${m}`
     }
+    const savePrefRoute = () => {
+        let p = pref.p
+        let route = pref.route
+        let arrival = pref.arrival
+
+        let dt = new Date(route.date)
+        let date = `${dt.getMonth()+1}-${dt.getDate()}-${dt.getFullYear()}`
+
+        let data = {
+            routeData: {
+                LineNumber: route.lines,
+                Origin: route.origin,
+                Destination: route.destination,
+                ArrivalTime: formatTime(arrival.getHours(), arrival.getMinutes()),
+                DepartureTime: route.departure,
+                RouteDuration: route.routeDuration,
+                Day: arrival.getDay(),
+                Hour: arrival.getHours(),
+                Stops: route.stops,
+                NumOfBuses: route.numOfBuses,
+                RouteDistance: route.routeDistance,
+                Rain: 0
+            },
+            date: date,
+            timeTarget: route.timeTarget,
+            predParams: {
+                SampleSD: p[4],
+                SampleVar: p[5],
+                Mean: p[6]
+            },
+            alarmClock: 0,
+            userId: userid
+        }
+        console.log(data)
+        let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/UsersManagement"
+        fetch(api, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: new Headers({
+            'Content-type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8'
+          })
+        })
+        .then(
+            (result) => {
+
+            })
+        .catch(function(error) {
+          console.log('There has been a problem with your fetch operation: ' + error.message);
+            throw error;
+          });
+    }
+    const renderCards = (arr) => {
+        const cardsArr = arr.map((data, index) => {
+            return <PredictionCard data={data} key={index}/>
+        })
+        setCards(cardsArr)
+    }
 
   return (
     <View>
-      <Text>Prediction</Text>
+        {cards}
+        <Button title='Save this route' onPress={savePrefRoute}/>
+        {btn}
     </View>
   )
 }
