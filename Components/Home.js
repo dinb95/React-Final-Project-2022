@@ -1,4 +1,4 @@
-import { View, Text, Button, StyleSheet,ImageBackground } from 'react-native';
+import { View, Text, Button, StyleSheet,ImageBackground,TouchableOpacity } from 'react-native';
 import React, {useState, useEffect} from 'react';
 
 
@@ -6,11 +6,16 @@ export default function Home({navigation}) {
   
   return (
     <View style={styles.container}>
-       <ImageBackground source={require('../images/way.jpeg')} resizeMode="cover" style={styles.image}>
+       <ImageBackground source={require('../images/way1.jpg')} resizeMode="cover" style={styles.image}>
         <View>
             <Text style={styles.timely_title}>Timely</Text>
             <Text style={styles.timely_subtitle}>To the right place at the right time</Text>
-            <Button title='Look For a ride'  onPress={()=> navigation.navigate('Search Route')}/>
+            <TouchableOpacity
+              style={styles.Btn}
+              onPress={() => {navigation.navigate('Search Route')}}
+              >
+              <Text style={styles.Txt}>Look For a ride</Text>
+            </TouchableOpacity>
         </View>
      </ImageBackground>
     </View>
@@ -43,5 +48,20 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     justifyContent: "center"
+  },
+  Btn:{
+    width: 150,
+    fontSize: 70,
+    alignItems: 'center',
+    backgroundColor: '#7fa7e3',
+    padding: 10 ,     
+    borderRadius: 25,
+    marginLeft:-20,
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  Txt:{
+    fontSize: 18,
+    alignItems: 'center',
   }
 })

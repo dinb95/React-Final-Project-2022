@@ -39,17 +39,18 @@ const CustomDrawer = props => {
     <View style={{flex: 1}}>
       <DrawerContentScrollView
         {...props}
-        contentContainerStyle={{backgroundColor: '#8200d6'}}>
+        contentContainerStyle={{backgroundColor: '#7bbee9'}}>
         <ImageBackground
-          source={require('../images/menu-bg.jpeg')}
+          source={require('../images/blueBackjpg.jpg')}
           style={{padding: 20}}>
           <Image
             source={{uri: userpic}}
             style={{height: 80, width: 80, borderRadius: 40, marginBottom: 10}}
           />
-          <Text
+          <Text 
             style={{
-              color: '#fff',
+              color: '#080808',
+              fontWeight:'bold',
               fontSize: 18,
             //   fontFamily: 'Roboto-Medium',
               marginBottom: 5,
@@ -58,10 +59,10 @@ const CustomDrawer = props => {
           </Text>
         </ImageBackground>
         <View style={{flex: 1, backgroundColor: '#fff', paddingTop: 10}}>
-          <DrawerItemList {...props} />
+          <DrawerItemList {...props}  />
         </View>
-      </DrawerContentScrollView>
-      <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#ccc'}}>
+      </DrawerContentScrollView >
+      <View style={{padding: 20, borderTopWidth: 1, backgroundColor: '#fff', borderTopColor: '#ccc'}}>
         <TouchableOpacity onPress={() => {}} style={{paddingVertical: 15}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Ionicons name="share-social-outline" size={22} />

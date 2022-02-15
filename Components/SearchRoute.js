@@ -1,9 +1,10 @@
-import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
+import { View, Text, TextInput, StyleSheet,ImageBackground, Button, TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import React, {useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RouteResults from './RouteResults';
 import { ScrollView } from 'react-native-gesture-handler';
+
 
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
 
@@ -83,30 +84,47 @@ export default function SearchRoute({navigation}) {
       )
     }
   return (
-    <View style={styles.container}>
-        <TextInput placeholder='Origin' style={styles.input} value={origin} onChangeText={setOrigin}></TextInput>
-        <TextInput placeholder='Destination' style={styles.input} value={destination} onChangeText={setDestination}></TextInput>
-        <View>
-        <Button onPress={showDatepicker} title="Choose Date" />
-        <Text>{getDate()}</Text>
-      </View>
-      <View>
-        <Button onPress={showTimepicker} title="Choose Time" />
-        <Text>{getTime()}</Text>
-      </View>
-        {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={onChange}
-        />
-      )}
-        <Button title='Search' onPress={getDirections}/>
-        {renderResults()}
-    </View>
+ 
+
+    /////
+        <View style={styles.container}>
+          <ImageBackground source={require('../images/blueWay.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
+
+            <TextInput placeholder='Origin' style={styles.input} value={origin} onChangeText={setOrigin}></TextInput>
+            <TextInput placeholder='Destination' style={styles.input} value={destination} onChangeText={setDestination}></TextInput>
+            <View style={{ flexDirection: 'row' }}>
+              <View>
+              <TouchableOpacity style={styles.Btn} onPress={showDatepicker}>
+                <Text style={styles.BtnTxt}>Choose Date</Text>
+              </TouchableOpacity>
+                  <Text style={styles.GetFromBtn}>{getDate()}</Text>
+              </View>
+              <View>
+                <TouchableOpacity style={styles.Btn} onPress={showTimepicker}>
+                  <Text style={styles.BtnTxt}>Choose Time</Text>
+                </TouchableOpacity>
+                  <Text style={styles.GetFromBtn}>{getTime()}</Text>
+              </View>
+                  {show && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode={mode}
+                    is24Hour={true}
+                    display="default"
+                    onChange={onChange}
+                  />
+                )}
+              </View>
+                <TouchableOpacity style={styles.BtnSearch} onPress={getDirections}>
+                  <Text style={styles.BtnTxt}>Search</Text>
+                </TouchableOpacity>
+          </ImageBackground>
+            {renderResults()}
+            
+
+        </View>
+
   );
 }
 
@@ -115,7 +133,11 @@ const styles = StyleSheet.create({
         width: '100%',
         height:'100%',
         alignItems: 'center',
-        position:'absolute'
+        position:'absolute',
+    },
+    image: {
+      width:'100%',
+      backgroundColor:'rgba(0,0,0,.6)',
     },
     input: {
       height: 50,
@@ -123,6 +145,11 @@ const styles = StyleSheet.create({
       margin: 12,
       borderWidth: 1,
       padding: 10,
+      borderRadius:7,
+      backgroundColor:'#ffffff',
+      alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
     },
     btn: {
         marginTop:10,
@@ -131,5 +158,41 @@ const styles = StyleSheet.create({
     scrollView: {
       height: '100%',
       width: '100%'
+    },
+    GetFromBtn:{
+      alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        color:"#ffffff",
+        fontWeight:'bold',
+        marginLeft:30,
+
+
+    },
+    Btn:{
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'center',
+      backgroundColor: '#bddff5',
+      padding: 7,  
+      borderRadius:7,
+      margin:10,
+      marginLeft:55
+    },
+    BtnSearch:{
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'center',
+      display:'flex',
+      backgroundColor: '#51aae1',
+      padding:7,  
+      borderRadius:7,
+      marginBottom:10,
+      
+    },
+    BtnTxt:{
+      fontWeight:'bold',
+
     }
+
   });

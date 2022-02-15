@@ -1,8 +1,10 @@
-import { View, Text, Button } from 'react-native'
+import { View, Text, Button,StyleSheet, TouchableOpacity,ImageBackground } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import axios from 'axios';
 import PredictionCard from './PredictionCard';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
 let loopCounter = 0;
@@ -100,8 +102,13 @@ export default function Prediction({route, navigation}) {
                 ProcessArr.push(all_route_data)
                 renderCards(ProcessArr)
                 setPref({p: p, route:route_data, arrival:route_arrival})
-
-                setBtn(<Button title={'Show on Map'} onPress={() => {navigation.navigate({name:'Map'})}} />)
+                
+                setBtn( <TouchableOpacity style={styles.Btn} onPress={() => {navigation.navigate({name:'Map'})}}>
+                        <View style={{ flexDirection: 'row' }}>
+                        <Text style={styles.BtnTxt}> Show on Map </Text>
+                        <Icon name="map-marker" size={20} />
+                        </View>
+                        </TouchableOpacity>)
                 //save route for user
             }
         }
@@ -268,10 +275,49 @@ export default function Prediction({route, navigation}) {
     }
 
   return (
-    <View>
+    <ImageBackground source={require('../images/blueWay.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
+    <View style={styles.container}>
+
         {cards}
-        <Button title='Save this route' onPress={savePrefRoute}/>
+        <TouchableOpacity style={styles.Btn} onPress={savePrefRoute}>
+        <Text style={styles.BtnTxt}>Save this route</Text>
+      </TouchableOpacity>
         {btn}
     </View>
+    </ImageBackground>
   )
 }
+const styles = StyleSheet.create({
+    container: {
+        width:'100%',
+        height: '100%',
+        marginLeft:30,
+        display:'flex',
+        justifyContent:'center',
+        alignSelf: 'center',
+    },
+    Btn:{
+    position:'relative',
+    width:'40%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    backgroundColor: '#bddff5',
+    padding: 6,  
+    borderRadius:7,
+    borderStyle:'solid',
+    borderWidth: 1,
+    borderColor:'black',
+    fontSize:18,
+    margin:10,
+
+    },
+    BtnTxt:{
+        fontSize:18,
+        
+      },
+      image: {
+        width:'100%',
+        backgroundColor:'rgba(0,0,0,.6)',
+      },
+})
