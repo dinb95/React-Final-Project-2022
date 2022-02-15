@@ -17,13 +17,12 @@ import SignUpScreen from './screens/SignUpScreen'
 import AlarmClock from  './screens/AlarmClock'
 import NavigationComp from './Components/NavigationComp'; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import CameraComp from './Components/CameraComp';
 
 
 export default function App() {
   const [isLogged, setLogged] = useState(false);
-  const [LoggedUser, setUser] = useState();
-  const logUser = (user) => {
-    setUser(user);
+  const logUser = () => {
     setLogged(true)
   }
 
@@ -36,6 +35,7 @@ export default function App() {
         <Stack.Screen name="Login Screen" component={LoginScreen} initialParams={{setLogged: logUser}}/>
         <Stack.Screen name="LoginUser" component={LoginUser}/>
         <Stack.Screen name="SignUp" component={SignUpScreen}/>
+        <Stack.Screen name="CameraComp" component={CameraComp}/>
         </Stack.Navigator>
       </NavigationContainer>
     )

@@ -9,11 +9,65 @@ import {
   Button,
   TouchableOpacity,
 } from "react-native";
- 
-export default function LoginUser() {
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+export default function LoginUser({route}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
  
+  const logUser = () => {
+  console.log(email, password)
+  let api = `https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/Users?email=${email}&password=${password}`
+  fetch(api, {
+  method: 'GET',
+  headers: new Headers({
+      'Content-type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json; charset=UTF-8'
+    })
+  })
+  .then(res => {
+      return res.json()
+  })
+  .then(
+      (result) => { 
+        try{
+          console.log(result)
+          saveToStorage(result)
+        } 
+        catch{
+          //check if user returned, if not then wrong email or password
+        }
+      })
+  .catch(function(error) {
+    console.log('There has been a problem with your fetch operation: ' + error.message);
+      throw error;
+    });
+  }
+  const saveToStorage = async(user) => {
+    console.log(user)
+    AsyncStorage.setItem('username', `${user.FirstName} ${user.LastName}`)
+    AsyncStorage.setItem('userid', JSON.stringify(user.Id))
+
+    let api = `https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/UserPic/${user.Id}`
+    fetch(api, {
+    method: 'GET',
+    headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json; charset=UTF-8'
+      })
+    })
+    .then(res => {
+        return res.json()
+    })
+    .then(
+        (result) => { 
+          console.log(result)
+          AsyncStorage.setItem('userpic', JSON.stringify(result))
+          route.params.setLogged();
+        })
+
+    
+  }
   return (
     <View style={styles.container}>
       <Image source={require("../images/logo3.jpg")}
@@ -24,7 +78,7 @@ export default function LoginUser() {
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Email."
+          placeholder="Email"
           placeholderTextColor="#003f5c"
           onChangeText={(email) => setEmail(email)}
         />
@@ -44,8 +98,8 @@ export default function LoginUser() {
         <Text style={styles.forgot_button}>Forgot Password?</Text>
       </TouchableOpacity>
  
-      <TouchableOpacity style={styles.loginBtn}>
-        <Text style={styles.loginText}>LOGIN</Text>
+      <TouchableOpacity style={styles.loginBtn} onPress={() => {logUser()}}>
+        <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
     </View>
   );

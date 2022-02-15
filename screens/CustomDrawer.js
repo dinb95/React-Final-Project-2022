@@ -12,7 +12,6 @@ import {
 } from '@react-navigation/drawer';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
@@ -31,8 +30,13 @@ const CustomDrawer = props => {
     if(id !== null){
       setUserid(id)
     }
-    if(pic !== null)
-    setUserpic(pic)
+    if(pic !== null){
+      try{
+        setUserpic(JSON.parse(pic))
+      }
+      catch{setUserpic(pic)}
+
+  }
   }
   getUser();
   return (

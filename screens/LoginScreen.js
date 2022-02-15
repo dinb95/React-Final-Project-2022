@@ -43,7 +43,7 @@ const LoginScreen = ({ route, navigation}) => {
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.LoginBtn}
-              onPress={() => {navigation.navigate('LoginUser')}}
+              onPress={() => {navigation.navigate({name: 'LoginUser', params:{setLogged: route.params.setLogged}})}}
               >
               <Text>Login</Text>
             </TouchableOpacity>
