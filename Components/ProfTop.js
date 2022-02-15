@@ -19,9 +19,9 @@ export default function ProfTop() {
      
 
   return (
-    <View>
+    <View style={styles.container}>
       <ImageBackground
-          source={require('../images/menu-bg.jpeg')}
+          source={require('../images/blueBackjpg.jpg')}
           style={{padding:110,paddingBottom:20,paddingTop:40}}>
           <Image
             source={{uri: userpic}}
@@ -41,3 +41,8 @@ export default function ProfTop() {
     </View>
   )
 }
+const styles = StyleSheet.create({
+  container: {
+
+  }
+})

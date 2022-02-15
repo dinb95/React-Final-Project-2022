@@ -54,7 +54,7 @@ const LoginScreen = ({ route, navigation}) => {
         
           style={styles.googleBtn} >  
           <View style={{ flexDirection: 'row' }}>
-            <Icon name="social-google" size={20} color="blue" />
+            <Icon name="google" size={20} color="blue" />
             <Text style={styles.googleTxt} > Quick login with Google</Text>
           </View>
         </TouchableOpacity>
