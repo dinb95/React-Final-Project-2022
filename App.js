@@ -6,14 +6,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, Text, View } from 'react-native';
 import CustomDrawer from  './screens/CustomDrawer'
 import LoginScreen from './screens/LoginScreen';
-import ProfileScreen from './screens/ProfileScreen';
 import ReservedTravel from  './screens/ReservedTravel'
 import History from  './screens/History'
 import SearchRoute from  './Components/SearchRoute'
 import ProfTop from  './Components/ProfTop'
 import LoginUser from './screens/LoginUser'
 import SignUpScreen from './screens/SignUpScreen'
-import PushPage from './PushPage'
 
 import AlarmClock from  './screens/AlarmClock'
 import NavigationComp from './Components/NavigationComp'; 

@@ -2,9 +2,9 @@ import { View, Text ,ImageBackground, Image,TouchableOpacity,SafeAreaView, Style
 import React from 'react'
 import {useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import UselessTextInput from './UselessTextInput'
+import UserUpdateForm from './UserUpdateForm'
 
-export default function ProfTop() {
+export default function ProfTop({navigation}) {
     const [username, setUsername] = useState();
     const [userpic, setUserpic] = useState();
     const getUser = async() => {
@@ -37,7 +37,7 @@ export default function ProfTop() {
             {username}
           </Text>
         </ImageBackground>
-       <UselessTextInput></UselessTextInput>
+       <UserUpdateForm navigation={navigation}/>
     </View>
   )
 }

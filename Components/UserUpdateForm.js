@@ -1,12 +1,64 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Button, Image, View, Platform,StyleSheet,Text,TextInput,TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StatusBar } from "expo-status-bar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const UserUpdateForm = ({navigation}) => {
+const [firstName, setFirstName] = useState("");
+const [lastName, setLastName] = useState("");
+const [password, setPassword] = useState("");
+const [confirm, setConfirm] = useState("");
+const [id, setId] = useState();
 
+  useEffect(async() =>{
+    let userId = await AsyncStorage.getItem('userid');
+    setId(JSON.parse(userId))
+  }, [])
 
-const UselessTextInput = () => {
-const [name, setName] = React.useState("");
+  const updateInfo = () => {
+    console.log(firstName)
+    if(firstName === "" || lastName === "" || password === "" || confirm === ""){
+      alert("Please fill all inputs")
+    }
+    else if(password != confirm)
+      alert("Passwords don't match")
+    else {
+      var user = {
+        Id: id,
+        FirstName: firstName,
+        LastName: lastName,
+        Password: password
+      }
+      console.log(id)
+      let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/Users"
+      fetch(api, {
+      method: 'PUT',
+      body: JSON.stringify(user),
+      headers: new Headers({
+          'Content-type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json; charset=UTF-8'
+        })
+      })
+      .then(res => {
+          return res.json()
+      })
+      .then(
+          (result) => { 
+            console.log(result)
+            if(result == "User Updated"){
+              alert("User's Information Updated Successfully")
+              navigation.goBack();
+            }
+            else alert("Something went wrong..")
+          })
+      .catch(function(error) {
+        console.log('There has been a problem with your fetch operation: ' + error.message);
+          throw error;
+        });
+
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -16,7 +68,7 @@ const [name, setName] = React.useState("");
         style={styles.TextInput}
         placeholder="First Name"
         placeholderTextColor="#003f5c"
-        onChangeText={(firstName) => setfirstName(firstName)}
+        onChangeText={(firstName) => setFirstName(firstName)}
       />
     </View>
     <StatusBar style="auto" />
@@ -47,10 +99,10 @@ const [name, setName] = React.useState("");
         onChangeText={(password) => setConfirm(password)}
       />
     </View>
-    <TouchableOpacity style={styles.SaveBtn} onPress={() => {logUser()}}>
+    <TouchableOpacity style={styles.SaveBtn} onPress={updateInfo}>
         <Text style={styles.Txt}>Save changes</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.DoNotSaveBtn} onPress={() => {logUser()}}>
+      <TouchableOpacity style={styles.DoNotSaveBtn} onPress={() => {navigation.goBack()}}>
         <Text style={styles.Txt}>Do not save changes</Text>
       </TouchableOpacity>
     </View>
@@ -110,5 +162,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default UselessTextInput;
+export default UserUpdateForm;
 
