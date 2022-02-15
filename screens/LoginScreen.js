@@ -4,7 +4,7 @@ import * as Google from "expo-google-app-auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { blue } from "@mui/material/colors";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import SignInScreen from "./SignUpScreen";
+import SignUpScreen from "./SignUpScreen";
 import LoginUser from "./LoginUser";
 
 
@@ -39,7 +39,7 @@ const LoginScreen = ({ route, navigation}) => {
       <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity
               style={styles.signInBtn}
-              onPress={() => {navigation.navigate('SignIn')}}
+              onPress={() => {navigation.navigate('SignUp')}}
               >
               <Text>Sign Up</Text>
             </TouchableOpacity>
