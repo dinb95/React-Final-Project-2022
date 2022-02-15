@@ -106,11 +106,7 @@ export default function SignUpScreen({navigation}) {
           'Accept': 'application/json; charset=UTF-8'
         })
       })
-      .then(res => {
-          return res.json()
-      })
-      .then(result => {
-        console.log(result);
+      .then(() => {
         alert("User Registered Successfully")
         navigation.goBack()
       })
