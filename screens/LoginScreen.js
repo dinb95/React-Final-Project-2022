@@ -4,11 +4,11 @@ import * as Google from "expo-google-app-auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { blue } from "@mui/material/colors";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import SignInScreen from "./SignInScreen";
+import SignInScreen from "./SignUpScreen";
 import LoginUser from "./LoginUser";
 
 
-const LoginScreen = ({ setLogged}) => {
+const LoginScreen = ({ route, navigation}) => {
   const signInAsync = async () => {
     console.log("LoginScreen.js 6 | loggin in");
     try {
@@ -21,7 +21,7 @@ const LoginScreen = ({ setLogged}) => {
         // Then you can use the Google REST API
         console.log("LoginScreen.js 17 | success, navigating to profile");
         console.log(user)
-        setLogged(user)
+        route.params.setLogged(user)
         await AsyncStorage.setItem('username', user.name)
         await AsyncStorage.setItem('userid', user.id)
         await AsyncStorage.setItem('userpic', user.photoUrl)
@@ -38,8 +38,10 @@ const LoginScreen = ({ setLogged}) => {
       <Text style={styles.timely_title}>Timely</Text>
       <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity
-              style={styles.signInBtn}>
-              <Text>Sing In</Text>
+              style={styles.signInBtn}
+              onPress={() => {navigation.navigate('SignIn')}}
+              >
+              <Text>Sign Up</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.LoginBtn}>

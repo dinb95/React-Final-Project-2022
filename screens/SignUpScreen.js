@@ -5,7 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { color } from 'react-native-reanimated';
 
 
-export default function SignInScreen() {
+export default function SignUpScreen() {
   const [image, setImage] = useState(null);
   const [firstName, setfirstName] = useState("");
   const [LastName, setLastName] = useState("");

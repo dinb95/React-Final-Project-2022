@@ -2,6 +2,7 @@ import 'react-native-gesture-handler';
 import React, {useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, Text, View } from 'react-native';
 import CustomDrawer from  './screens/CustomDrawer'
 import LoginScreen from './screens/LoginScreen';
@@ -11,7 +12,7 @@ import History from  './screens/History'
 import SearchRoute from  './Components/SearchRoute'
 import ProfTop from  './Components/ProfTop'
 import LoginUser from './screens/LoginUser'
-import SignInScreen from './screens/SignInScreen'
+import SignUpScreen from './screens/SignUpScreen'
 
 import AlarmClock from  './screens/AlarmClock'
 import NavigationComp from './Components/NavigationComp'; 
@@ -28,7 +29,16 @@ export default function App() {
 
   const Drawer = createDrawerNavigator();
   if(!isLogged){
-    return <LoginScreen setLogged={logUser}/>
+    const Stack = createNativeStackNavigator();
+    return (
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login Screen">
+        <Stack.Screen name="Login Screen" component={LoginScreen} initialParams={{setLogged: logUser}}/>
+        <Stack.Screen name="Login" component={LoginUser}/>
+        <Stack.Screen name="SignUp" component={SignUpScreen}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+    )
   }
   else return (
     <NavigationContainer>
