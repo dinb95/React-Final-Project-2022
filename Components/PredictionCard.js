@@ -1,5 +1,7 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground } from 'react-native'
 import React from 'react'
+
+const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>
 
 export default function PredictionCard({data}) {
     console.log(data)
@@ -19,10 +21,10 @@ export default function PredictionCard({data}) {
         else var arrival = `${hours}:${minutes}`
         return(
             <View>
-             <Text>Predicted Arrival Time: {arrival}</Text>
-             <Text>Departure Time: {data.route_data.departure}</Text>
-             <Text>Lines: {data.route_data.lines}</Text>
-             <Text>{status[data.status]}</Text>
+                <Text style={styles.Txt}><B>Predicted Arrival Time: </B>{arrival}</Text>
+                <Text style={styles.Txt}><B>Departure Time:</B> {data.route_data.departure}</Text>
+                <Text style={styles.Txt}><B>Lines: </B>{data.route_data.lines}</Text>
+                <Text style={styles.statusTxt}>{status[data.status]}</Text>
             </View>
         )
     }
@@ -35,13 +37,28 @@ export default function PredictionCard({data}) {
 
 const styles = StyleSheet.create({
     container: {
-        height: 110,
-        width:'100%',
+        height: 137,
+        width:'90%',
         borderColor:'black',
         borderStyle:'solid',
         borderWidth: 1,
         margin: 5,
         padding:5,
+        borderRadius:10,
+        backgroundColor: '#7bbee9'
 
-    }
+    },
+    Txt:{
+        margin: 2,
+        fontSize:18,
+      },
+      BtnTxt:{
+        fontSize:18,
+      },
+      statusTxt:{
+        margin: 2,
+        fontSize:18,  
+        alignSelf: 'center',
+      },
+     
 })

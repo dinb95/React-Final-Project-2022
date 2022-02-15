@@ -6,6 +6,8 @@ import { blue } from "@mui/material/colors";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SignUpScreen from "./SignUpScreen";
 import LoginUser from "./LoginUser";
+import PushPage from '../PushPage';
+
 
 
 const LoginScreen = ({ route, navigation}) => {
@@ -32,27 +34,31 @@ const LoginScreen = ({ route, navigation}) => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={require('../images/way.jpeg')} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require('../images/way1.jpg')} resizeMode="cover" style={styles.image}>
       <Text style={styles.timely_title}>Timely</Text>
       <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity
               style={styles.signInBtn}
               onPress={() => {navigation.navigate('SignUp')}}
               >
-              <Text>Sign Up</Text>
+              <Text style={styles.Txt}>Sign Up</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.LoginBtn}
               onPress={() => {navigation.navigate({name: 'LoginUser', params:{setLogged: route.params.setLogged}})}}
               >
-              <Text>Login</Text>
+              <Text style={styles.Txt}>Login</Text>
             </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={signInAsync}
+        
           style={styles.googleBtn} >  
-<Icon name="google" size={20} />
-          <Text>Quick login with Google</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Icon name="social-google" size={20} color="blue" />
+            <Text style={styles.googleTxt} > Quick login with Google</Text>
+          </View>
         </TouchableOpacity>
+        <PushPage/>
       </ImageBackground>
 
     </View>
@@ -90,7 +96,7 @@ const styles = StyleSheet.create({
     width: 150,
     fontSize: 60,
     alignItems: 'center',
-    backgroundColor: '#adb9ca',
+    backgroundColor: '#7fa7e3',
     padding: 10 ,     
     borderRadius: 25,
     marginLeft:20
@@ -100,16 +106,16 @@ const styles = StyleSheet.create({
     width: 150,
     fontSize: 60,
     alignItems: 'center',
-    backgroundColor: '#adb9ca',
+    backgroundColor: '#7fa7e3',
     padding: 10 ,
     borderRadius: 25,
     marginLeft:20
   },
   googleBtn:{
-    width: 220,
+    width: 230,
     fontSize: 60,
     alignItems: 'center',
-    backgroundColor: '#7fa7e3',
+    backgroundColor: '#abc5ed',
     padding: 10 ,
     borderRadius: 25,
     justifyContent: 'center',
@@ -118,5 +124,14 @@ const styles = StyleSheet.create({
     margin:10
 
 
+  },
+  googleTxt:{
+    fontSize: 18,
+    alignItems: 'center',
+    color:'blue',
+  },
+  Txt:{
+    fontSize: 18,
+    alignItems: 'center',
   }
 })

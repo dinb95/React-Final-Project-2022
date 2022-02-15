@@ -13,6 +13,7 @@ import SearchRoute from  './Components/SearchRoute'
 import ProfTop from  './Components/ProfTop'
 import LoginUser from './screens/LoginUser'
 import SignUpScreen from './screens/SignUpScreen'
+import PushPage from './PushPage'
 
 import AlarmClock from  './screens/AlarmClock'
 import NavigationComp from './Components/NavigationComp'; 
@@ -38,10 +39,11 @@ export default function App() {
         <Stack.Screen name="CameraComp" component={CameraComp}/>
         </Stack.Navigator>
       </NavigationContainer>
+
     )
   }
   else return (
-    <NavigationContainer>
+    <NavigationContainer >
       <Drawer.Navigator drawerContent={props=> <CustomDrawer {...props} />} screenOptions={{headerShown: false}} initialRouteName="Main">
         <Drawer.Screen name="Home" component={NavigationComp} options={{
           drawerIcon: ({color}) => (
@@ -68,6 +70,7 @@ export default function App() {
             <Ionicons name="bus-outline"size={22} color={color} /> ), 
             }}/>
       </Drawer.Navigator>
+     
     </NavigationContainer>
   );
 }

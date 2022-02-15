@@ -80,6 +80,10 @@ export default function RouteResults({route_results, navigation}) {
 const styles = StyleSheet.create({
     container: {
         width:'100%',
-        height: '100%'
+        height: '100%',
+        marginLeft:30,
+        display:'flex',
+        justifyContent:'center',
+        alignSelf: 'center',
     }
 })
