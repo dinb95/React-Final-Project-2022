@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react'
 import { initializeApp } from 'firebase/app';
 import { getDatabase, onValue, ref } from "firebase/database";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Travel from '../Components/Travel';
+import History from './History';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4",
@@ -22,9 +22,7 @@ const database = getDatabase(app);
 export default function HistoryTravel() {
     const [travels, setTravels] = useState([]);
     const [user, setUser] = useState();
-  
-  
-  
+
     useEffect(() => {
       getUser()
     }, [user])
@@ -49,7 +47,7 @@ export default function HistoryTravel() {
       })
     }
     const renderedTravels = travels.map((travel, index) => {
-      return <Travel data={travel} key={index}/>
+      return <History data={travel} key={index}/>
     })
   
     return (

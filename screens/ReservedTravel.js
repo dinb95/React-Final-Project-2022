@@ -57,7 +57,7 @@ const ReservedTravel = () => {
   return (
     <View style={styles.container}>
     <Text style={styles.title}>Reserved Travels</Text>
-      <ScrollView>
+      <ScrollView style={styles.resCard}>
         {renderedTravels}
       </ScrollView>
     </View>
@@ -71,17 +71,19 @@ const styles = StyleSheet.create({
   container: {
     width:'100%',
     height: '100%',
-    marginLeft:30,
     display:'flex',
     justifyContent:'center',
     alignSelf: 'center',
   },
   title:{
-    position:'absolute',
     fontSize:40,
     top:20,
     color: "#51aae1",
     fontWeight:'bold',
-
+    alignSelf:'center',
+    margin:20,
+    marginBottom: 40
 },
+resCard: {
+}
 })

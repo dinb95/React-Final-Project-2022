@@ -11,12 +11,11 @@ let loopCounter = 0;
 
 export default function Prediction({route, navigation}) {
     const [cards, setCards] = useState();
-    const [userid, setUserid] = useState();
     const [btn, setBtn] = useState();
 
     var pref;
     var ProcessArr = [];
-
+    var userid;
     var route_data = route.params.route_data
 
     useEffect(() => {
@@ -26,7 +25,7 @@ export default function Prediction({route, navigation}) {
     const getUserId = async() => {
         const id = await AsyncStorage.getItem('userid');
         if(id !== null){
-            setUserid(id)
+            userid = id
           }
     }
 
@@ -252,6 +251,7 @@ export default function Prediction({route, navigation}) {
             alarmClock: 0,
             userId: userid
         }
+        console.log(data);
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/UsersManagement"
         fetch(api, {
         method: 'POST',
