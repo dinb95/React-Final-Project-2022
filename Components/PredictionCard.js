@@ -4,7 +4,6 @@ import React from 'react'
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>
 
 export default function PredictionCard({data}) {
-    console.log(data)
     const status = {
         0: 'You will arrive on time if you take this bus!',
         1: 'T-Test failed, prediction not reliable. Searching for a new route...',

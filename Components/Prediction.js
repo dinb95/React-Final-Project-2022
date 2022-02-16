@@ -1,4 +1,4 @@
-import { View, Text, Button,StyleSheet, TouchableOpacity,ImageBackground } from 'react-native'
+import { View,ScrollView, Text, Button,StyleSheet, TouchableOpacity,ImageBackground } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import axios from 'axios';
 import PredictionCard from './PredictionCard';
@@ -10,17 +10,16 @@ let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
 let loopCounter = 0;
 
 export default function Prediction({route, navigation}) {
-    const [pref, setPref] = useState()
     const [cards, setCards] = useState();
     const [userid, setUserid] = useState();
-    const [btn, setBtn] = useState()
+    const [btn, setBtn] = useState();
 
+    var pref;
     var ProcessArr = [];
 
     var route_data = route.params.route_data
 
     useEffect(() => {
-        console.log('useEffect')
         getUserId()
         getPrediction(route_data);
     }, [])
@@ -60,7 +59,6 @@ export default function Prediction({route, navigation}) {
         })
         .then(
             (result) => { //add test time to route
-                console.log("Data: ", route_data)
                 runPrediction(result, route_data)
             })
         .catch(function(error) {
@@ -72,56 +70,61 @@ export default function Prediction({route, navigation}) {
     const runPrediction = (p, route_data) => {
         if(p == null){
             alert("No data was found, could not predict route time");
-            //render default route
+            navigation.goBack()
         }
+        else{
+            var Predicted_D = Math.ceil(p[0] / 60);
 
-        var Predicted_D = Math.ceil(p[0] / 60);
+            let hm = route_data.departure.split(':');
+            let hours = parseInt(hm[0])
+            let minutes = parseInt(hm[1])
 
-        let hm = route_data.departure.split(':');
-        let hours = parseInt(hm[0])
-        let minutes = parseInt(hm[1])
+            let route_arrival = new Date(route_data.date);
+            route_arrival.setHours(hours, minutes + Predicted_D) //get route predicted arrival time
+            //if predicted arrival time is lower than the user's targetted arrival time:
+            if (route_arrival.getTime() <= route_data.date) {
+                //if T-test failed - results aren't reliable        
+                if (p[3] == 0) {
+                    console.log("t test failed, searching previous route")
+                    //render route
+                    let all_route_data = {arrival: route_arrival, route_data: route_data, status: 1}
+                    ProcessArr.push(all_route_data)
 
-        let route_arrival = new Date(route_data.date);
-        route_arrival.setHours(hours, minutes + Predicted_D) //get route predicted arrival time
-        //if predicted arrival time is lower than the user's targetted arrival time:
-        if (route_arrival.getTime() <= route_data.date) {
-            console.log("arrival time good. arrival time: ", route_arrival,"route duration: ", Predicted_D)
-            //if T-test failed - results aren't reliable        
-            if (p[3] == 0) {
-                console.log("t test failed, searching previous route")
+                    searchPrevRoute(route_data)
+                }
+                else {
+                    console.log("route good, saving route")
+                    //render route and finish
+                    let all_route_data = {arrival: route_arrival, route_data: route_data, status: 0}
+                    ProcessArr.push(all_route_data)
+                    renderCards(ProcessArr)
+                    //setPref({p: p, route:route_data, arrival:route_arrival})
+                    pref = {p: p, route:route_data, arrival:route_arrival}
+                    
+                    setBtn(<View>
+                    <TouchableOpacity style={styles.Btn} onPress={savePrefRoute}>
+                        <Text style={styles.BtnTxt}>Save this route</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.Btn} onPress={() => {navigation.navigate({name:'Map'})}}>
+                            <View style={{ flexDirection: 'row' }}>
+                            <Text style={styles.BtnTxt}> Show on Map </Text>
+                            <Icon name="map-marker" size={20} />
+                            </View>
+                            </TouchableOpacity></View>)
+                    //save route for user
+                }
+            }
+            else {
+                console.log("the bus will arrive late, searching new route")
+                //predicting the bus will arrive after the user's targetted arrival time
+                //search for an earlier bus and predict route's arrival time again
+                //////////////+=///////////////////////
                 //render route
-                let all_route_data = {arrival: route_arrival, route_data: route_data, status: 1}
+                let all_route_data = {arrival: route_arrival, route_data: route_data, status: 2}
                 ProcessArr.push(all_route_data)
 
                 searchPrevRoute(route_data)
             }
-            else {
-                console.log("route good, saving route")
-                //render route and finish
-                let all_route_data = {arrival: route_arrival, route_data: route_data, status: 0}
-                ProcessArr.push(all_route_data)
-                renderCards(ProcessArr)
-                setPref({p: p, route:route_data, arrival:route_arrival})
-                
-                setBtn( <TouchableOpacity style={styles.Btn} onPress={() => {navigation.navigate({name:'Map'})}}>
-                        <View style={{ flexDirection: 'row' }}>
-                        <Text style={styles.BtnTxt}> Show on Map </Text>
-                        <Icon name="map-marker" size={20} />
-                        </View>
-                        </TouchableOpacity>)
-                //save route for user
-            }
-        }
-        else {
-            console.log("the bus will arrive late, searching new route")
-            //predicting the bus will arrive after the user's targetted arrival time
-            //search for an earlier bus and predict route's arrival time again
-            //////////////+=///////////////////////
-            //render route
-            let all_route_data = {arrival: route_arrival, route_data: route_data, status: 2}
-            ProcessArr.push(all_route_data)
-
-            searchPrevRoute(route_data)
         }
     }
     function searchPrevRoute(route){
@@ -187,7 +190,6 @@ export default function Prediction({route, navigation}) {
         return bus_data;
     }
 
-
     function getLines(route) {
         let lines = ""
         for (let i = 0; i < route.steps.length; i++) {
@@ -216,6 +218,8 @@ export default function Prediction({route, navigation}) {
             return `${h}:${m}`
     }
     const savePrefRoute = () => {
+        console.log(pref)
+
         let p = pref.p
         let route = pref.route
         let arrival = pref.arrival
@@ -248,7 +252,6 @@ export default function Prediction({route, navigation}) {
             alarmClock: 0,
             userId: userid
         }
-        console.log(data)
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/UsersManagement"
         fetch(api, {
         method: 'POST',
@@ -259,8 +262,9 @@ export default function Prediction({route, navigation}) {
           })
         })
         .then(
-            (result) => {
-
+            () => {
+                alert("Route was saved successfuly!")
+                navigation.navigate('Home');
             })
         .catch(function(error) {
           console.log('There has been a problem with your fetch operation: ' + error.message);
@@ -277,11 +281,9 @@ export default function Prediction({route, navigation}) {
   return (
     <ImageBackground source={require('../images/blueWay.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
     <View style={styles.container}>
-
+        <ScrollView>
         {cards}
-        <TouchableOpacity style={styles.Btn} onPress={savePrefRoute}>
-        <Text style={styles.BtnTxt}>Save this route</Text>
-      </TouchableOpacity>
+        </ScrollView>
         {btn}
     </View>
     </ImageBackground>

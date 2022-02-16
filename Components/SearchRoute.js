@@ -74,7 +74,6 @@ export default function SearchRoute({navigation}) {
           });
     }
     const renderResults = () => {
-      console.log('rendering')
       if(results === "")
         return <Text></Text>;
       return (
