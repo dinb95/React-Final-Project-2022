@@ -17,6 +17,8 @@ import AlarmClock from  './screens/AlarmClock'
 import NavigationComp from './Components/NavigationComp'; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CameraComp from './Components/CameraComp';
+import SelectPictureScreen from './screens/SelectPictureScreen';
+
 
 
 export default function App() {
@@ -35,6 +37,7 @@ export default function App() {
         <Stack.Screen name="LoginUser" component={LoginUser}/>
         <Stack.Screen name="SignUp" component={SignUpScreen}/>
         <Stack.Screen name="CameraComp" component={CameraComp}/>
+        <Stack.Screen name="SelectPictureScreen" component={SelectPictureScreen}/>
         </Stack.Navigator>
       </NavigationContainer>
 

@@ -11,20 +11,8 @@ export default function SignUpScreen({navigation}) {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
-  };
-  const takePicture = (uri) => {
+  //define this in userUpdate page
+  const savePicture = (uri) => {
     console.log("uri from signup: ", uri)
     setImage(uri);
   }
@@ -69,6 +57,8 @@ export default function SignUpScreen({navigation}) {
     });
   }
   const imageUpload = (picName, id) => {
+    console.log(image)
+    console.log(picName, id)
     let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/uploadpicture"
     let data = new FormData();
     data.append('picture', {
@@ -82,6 +72,7 @@ export default function SignUpScreen({navigation}) {
     }
     fetch(api, config)
     .then((res) => {
+      console.log(res.message)
       if (res.status == 201) {return res.json(); }
       else {return "err"; }
       })
@@ -115,12 +106,13 @@ export default function SignUpScreen({navigation}) {
    // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
    <View style={styles.container}>
    <Text style={styles.title}>Sign Up</Text>
-   <Button title="Pick an image from camera roll" onPress={pickImage} />
-      {image && <Image source={{ uri: image }} style={{ borderRadius: 80, width: 150, height: 150, paddingBottom:20 }} />}
-    <Button title='Take a picture from camera' onPress={() => {navigation.navigate({
-      name: 'CameraComp', 
-      params:{takePicture:takePicture}
-      })}}/>
+   {image && <Image source={{ uri: image }} style={{ borderRadius: 80, width: 150, height: 150, paddingBottom:20 }} />}
+    <TouchableOpacity style={styles.uploadBtn} onPress={() => navigation.navigate({
+      name:'SelectPictureScreen',
+      params:{savePicture:savePicture}
+      })}>
+      <Text>Upload Picture</Text>
+      </TouchableOpacity>
     <StatusBar style="auto" />
       <View style={styles.inputView}>
         <TextInput
@@ -184,9 +176,8 @@ const styles = StyleSheet.create({
       backgroundColor: "#fff",
       borderRadius: 30,
       width: "70%",
-      height: 45,
+      height: 40,
       marginBottom: 20,
-   
       alignItems: "center",
     },
    
@@ -209,6 +200,14 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: "#809bc2",
+    },
+    uploadBtn:{
+        width: "50%",
+        borderRadius: 25,
+        height: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#809bc2",
     },
     title:{
         position:'absolute',
