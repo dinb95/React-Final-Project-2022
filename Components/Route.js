@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         margin: 5,
         padding:5,
         borderRadius:10,
-        backgroundColor: '#7bbee9'
+        backgroundColor: '#bddff5'
     
     },
     saveBtn: {
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',
-        backgroundColor: '#bddff5',
+        backgroundColor: '#7bbee9',
         padding: 6,  
         borderRadius:7,
         borderStyle:'solid',

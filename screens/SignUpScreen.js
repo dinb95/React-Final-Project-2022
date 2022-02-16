@@ -119,12 +119,7 @@ export default function SignUpScreen({navigation}) {
    <View style={styles.container}>
    <Text style={styles.title}>Sign Up</Text>
    {image && <Image source={{ uri: image }} style={{ borderRadius: 80, width: 150, height: 150, paddingBottom:20 }} />}
-    <TouchableOpacity style={styles.uploadBtn} onPress={() => navigation.navigate({
-      name:'SelectPictureScreen',
-      params:{savePicture:savePicture}
-      })}>
-      <Text>Upload Picture</Text>
-      </TouchableOpacity>
+    
     <StatusBar style="auto" />
       <View style={styles.inputView}>
         <TextInput
@@ -170,9 +165,16 @@ export default function SignUpScreen({navigation}) {
           onChangeText={(password) => setConfirm(password)}
         />
       </View>
-      <TouchableOpacity style={styles.loginBtn} onPress={SignUpUser}>
-        <Text style={styles.loginText}>Sign Up</Text>
+      <TouchableOpacity style={styles.picBtn} onPress={() => navigation.navigate({
+      name:'SelectPictureScreen',
+      params:{savePicture:savePicture}
+      })}>
+      <Text style={styles.UploadPicText}>Upload Picture</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.SignUpBtn} onPress={SignUpUser}>
+        <Text style={styles.SignUpText}>Sign Up</Text>
+      </TouchableOpacity>
+     
     </View>
   );
 }
@@ -189,7 +191,7 @@ const styles = StyleSheet.create({
       borderRadius: 30,
       width: "70%",
       height: 40,
-      marginBottom: 20,
+      marginTop: 20,
       alignItems: "center",
     },
    
@@ -197,36 +199,46 @@ const styles = StyleSheet.create({
       height: 50,
       flex: 1,
       padding: 10,
-      marginLeft: 20,
       fontSize:18
     },
    
-    forgot_button: {
-      height: 30,
-      marginBottom: 30,
-    },
-   
-    loginBtn: {
+
+    SignUpBtn: {
       width: "80%",
       borderRadius: 25,
       height: 50,
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: "#51aae1",
+      position:'absolute',
+      bottom:50,
+      marginTop:15,
     },
-    uploadBtn:{
-        width: "50%",
-        borderRadius: 25,
-        height: 50,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#809bc2",
+    picBtn:{
+      backgroundColor: "#bddff5",
+      borderRadius: 30,
+      width: "70%",
+      height: 40,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop:15,
+      color: "#51aae1",
     },
     title:{
         position:'absolute',
         fontSize:40,
-        top:50,
-        color: '#fff'
+        top:20,
+        color: "#51aae1",
+        fontWeight:'bold',
+
     },
-    loginText:{   fontSize:18}
+    UploadPicText:{
+      height: 50,
+      flex: 1,
+      padding: 10,
+      fontSize:18,
+      color: "blue",
+
+    },
+    SignUpText:{   fontSize:18}
   });

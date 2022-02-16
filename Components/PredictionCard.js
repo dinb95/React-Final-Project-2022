@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         margin: 5,
         padding:5,
         borderRadius:10,
-        backgroundColor: '#7bbee9'
+        backgroundColor: '#bddff5'
 
     },
     Txt:{

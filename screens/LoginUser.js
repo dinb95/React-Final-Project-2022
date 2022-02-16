@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     height: 50,
     flex: 1,
     padding: 10,
-    marginLeft: 20,
+    fontSize:18
   },
  
   forgot_button: {
@@ -144,8 +144,9 @@ const styles = StyleSheet.create({
     marginTop: 40,
     backgroundColor: "#51aae1",
   },
-  image: {
-    
+  loginText:{
+    fontSize:18
 
   }
+ 
 });
