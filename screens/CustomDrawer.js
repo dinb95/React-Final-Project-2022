@@ -15,7 +15,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-const CustomDrawer = props => {
+const CustomDrawer = (props) => {
 
   const [username, setUsername] = useState();
   const [userid, setUserid] = useState();
@@ -37,6 +37,9 @@ const CustomDrawer = props => {
       catch{setUserpic(pic)}
 
   }
+  }
+  const signOutBtn = () => {
+    props.signOut();
   }
   getUser();
   return (
@@ -67,7 +70,7 @@ const CustomDrawer = props => {
         </View>
       </DrawerContentScrollView>
       <View style={{padding: 20, borderTopWidth: 1, backgroundColor: '#fff', borderTopColor: '#ccc'}}>
-        <TouchableOpacity onPress={() => {}} style={{paddingVertical: 15}}>
+        <TouchableOpacity onPress={() => {signOutBtn()}} style={{paddingVertical: 15}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Ionicons name="exit-outline" size={22} />
             <Text

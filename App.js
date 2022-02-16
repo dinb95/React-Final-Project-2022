@@ -26,7 +26,9 @@ export default function App() {
   const logUser = () => {
     setLogged(true)
   }
-
+  const signOut= () => {
+    setLogged(false)
+  }
   const Drawer = createDrawerNavigator();
   if(!isLogged){
     const Stack = createNativeStackNavigator();
@@ -44,7 +46,7 @@ export default function App() {
   }
   else return (
     <NavigationContainer >
-      <Drawer.Navigator drawerContent={props=> <CustomDrawer {...props} />} screenOptions={{headerShown: false}} initialRouteName="Main">
+      <Drawer.Navigator drawerContent={props=> <CustomDrawer {...props} signOut={signOut} />} screenOptions={{headerShown: false}} initialRouteName="Main">
         <Drawer.Screen name="Navigation" component={NavigationComp} options={{
           drawerIcon: ({color}) => (
             <Ionicons name="home-outline" size={22} color={color} /> ),

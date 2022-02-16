@@ -35,7 +35,7 @@ export default function LoginUser({route}) {
       return res.json()
   })
   .then(
-      (result) => { 
+      (result) => {
         if(result.Message == "user not found")
           alert("Wrong email or password")
         else saveToStorage(result)
