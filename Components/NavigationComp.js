@@ -4,9 +4,9 @@ import React from 'react'
 import Home from './Home';
 import Map from './Map';
 import SearchRoute from './SearchRoute';
-import RouteResults from './RouteResults';
 import ProfileScreen from '../screens/ProfileScreen';
 import Prediction from './Prediction';
+import AlarmClock from '../screens/AlarmClock';
 
 export default function NavigationComp() {
     const Stack = createNativeStackNavigator();
@@ -15,8 +15,9 @@ export default function NavigationComp() {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Search Route" component={SearchRoute}/>
       <Stack.Screen name="Prediction Process" component={Prediction}/>
-      <Stack.Screen name="Map" component={Map}/>
+      <Stack.Screen name="Map" component={Map} options={{headerShown:true}}/>
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="AlarmClock" component={AlarmClock} />
     </Stack.Navigator>
   )
 }

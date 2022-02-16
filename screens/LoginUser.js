@@ -17,11 +17,11 @@ export default function LoginUser({route}) {
  
   const logUser = () => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    if(reg.test(email)){
-    alert("Email is Not Correct");
-    setEmail("");
-    return false;
-  } 
+    if(!reg.test(email)){
+      alert("Email is Not Correct");
+      setEmail("");
+      return false;
+  }
   
   let api = `https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/Users?email=${email}&password=${password}`
   fetch(api, {

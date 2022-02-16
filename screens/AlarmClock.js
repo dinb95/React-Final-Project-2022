@@ -1,17 +1,16 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, Switch } from 'react-native'
 import React,{ useState } from 'react'
 import NumericInput from 'react-native-numeric-input'
-import ToggleSwitch from 'toggle-switch-react-native'
 
-
-const save = () => {
-
-}
-
-
-const AlarmClock = () => {
+const AlarmClock = ({navigation, route}) => {
   // const [isEnabled, setIsEnabled] = useState(false);
   // const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const [alarm, setAlarm] = useState()
+
+  const save = () => {
+    route.params.setAlarmClock(alarm)
+    navigation.goBack()
+  }
 
   return (
     <View style={styles.container}>
@@ -21,7 +20,7 @@ const AlarmClock = () => {
          source={require('../images/AlarmClock.png')}
          style={{height: 150, width: 150, marginBottom: 30, justifyContent: 'center', display:'flex', alignItems: 'center'}}/>
         <View style={styles.Btn}>
-          <NumericInput onChange={value => console.log(value)} />
+          <NumericInput onChange={value => setAlarm(value)} />
         </View>
         {/* <Switch style={styles.SwitchBtn}
         trackColor={{ false: "#767577", true: "#51aae1" }}

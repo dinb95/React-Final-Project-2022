@@ -13,6 +13,7 @@ export default function Prediction({route, navigation}) {
     const [cards, setCards] = useState();
     const [btn, setBtn] = useState();
 
+    var alarm;
     var pref;
     var ProcessArr = [];
     var userid;
@@ -28,7 +29,10 @@ export default function Prediction({route, navigation}) {
             userid = id
           }
     }
-
+    const setAlarmClock = (value) => {
+        alarm = value
+        console.log(value)
+    }
     const getPrediction = (route_data) => {
         var route = {
             LineNumber: route_data.lines,
@@ -101,9 +105,16 @@ export default function Prediction({route, navigation}) {
                     pref = {p: p, route:route_data, arrival:route_arrival}
                     
                     setBtn(<View>
+                        <View style={{ flexDirection: 'row' }}> 
                     <TouchableOpacity style={styles.Btn} onPress={savePrefRoute}>
                         <Text style={styles.BtnTxt}>Save this route</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity style={styles.Btn} onPress={() => {navigation.navigate({
+                        name:'AlarmClock', 
+                        params: {setAlarmClock:setAlarmClock}})}}>
+                        <Text style={styles.BtnTxt}>Set Alarm Clock</Text>
+                    </TouchableOpacity>
+                    </View>
                     <TouchableOpacity style={styles.Btn} onPress={() => {navigation.navigate({name:'Map'})}}>
                             <View style={{ flexDirection: 'row' }}>
                             <Text style={styles.BtnTxt}> Show on Map </Text>
@@ -248,7 +259,7 @@ export default function Prediction({route, navigation}) {
                 SampleVar: p[5],
                 Mean: p[6]
             },
-            alarmClock: 0,
+            alarmClock: alarm,
             userId: userid
         }
         console.log(data);

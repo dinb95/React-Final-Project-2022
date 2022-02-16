@@ -103,10 +103,10 @@ export default function SearchRoute({navigation}) {
               </TouchableOpacity>
             <View>
               <View>
-                  <Text style={styles.GetFromBtn}>Time: {getDate()}</Text>
+                  <Text style={styles.GetFromBtn}>Time: {getTime()}</Text>
               </View>
               <View>
-                  <Text style={styles.GetFromBtn}>Date: {getTime()}</Text>
+                  <Text style={styles.GetFromBtn}>Date: {getDate()}</Text>
               </View>
                   {show && (
                   <DateTimePickerModal
