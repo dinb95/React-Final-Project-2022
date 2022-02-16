@@ -12,9 +12,14 @@ export default function ProfTop({navigation}) {
         const pic = await AsyncStorage.getItem('userpic'); 
         if(name !== null)
             setUsername(name)        
-        if(pic !== null)
-            setUserpic(pic)
+        if(pic !== null){
+          try{
+            setUserpic(JSON.parse(pic))
+          }
+          catch{setUserpic(pic)}
+        console.log(userpic)
       }
+    }
       getUser();
      
 
@@ -43,6 +48,6 @@ export default function ProfTop({navigation}) {
 }
 const styles = StyleSheet.create({
   container: {
-
+    width:'100%'
   }
 })

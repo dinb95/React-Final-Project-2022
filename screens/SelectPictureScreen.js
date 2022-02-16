@@ -23,6 +23,7 @@ export default function SelectPictureScreen({route, navigation}) {
         setImage(uri);
       }
     const saveImage = () => {
+        console.log(image)
         route.params.savePicture(image)
         navigation.goBack()
     }
