@@ -1,4 +1,4 @@
-import { View, Text, Button, StyleSheet } from 'react-native'
+import { View, ScrollView, Text, Button, StyleSheet } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import { initializeApp } from 'firebase/app';
 import { getDatabase, onValue, ref } from "firebase/database";
@@ -56,8 +56,10 @@ const ReservedTravel = () => {
 
   return (
     <View style={styles.container}>
-    {renderedTravels}
-    <Button title='Press' onPress={() => {console.log(travels)}}/>
+    <Text style={styles.title}>Reserved Travels</Text>
+      <ScrollView>
+        {renderedTravels}
+      </ScrollView>
     </View>
 
   )
@@ -68,7 +70,18 @@ export default ReservedTravel
 const styles = StyleSheet.create({
   container: {
     width:'100%',
-    height:'100%',
-    justifyContent:'center'
-  }
+    height: '100%',
+    marginLeft:30,
+    display:'flex',
+    justifyContent:'center',
+    alignSelf: 'center',
+  },
+  title:{
+    position:'absolute',
+    fontSize:40,
+    top:20,
+    color: "#51aae1",
+    fontWeight:'bold',
+
+},
 })

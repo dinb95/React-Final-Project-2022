@@ -1,5 +1,6 @@
 {
   "expo": {
+    "userInterfaceStyle": "automatic",
     "name": "final_project",
     "slug": "final_project",
     "version": "1.0.0",
@@ -35,5 +36,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     }
+    
   }
 }

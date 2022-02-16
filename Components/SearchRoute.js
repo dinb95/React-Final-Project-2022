@@ -4,6 +4,8 @@ import React, {useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RouteResults from './RouteResults';
 import { ScrollView } from 'react-native-gesture-handler';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 
 
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
@@ -21,6 +23,7 @@ export default function SearchRoute({navigation}) {
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
+        console.log(Platform.OS)
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
       };
@@ -37,8 +40,12 @@ export default function SearchRoute({navigation}) {
       const showTimepicker = () => {
         showMode('time');
       };
+      const handleConfirm = (newdate) => {
+        setDate(newdate)
+        setShow(false)
+      }
     const getDate = () => {
-        return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
+        return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
     }
     const getTime = () => {
         if(date.getMinutes() < 10)
@@ -105,13 +112,13 @@ export default function SearchRoute({navigation}) {
                   <Text style={styles.GetFromBtn}>{getTime()}</Text>
               </View>
                   {show && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
+                  <DateTimePickerModal
+                    isVisible={show}
                     value={date}
                     mode={mode}
                     is24Hour={true}
-                    display="default"
-                    onChange={onChange}
+                    onCancel={() =>setShow(false)}
+                    onConfirm={handleConfirm}
                   />
                 )}
               </View>

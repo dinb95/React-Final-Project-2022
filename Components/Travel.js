@@ -4,7 +4,6 @@ import React from 'react'
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>
 
 export default function Travel({data}) {
-    console.log(data)
     const renderCard = () => {
         <View>
         <Text style={styles.Txt}><B>Predicted Arrival Time: </B>{}</Text>
