@@ -105,15 +105,15 @@ export default function Prediction({route, navigation}) {
                     //setPref({p: p, route:route_data, arrival:route_arrival})
                     pref = {p: p, route:route_data, arrival:route_arrival}
                     
-                    setBtn(<View>
-                        <View style={{ flexDirection: 'row' }}> 
+                    setBtn(<View style={{ marginBottom:40 }}>
+                        <View style={{ flexDirection: 'row' ,alignItems: 'center',justifyContent: 'center',alignSelf: 'center',}}> 
                     <TouchableOpacity style={styles.Btn} onPress={savePrefRoute}>
                         <Text style={styles.BtnTxt}>Save this route</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.Btn} onPress={() => {navigation.navigate({
                         name:'AlarmClock', 
                         params: {setAlarmClock:setAlarmClock}})}}>
-                        <Text style={styles.BtnTxt}>Set Alarm Clock</Text>
+                        <Text style={styles.BtnTxt}>Alarm Clock</Text>
                     </TouchableOpacity>
                     </View>
                     <TouchableOpacity style={styles.Btn} onPress={() => {navigation.navigate({name:'Map'})}}>
