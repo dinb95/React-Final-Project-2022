@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     title:{
       position:'absolute',
         fontSize:40,
-        top:20,
+        top:40,
         color: "#51aae1",
         fontWeight:'bold',
   },

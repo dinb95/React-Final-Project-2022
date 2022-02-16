@@ -95,13 +95,13 @@ export default function SearchRoute({navigation}) {
     /////
         <View style={styles.container}>
           <ImageBackground source={require('../images/blueWay.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
-          <View style={{marginTop:20}}>
+          <View style={{marginTop:30}}>
             <TextInput placeholder='Origin' style={styles.input} value={origin} onChangeText={setOrigin}></TextInput>
             <TextInput placeholder='Destination' style={styles.input} value={destination} onChangeText={setDestination}></TextInput>
             <TouchableOpacity style={styles.Btn} onPress={showDatepicker}>
-                <Text style={styles.BtnTxt}>Choose Date and Time</Text>
+                <Text style={styles.BtnDateTxt}>Choose Date and Time</Text>
               </TouchableOpacity>
-            <View>
+            <View style={{ flexDirection: 'row' }}>
               <View>
                   <Text style={styles.GetFromBtn}>Time: {getTime()}</Text>
               </View>
@@ -149,8 +149,9 @@ const styles = StyleSheet.create({
       borderRadius:7,
       backgroundColor:'#ffffff',
       alignItems: 'center',
-        justifyContent: 'center',
-        alignSelf: 'center',
+      justifyContent: 'center',
+      alignSelf: 'center',
+      fontSize:18
     },
     scrollView: {
       height: '100%',
@@ -163,6 +164,7 @@ const styles = StyleSheet.create({
         color:"#ffffff",
         fontWeight:'bold',
         marginLeft:30,
+        fontSize:18
     },
     Btn:{
       alignItems: 'center',
@@ -183,6 +185,7 @@ const styles = StyleSheet.create({
       padding:7,  
       borderRadius:7,
       marginBottom:10,
+      marginTop:10,
       
     },
     BtnTxt:{
@@ -191,7 +194,15 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignSelf: 'center',
       display:'flex',
+      fontSize:18
       
+    },
+    BtnDateTxt:{
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'center',
+      display:'flex',
+      fontSize:18
     }
 
   });
