@@ -12,6 +12,8 @@ import SearchRoute from  './Components/SearchRoute'
 import ProfTop from  './Components/ProfTop'
 import LoginUser from './screens/LoginUser'
 import SignUpScreen from './screens/SignUpScreen'
+import ForgotPassword from './screens/ForgotPassword'
+
 
 import AlarmClock from  './screens/AlarmClock'
 import NavigationComp from './Components/NavigationComp'; 
@@ -67,6 +69,7 @@ export default function App() {
           drawerIcon: ({color}) => (
             <Ionicons name="bus-outline"size={22} color={color} /> ), 
             }}/>
+          
       </Drawer.Navigator>
      
     </NavigationContainer>

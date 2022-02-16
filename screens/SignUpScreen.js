@@ -3,6 +3,7 @@ import { Button, Image, View, Platform,StyleSheet,Text,TextInput,TouchableOpacit
 import * as ImagePicker from 'expo-image-picker';
 import { StatusBar } from "expo-status-bar";
 
+
 export default function SignUpScreen({navigation}) {
   const [image, setImage] = useState(null);
   const [firstName, setfirstName] = useState("");
@@ -29,8 +30,15 @@ export default function SignUpScreen({navigation}) {
     setImage(uri);
   }
   const SignUpUser = () => {
-    if(firstName === "" || LastName === "" || email ==="" || password === "" || confirm === "" || image === null){
+    if(firstName === "" || LastName === "" || email ==="" || password === "" || confirm === "" ){
       alert("Please fill all inputs")
+    }
+    if(image === null)
+    {
+      setImage("https://yt3.ggpht.com/ytc/AKedOLQf5MBcFSDzo2FeZIXSqafCvdRMGjW2C-0j8RpD=s900-c-k-c0x00ffffff-no-rj");
+    }
+    else if(!valid()){      
+      alert("Email is Not Correct");
     }
     else if(password != confirm)
       alert("Passwords don't match")
@@ -38,6 +46,12 @@ export default function SignUpScreen({navigation}) {
       createUser();
     }
   }
+ 
+  const valid = () => {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+   return(reg.test(email));  
+  }  
+
   const createUser = () => {
     var user = {
       FirstName: firstName,
@@ -69,6 +83,7 @@ export default function SignUpScreen({navigation}) {
     });
   }
   const imageUpload = (picName, id) => {
+    console.log(image);
     let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/uploadpicture"
     let data = new FormData();
     data.append('picture', {
@@ -145,7 +160,7 @@ export default function SignUpScreen({navigation}) {
           style={styles.TextInput}
           placeholder="Email"
           placeholderTextColor="#003f5c"
-          onChangeText={(email) => setEmail(email)}
+          onChangeText={(email) =>setEmail(email)}
         />
       </View>
       <View style={styles.inputView}>
@@ -175,13 +190,13 @@ export default function SignUpScreen({navigation}) {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#adb9ca",
+      backgroundColor: "#fff",
       alignItems: "center",
      justifyContent: "center",
     },
   
     inputView: {
-      backgroundColor: "#fff",
+      backgroundColor: "#bddff5",
       borderRadius: 30,
       width: "70%",
       height: 45,
@@ -195,6 +210,7 @@ const styles = StyleSheet.create({
       flex: 1,
       padding: 10,
       marginLeft: 20,
+      fontSize:18
     },
    
     forgot_button: {
@@ -208,12 +224,13 @@ const styles = StyleSheet.create({
       height: 50,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: "#809bc2",
+      backgroundColor: "#51aae1",
     },
     title:{
         position:'absolute',
         fontSize:40,
         top:50,
         color: '#fff'
-    }
+    },
+    loginText:{   fontSize:18}
   });

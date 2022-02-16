@@ -16,6 +16,13 @@ export default function LoginUser({route}) {
   const [password, setPassword] = useState("");
  
   const logUser = () => {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if(reg.test(email)){
+    alert("Email is Not Correct");
+    setEmail("");
+    return false;
+  } 
+  
   let api = `https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/Users?email=${email}&password=${password}`
   fetch(api, {
   method: 'GET',
@@ -110,7 +117,7 @@ const styles = StyleSheet.create({
   },
 
   inputView: {
-    backgroundColor: "#adb9ca",
+    backgroundColor: "#bddff5",
     borderRadius: 30,
     width: "70%",
     height: 45,
@@ -138,7 +145,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 40,
-    backgroundColor: "#809bc2",
+    backgroundColor: "#51aae1",
   },
   image: {
     
