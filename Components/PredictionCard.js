@@ -44,20 +44,21 @@ const styles = StyleSheet.create({
         margin: 5,
         padding:5,
         borderRadius:10,
-        backgroundColor: '#bddff5'
-
+        backgroundColor: '#bddff5',
+      
     },
+  
     Txt:{
         margin: 2,
         fontSize:18,
-      },
-      BtnTxt:{
+    },
+    BtnTxt:{
         fontSize:18,
-      },
-      statusTxt:{
+    },
+    statusTxt:{
         margin: 2,
         fontSize:18,  
         alignSelf: 'center',
-      },
-     
+    },
+    
 })

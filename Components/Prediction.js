@@ -11,11 +11,12 @@ let loopCounter = 0;
 
 export default function Prediction({route, navigation}) {
     const [cards, setCards] = useState();
+    const [userid, setUserid] = useState();
     const [btn, setBtn] = useState();
 
     var pref;
     var ProcessArr = [];
-    var userid;
+
     var route_data = route.params.route_data
 
     useEffect(() => {
@@ -25,7 +26,7 @@ export default function Prediction({route, navigation}) {
     const getUserId = async() => {
         const id = await AsyncStorage.getItem('userid');
         if(id !== null){
-            userid = id
+            setUserid(id)
           }
     }
 
@@ -100,7 +101,7 @@ export default function Prediction({route, navigation}) {
                     //setPref({p: p, route:route_data, arrival:route_arrival})
                     pref = {p: p, route:route_data, arrival:route_arrival}
                     
-                    setBtn(<View>
+                    setBtn(<View style={styles.containerBtn}>
                     <TouchableOpacity style={styles.Btn} onPress={savePrefRoute}>
                         <Text style={styles.BtnTxt}>Save this route</Text>
                     </TouchableOpacity>
@@ -251,7 +252,6 @@ export default function Prediction({route, navigation}) {
             alarmClock: 0,
             userId: userid
         }
-        console.log(data);
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/UsersManagement"
         fetch(api, {
         method: 'POST',
@@ -299,6 +299,8 @@ const styles = StyleSheet.create({
     },
     predCard:{
         marginLeft:30,
+        marginTop:80,
+      
     },
     Btn:{
     position:'relative',
@@ -314,14 +316,20 @@ const styles = StyleSheet.create({
     borderColor:'black',
     fontSize:18,
     margin:10,
+    
 
     },
     BtnTxt:{
         fontSize:18,
-        
-      },
-      image: {
+        fontWeight:'bold',
+    
+    },
+    image: {
         width:'100%',
         backgroundColor:'rgba(0,0,0,.6)',
-      },
+    },
+    containerBtn:{
+        marginBottom:40,
+
+      }
 })
