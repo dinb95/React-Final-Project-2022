@@ -70,6 +70,8 @@ export default function LoginUser({route}) {
   }
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Login</Text>
+
       <Image source={require("../images/logo3.jpg")}
              style={{height: 150, width: 150, borderRadius: 80, marginBottom: 60, justifyContent: 'center', alignItems: 'center'}}
              />
@@ -106,7 +108,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
    justifyContent: "center",
-  },
+  }, 
+  title:{
+    position:'absolute',
+    fontSize:40,
+    top:40,
+    color: "#51aae1",
+    fontWeight:'bold',
+ 
+
+},
 
   inputView: {
     backgroundColor: "#bddff5",
