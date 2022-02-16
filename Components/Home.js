@@ -1,9 +1,34 @@
 import { View, Text, Button, StyleSheet,ImageBackground,TouchableOpacity } from 'react-native';
 import React, {useState, useEffect} from 'react';
+import PushPage from '../PushPage';
+import { initializeApp } from 'firebase/app';
+import { getDatabase, set, ref } from "firebase/database";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const firebaseConfig = {
+  apiKey: "AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4",
+  authDomain: "final-project-din-and-hadar.firebaseapp.com",
+  databaseURL: "https://final-project-din-and-hadar-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "final-project-din-and-hadar",
+  storageBucket: "final-project-din-and-hadar.appspot.com",
+  messagingSenderId: "490950571924",
+  appId: "1:490950571924:web:16a1d3b0896e4b41cfc181",
+  measurementId: "G-4YV91X5FDZ"
+};
+
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
 export default function Home({navigation}) {
-  
+  const getToken = async() => {
+    const token = await AsyncStorage.getItem('usertoken')
+    const id = await AsyncStorage.getItem('userid')
+    const db = ref(database, `Tokens/${id}/`);
+    set(db, token)
+  }
+  useEffect(()=> {
+    getToken();
+  },[])
   return (
     <View style={styles.container}>
        <ImageBackground source={require('../images/way1.jpg')} resizeMode="cover" style={styles.image}>
@@ -18,6 +43,7 @@ export default function Home({navigation}) {
             </TouchableOpacity>
         </View>
      </ImageBackground>
+     <PushPage/>
     </View>
   );
 }

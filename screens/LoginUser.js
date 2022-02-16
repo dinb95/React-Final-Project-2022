@@ -16,7 +16,6 @@ export default function LoginUser({route}) {
   const [password, setPassword] = useState("");
  
   const logUser = () => {
-  console.log(email, password)
   let api = `https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/Users?email=${email}&password=${password}`
   fetch(api, {
   method: 'GET',
@@ -31,7 +30,6 @@ export default function LoginUser({route}) {
   .then(
       (result) => { 
         try{
-          console.log(result)
           saveToStorage(result)
         } 
         catch{
@@ -44,7 +42,6 @@ export default function LoginUser({route}) {
     });
   }
   const saveToStorage = async(user) => {
-    console.log(user)
     AsyncStorage.setItem('username', `${user.FirstName} ${user.LastName}`)
     AsyncStorage.setItem('userid', JSON.stringify(user.Id))
 
@@ -61,7 +58,6 @@ export default function LoginUser({route}) {
     })
     .then(
         (result) => { 
-          console.log(result)
           AsyncStorage.setItem('userpic', JSON.stringify(result))
           route.params.setLogged();
         })
