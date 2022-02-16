@@ -23,7 +23,6 @@ export default function SearchRoute({navigation}) {
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
-        console.log(Platform.OS)
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
       };
@@ -41,7 +40,8 @@ export default function SearchRoute({navigation}) {
         showMode('time');
       };
       const handleConfirm = (newdate) => {
-        setDate(newdate)
+        const currentDate = newdate || date;
+        setDate(currentDate)
         setShow(false)
       }
     const getDate = () => {
@@ -95,29 +95,26 @@ export default function SearchRoute({navigation}) {
     /////
         <View style={styles.container}>
           <ImageBackground source={require('../images/blueWay.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
-
+          <View style={{marginTop:20}}>
             <TextInput placeholder='Origin' style={styles.input} value={origin} onChangeText={setOrigin}></TextInput>
             <TextInput placeholder='Destination' style={styles.input} value={destination} onChangeText={setDestination}></TextInput>
-            <View style={{ flexDirection: 'row' }}>
-              <View>
-              <TouchableOpacity style={styles.Btn} onPress={showDatepicker}>
-                <Text style={styles.BtnTxt}>Choose Date</Text>
+            <TouchableOpacity style={styles.Btn} onPress={showDatepicker}>
+                <Text style={styles.BtnTxt}>Choose Date and Time</Text>
               </TouchableOpacity>
-                  <Text style={styles.GetFromBtn}>{getDate()}</Text>
+            <View>
+              <View>
+                  <Text style={styles.GetFromBtn}>Time: {getDate()}</Text>
               </View>
               <View>
-                <TouchableOpacity style={styles.Btn} onPress={showTimepicker}>
-                  <Text style={styles.BtnTxt}>Choose Time</Text>
-                </TouchableOpacity>
-                  <Text style={styles.GetFromBtn}>{getTime()}</Text>
+                  <Text style={styles.GetFromBtn}>Date: {getTime()}</Text>
               </View>
                   {show && (
                   <DateTimePickerModal
                     isVisible={show}
                     value={date}
-                    mode={mode}
+                    mode='datetime'
                     is24Hour={true}
-                    onCancel={() =>setShow(false)}
+                    onCancel={() => setShow(false)}
                     onConfirm={handleConfirm}
                   />
                 )}
@@ -125,12 +122,10 @@ export default function SearchRoute({navigation}) {
                 <TouchableOpacity style={styles.BtnSearch} onPress={getDirections}>
                   <Text style={styles.BtnTxt}>Search</Text>
                 </TouchableOpacity>
+                </View>
           </ImageBackground>
             {renderResults()}
-            
-
         </View>
-
   );
 }
 
@@ -157,10 +152,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
     },
-    btn: {
-        marginTop:10,
-        width: '50%'
-    },
     scrollView: {
       height: '100%',
       width: '100%'
@@ -172,18 +163,16 @@ const styles = StyleSheet.create({
         color:"#ffffff",
         fontWeight:'bold',
         marginLeft:30,
-
-
     },
     Btn:{
       alignItems: 'center',
       justifyContent: 'center',
       alignSelf: 'center',
+      display:'flex',
       backgroundColor: '#bddff5',
       padding: 7,  
       borderRadius:7,
       margin:10,
-      marginLeft:55
     },
     BtnSearch:{
       alignItems: 'center',
@@ -198,7 +187,11 @@ const styles = StyleSheet.create({
     },
     BtnTxt:{
       fontWeight:'bold',
-
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'center',
+      display:'flex',
+      
     }
 
   });

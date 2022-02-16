@@ -84,6 +84,4 @@ const styles = StyleSheet.create({
     margin:20,
     marginBottom: 40
 },
-resCard: {
-}
 })

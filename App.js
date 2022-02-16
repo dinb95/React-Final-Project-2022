@@ -7,19 +7,16 @@ import { StyleSheet, Text, View } from 'react-native';
 import CustomDrawer from  './screens/CustomDrawer'
 import LoginScreen from './screens/LoginScreen';
 import ReservedTravel from  './screens/ReservedTravel'
-import History from  './screens/History'
 import SearchRoute from  './Components/SearchRoute'
 import ProfTop from  './Components/ProfTop'
 import LoginUser from './screens/LoginUser'
 import SignUpScreen from './screens/SignUpScreen'
-import ForgotPassword from './screens/ForgotPassword'
-
-
 import AlarmClock from  './screens/AlarmClock'
 import NavigationComp from './Components/NavigationComp'; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CameraComp from './Components/CameraComp';
 import SelectPictureScreen from './screens/SelectPictureScreen';
+import HistoryTravel from './screens/HistoryTravel';
 
 
 
@@ -35,7 +32,7 @@ export default function App() {
     const Stack = createNativeStackNavigator();
     return (
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login Screen">
+        <Stack.Navigator initialRouteName="Login Screen" screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login Screen" component={LoginScreen} initialParams={{setLogged: logUser, setGoogle:setGoogle}}/>
         <Stack.Screen name="LoginUser" component={LoginUser}/>
         <Stack.Screen name="SignUp" component={SignUpScreen}/>
@@ -48,7 +45,7 @@ export default function App() {
   else return (
     <NavigationContainer >
       <Drawer.Navigator drawerContent={props=> <CustomDrawer {...props} />} screenOptions={{headerShown: false}} initialRouteName="Main">
-        <Drawer.Screen name="Home" component={NavigationComp} options={{
+        <Drawer.Screen name="Navigation" component={NavigationComp} options={{
           drawerIcon: ({color}) => (
             <Ionicons name="home-outline" size={22} color={color} /> ),
             }}/>
@@ -64,7 +61,7 @@ export default function App() {
           drawerIcon: ({color}) => (
             <Ionicons name="alarm-outline" size={22} color={color} /> ), 
             }} />
-        <Drawer.Screen name="History" component={History}  options={{
+        <Drawer.Screen name="History" component={HistoryTravel}  options={{
           drawerIcon: ({color}) => (
             <Ionicons name="bookmark-outline" size={22} color={color} /> ), 
             }}/>

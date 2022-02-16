@@ -87,17 +87,12 @@ export default function LoginUser({route}) {
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Password."
+          placeholder="Password"
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
           onChangeText={(password) => setPassword(password)}
         />
-      </View>
- 
-      <TouchableOpacity>
-        <Text style={styles.forgot_button}>Forgot Password?</Text>
-      </TouchableOpacity>
- 
+      </View> 
       <TouchableOpacity style={styles.loginBtn} onPress={() => {logUser()}}>
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>

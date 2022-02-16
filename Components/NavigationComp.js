@@ -11,7 +11,7 @@ import Prediction from './Prediction';
 export default function NavigationComp() {
     const Stack = createNativeStackNavigator();
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator initialRouteName="Home" screenOptions={{headerShown: false}}>
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Search Route" component={SearchRoute}/>
       <Stack.Screen name="Prediction Process" component={Prediction}/>

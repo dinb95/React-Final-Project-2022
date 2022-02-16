@@ -1,9 +1,9 @@
-import { View, Text, Button, StyleSheet } from 'react-native'
+import { View, Text, Button, StyleSheet, ScrollView } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import { initializeApp } from 'firebase/app';
 import { getDatabase, onValue, ref } from "firebase/database";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import History from './History';
+import Travel from '../Components/Travel'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4",
@@ -32,11 +32,11 @@ export default function HistoryTravel() {
       if(userId !== null){
         setUser(user)
         console.log('setting user', userId)
-        getReservedTravels(userId)
+        getHistory(userId)
       }
     }
   
-    const getReservedTravels = (userId) => {
+    const getHistory = (userId) => {
       console.log('getting user', userId, 'routes')
       const db = ref(database, `OldRoutes/user_${userId}/`);
       onValue(db, (snapshot) => {
@@ -47,14 +47,33 @@ export default function HistoryTravel() {
       })
     }
     const renderedTravels = travels.map((travel, index) => {
-      return <History data={travel} key={index}/>
+      return <Travel data={travel} key={index}/>
     })
-  
     return (
-      <View style={styles.container}>
-      {renderedTravels}
-      <Button title='Press' onPress={() => {console.log(travels)}}/>
-      </View>
-  
+        <View style={styles.container}>
+        <Text style={styles.title}>History Travels</Text>
+          <ScrollView style={styles.resCard}>
+            {renderedTravels}
+          </ScrollView>
+        </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+      width:'100%',
+      height: '100%',
+      display:'flex',
+      justifyContent:'center',
+      alignSelf: 'center',
+    },
+    title:{
+      fontSize:40,
+      top:20,
+      color: "#51aae1",
+      fontWeight:'bold',
+      alignSelf:'center',
+      margin:20,
+      marginBottom: 40
+  },
+  })
