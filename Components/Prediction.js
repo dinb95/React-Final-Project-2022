@@ -281,7 +281,7 @@ export default function Prediction({route, navigation}) {
   return (
     <ImageBackground source={require('../images/blueWay.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
     <View style={styles.container}>
-        <ScrollView>
+        <ScrollView style={styles.predCard}>
         {cards}
         </ScrollView>
         {btn}
@@ -293,10 +293,12 @@ const styles = StyleSheet.create({
     container: {
         width:'100%',
         height: '100%',
-        marginLeft:30,
         display:'flex',
         justifyContent:'center',
         alignSelf: 'center',
+    },
+    predCard:{
+        marginLeft:30,
     },
     Btn:{
     position:'relative',
@@ -304,7 +306,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    backgroundColor: '#bddff5',
+    backgroundColor: '#7bbee9',
     padding: 6,  
     borderRadius:7,
     borderStyle:'solid',

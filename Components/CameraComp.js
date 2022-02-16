@@ -70,16 +70,20 @@ const styles = StyleSheet.create({
   button: {
     flex: 0.15,
     alignSelf: 'flex-end',
-    alignItems: 'center',
+    alignItems: "center",
+      justifyContent: "center",
+      
+  
   },
   text: {
-    fontSize: 18,
     color: 'white',
+    marginBottom:30,
+    fontSize: 20,
+
   },
   snap: {
-      fontSize: 18,
+      fontSize: 20,
       color:'white',
-      justifyContent:'center',
-      alignContent:'center',
+      marginBottom:30,
   }
 });

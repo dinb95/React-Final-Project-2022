@@ -31,14 +31,14 @@ export default function SelectPictureScreen({route, navigation}) {
     <View style={styles.container}>
         <Text style={styles.title}>Upload Picture</Text>
         {image && <Image source={{ uri: image }} style={{ borderRadius: 80, width: 150, height: 150, paddingBottom:20 }} />}
-        <TouchableOpacity style={styles.uploadBtn} onPress={() => {navigation.navigate({
+        <TouchableOpacity style={styles.Btn1} onPress={() => {navigation.navigate({
             name: 'CameraComp', 
             params:{takePicture:takePicture}
         })}}>
-            <Text>Take a picture from camera</Text>
+            <Text style={styles.TextInput}>Take a picture from camera</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.uploadBtn} onPress={pickImage} >
-            <Text>Pick an image from camera roll</Text>
+        <TouchableOpacity style={styles.Btn2} onPress={pickImage} >
+            <Text style={styles.TextInput}>Pick an image from camera roll</Text>
         </TouchableOpacity>
         <Button title='Save Image' onPress={saveImage}/>
     </View>
@@ -48,54 +48,49 @@ export default function SelectPictureScreen({route, navigation}) {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#adb9ca",
+      backgroundColor: "#fff",
       alignItems: "center",
      justifyContent: "center",
     },
   
     inputView: {
-      backgroundColor: "#fff",
+      backgroundColor: "#bddff5",
       borderRadius: 30,
       width: "70%",
-      height: 45,
-      marginBottom: 20,
-   
+      height: 40,
+      marginTop: 20,
       alignItems: "center",
     },
    
-    TextInput: {
-      height: 50,
-      flex: 1,
-      padding: 10,
-      marginLeft: 20,
-    },
-   
-    forgot_button: {
-      height: 30,
-      marginBottom: 30,
-    },
-   
-    loginBtn: {
-      width: "80%",
-      borderRadius: 25,
-      height: 50,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: "#809bc2",
-    },
-    uploadBtn:{
-        width: "60%",
-        borderRadius: 25,
-        height: 50,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#809bc2",
-        margin:10
-    },
     title:{
-        position:'absolute',
+      position:'absolute',
         fontSize:40,
-        top:50,
-        color: '#fff'
-    }
+        top:20,
+        color: "#51aae1",
+        fontWeight:'bold',
+  },
+  Btn1: {
+    backgroundColor: "#51aae1",
+    borderRadius: 30,
+    width: "80%",
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop:15,
+  },
+  Btn2: {
+    backgroundColor: "#bddff5",
+    borderRadius: 30,
+    width: "80%",
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop:15,
+  },
+  TextInput: {
+    height: 50,
+    flex: 1,
+    padding: 10,
+    fontSize:18
+  },
   });

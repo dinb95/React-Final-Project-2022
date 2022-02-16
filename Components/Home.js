@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     width: 150,
     fontSize: 70,
     alignItems: 'center',
-    backgroundColor: '#7fa7e3',
+    backgroundColor: '#51aae1',
     padding: 10 ,     
     borderRadius: 25,
     marginLeft:-20,

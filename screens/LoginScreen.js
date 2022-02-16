@@ -22,8 +22,7 @@ const LoginScreen = ({ route, navigation}) => {
         // Then you can use the Google REST API
         console.log("LoginScreen.js 17 | success, navigating to profile");
         console.log(user)
-        route.params.setLogged(user);
-        route.params.setGoogle(true);
+        route.params.setLogged(user)
         await AsyncStorage.setItem('username', user.name)
         await AsyncStorage.setItem('userid', user.id)
         await AsyncStorage.setItem('userpic', user.photoUrl)
