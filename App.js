@@ -11,7 +11,6 @@ import SearchRoute from  './Components/SearchRoute'
 import ProfTop from  './Components/ProfTop'
 import LoginUser from './screens/LoginUser'
 import SignUpScreen from './screens/SignUpScreen'
-import AlarmClock from  './screens/AlarmClock'
 import NavigationComp from './Components/NavigationComp'; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CameraComp from './Components/CameraComp';
@@ -65,10 +64,6 @@ export default function App() {
           drawerIcon: ({color}) => (
             <Ionicons name="star-outline" size={22} color={color} /> ), 
             }} />}
-        <Drawer.Screen name="Alarm Clock" component={AlarmClock} options={{
-          drawerIcon: ({color}) => (
-            <Ionicons name="alarm-outline" size={22} color={color} /> ), 
-            }} />
         <Drawer.Screen name="History" component={HistoryTravel}  options={{
           drawerIcon: ({color}) => (
             <Ionicons name="bookmark-outline" size={22} color={color} /> ), 
