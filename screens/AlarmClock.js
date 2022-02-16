@@ -20,7 +20,7 @@ const AlarmClock = ({navigation, route}) => {
          source={require('../images/AlarmClock.png')}
          style={{height: 150, width: 150, marginBottom: 30, justifyContent: 'center', display:'flex', alignItems: 'center'}}/>
         <View style={styles.Btn}>
-          <NumericInput onChange={value => setAlarm(value)} />
+          <NumericInput minValue={0}  step={5} onChange={value => setAlarm(value) } />
         </View>
         {/* <Switch style={styles.SwitchBtn}
         trackColor={{ false: "#767577", true: "#51aae1" }}
