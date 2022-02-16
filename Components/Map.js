@@ -16,11 +16,12 @@ export default function Map(){
             }}
             >
              <MapViewDirections
-             origin='Hadera'
-             destination='Ruppin Academic Center'
-             mode='TRANSIT'
-             apikey='AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4'
-             strokeWidth={3}
+              origin='Hadera'
+              destination='Ruppin Academic Center'
+              mode='TRANSIT'
+              apikey='AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4'
+              strokeWidth={5}
+              strokeColor='blue'
               />
              </MapView>
         </View>
