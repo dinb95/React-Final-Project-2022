@@ -22,7 +22,8 @@ import HistoryTravel from './screens/HistoryTravel';
 
 export default function App() {
   const [isLogged, setLogged] = useState(false);
-  const [isGoogle, setGoogle] = useState(false)
+  const [isGoogle, setGoogle] = useState(false);
+  const [fullName, setFullName] = useState("");
   const logUser = () => {
     setLogged(true)
   }
@@ -30,6 +31,9 @@ export default function App() {
     alert("User Signed Out")
     setLogged(false);
     setGoogle(false);
+  }
+  const setName = (name) => {
+    setFullName(name);
   }
   const Drawer = createDrawerNavigator();
   if(!isLogged){
@@ -57,7 +61,7 @@ export default function App() {
           drawerIcon: ({color}) => (
             <Ionicons name="search-circle-outline" size={22} color={color} /> ),
             }}/>
-        {!isGoogle && <Drawer.Screen name="My Profile" component={ProfTop} options={{//ProfileScreen
+        {!isGoogle && <Drawer.Screen name="My Profile" component={ProfTop} initialParams={{setName:setName}} options={{//ProfileScreen
           drawerIcon: ({color}) => (
             <Ionicons name="star-outline" size={22} color={color} /> ), 
             }} />}

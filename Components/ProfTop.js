@@ -4,7 +4,7 @@ import {useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserUpdateForm from './UserUpdateForm'
 
-export default function ProfTop({navigation}) {
+export default function ProfTop({navigation, route}) {
     const [username, setUsername] = useState();
     const [userpic, setUserpic] = useState();
     const getUser = async() => {
@@ -42,7 +42,7 @@ export default function ProfTop({navigation}) {
             {username}
           </Text>
         </ImageBackground>
-       <UserUpdateForm navigation={navigation}/>
+       <UserUpdateForm navigation={navigation} route={route}/>
     </View>
   )
 }

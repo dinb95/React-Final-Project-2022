@@ -3,7 +3,7 @@ import {View, StyleSheet, Text} from 'react-native'
 import MapView from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 
-export default function Map(){
+export default function Map({route}){
     return(
         <View style={styles.container}>
             <MapView
@@ -16,8 +16,8 @@ export default function Map(){
             }}
             >
              <MapViewDirections
-              origin='Hadera'
-              destination='Ruppin Academic Center'
+              origin={route.params.origin}
+              destination={route.params.destination}
               mode='TRANSIT'
               apikey='AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4'
               strokeWidth={5}

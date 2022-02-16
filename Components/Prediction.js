@@ -11,9 +11,9 @@ let loopCounter = 0;
 
 export default function Prediction({route, navigation}) {
     const [cards, setCards] = useState();
-    const [userid, setUserid] = useState();
     const [btn, setBtn] = useState();
 
+    var userid;
     var alarm;
     var pref;
     var ProcessArr = [];
@@ -27,7 +27,7 @@ export default function Prediction({route, navigation}) {
     const getUserId = async() => {
         const id = await AsyncStorage.getItem('userid');
         if(id !== null){
-            setUserid(id)
+            userid = id;
           }
     }
     const setAlarmClock = (value) => {
@@ -72,7 +72,8 @@ export default function Prediction({route, navigation}) {
     }
 
     const runPrediction = (p, route_data) => {
-        if(p == null){
+        console.log("from p", p.Message)
+        if(p.Message == 'An error has occurred.'){
             alert("No data was found, could not predict route time");
             navigation.goBack()
         }
@@ -116,7 +117,10 @@ export default function Prediction({route, navigation}) {
                         <Text style={styles.BtnTxt}>Alarm Clock</Text>
                     </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.Btn} onPress={() => {navigation.navigate({name:'Map'})}}>
+                    <TouchableOpacity style={styles.Btn} onPress={() => {navigation.navigate({
+                        name:'Map', 
+                        params:{origin:route_data.origin, destination:route_data.destination}
+                        })}}>
                             <View style={{ flexDirection: 'row' }}>
                             <Text style={styles.BtnTxt}> Show on Map </Text>
                             <Icon name="map-marker" size={20} />

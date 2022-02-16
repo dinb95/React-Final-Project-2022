@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const UserUpdateForm = ({navigation}) => {
+const UserUpdateForm = ({navigation, route}) => {
 const [firstName, setFirstName] = useState("");
 const [lastName, setLastName] = useState("");
 const [password, setPassword] = useState("");
@@ -14,7 +14,9 @@ const [id, setId] = useState();
   useEffect(async() =>{
     let userId = await AsyncStorage.getItem('userid');
     setId(JSON.parse(userId))
+    getUserInfo(userId)
   }, [])
+
 
   const updateInfo = () => {
     console.log(firstName)
@@ -44,9 +46,12 @@ const [id, setId] = useState();
           return res.json()
       })
       .then(
-          (result) => { 
+          async (result) => { 
             console.log(result)
             if(result == "User Updated"){
+              let name = `${firstName} ${lastName}`
+              await AsyncStorage.setItem('username', name)
+              route.params.setName(name)
               alert("User's Information Updated Successfully")
               navigation.goBack();
             }
@@ -56,8 +61,33 @@ const [id, setId] = useState();
         console.log('There has been a problem with your fetch operation: ' + error.message);
           throw error;
         });
-
     }
+  }
+  const getUserInfo = (userid) => {
+    let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/Users/" + userid
+      fetch(api, {
+      method: 'GET',
+      headers: new Headers({
+          'Content-type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json; charset=UTF-8'
+        })
+      })
+      .then(res => {
+          return res.json()
+      })
+      .then(
+          (result) => { 
+            console.log(result)
+            setFirstName(result.FirstName)
+            setLastName(result.LastName)
+            setPassword(result.Password)
+            setConfirm(result.Password)  
+            }
+          )
+      .catch(function(error) {
+        console.log('There has been a problem with your fetch operation: ' + error.message);
+          throw error;
+        });
   }
 
   return (
@@ -69,6 +99,7 @@ const [id, setId] = useState();
         placeholder="First Name"
         placeholderTextColor="#003f5c"
         onChangeText={(firstName) => setFirstName(firstName)}
+        value={firstName}
       />
     </View>
     <StatusBar style="auto" />
@@ -78,6 +109,7 @@ const [id, setId] = useState();
         placeholder="Last Name"
         placeholderTextColor="#003f5c"
         onChangeText={(LastName) => setLastName(LastName)}
+        value={lastName}
       />
     </View>
   
@@ -88,6 +120,7 @@ const [id, setId] = useState();
         placeholderTextColor="#003f5c"
         secureTextEntry={true}
         onChangeText={(password) => setPassword(password)}
+        value={password}
       />
     </View>
     <View style={styles.inputView}>
@@ -97,6 +130,7 @@ const [id, setId] = useState();
         placeholderTextColor="#003f5c"
         secureTextEntry={true}
         onChangeText={(password) => setConfirm(password)}
+        value={confirm}
       />
     </View>
     <TouchableOpacity style={styles.SaveBtn} onPress={updateInfo}>
