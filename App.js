@@ -27,7 +27,9 @@ export default function App() {
     setLogged(true)
   }
   const signOut= () => {
-    setLogged(false)
+    alert("User Signed Out")
+    setLogged(false);
+    setGoogle(false);
   }
   const Drawer = createDrawerNavigator();
   if(!isLogged){
