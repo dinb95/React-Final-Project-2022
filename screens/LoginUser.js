@@ -36,12 +36,9 @@ export default function LoginUser({route}) {
   })
   .then(
       (result) => { 
-        try{
-          saveToStorage(result)
-        } 
-        catch{
-          //check if user returned, if not then wrong email or password
-        }
+        if(result.Message == "user not found")
+          alert("Wrong email or password")
+        else saveToStorage(result)
       })
   .catch(function(error) {
     console.log('There has been a problem with your fetch operation: ' + error.message);

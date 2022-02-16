@@ -19,10 +19,13 @@ import AlarmClock from  './screens/AlarmClock'
 import NavigationComp from './Components/NavigationComp'; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CameraComp from './Components/CameraComp';
+import SelectPictureScreen from './screens/SelectPictureScreen';
+
 
 
 export default function App() {
   const [isLogged, setLogged] = useState(false);
+  const [isGoogle, setGoogle] = useState(false)
   const logUser = () => {
     setLogged(true)
   }
@@ -33,13 +36,13 @@ export default function App() {
     return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login Screen">
-        <Stack.Screen name="Login Screen" component={LoginScreen} initialParams={{setLogged: logUser}}/>
+        <Stack.Screen name="Login Screen" component={LoginScreen} initialParams={{setLogged: logUser, setGoogle:setGoogle}}/>
         <Stack.Screen name="LoginUser" component={LoginUser}/>
         <Stack.Screen name="SignUp" component={SignUpScreen}/>
         <Stack.Screen name="CameraComp" component={CameraComp}/>
+        <Stack.Screen name="SelectPictureScreen" component={SelectPictureScreen}/>
         </Stack.Navigator>
       </NavigationContainer>
-
     )
   }
   else return (
@@ -53,10 +56,10 @@ export default function App() {
           drawerIcon: ({color}) => (
             <Ionicons name="search-circle-outline" size={22} color={color} /> ),
             }}/>
-        <Drawer.Screen name="My Profile" component={ProfTop} options={{//ProfileScreen
+        {!isGoogle && <Drawer.Screen name="My Profile" component={ProfTop} options={{//ProfileScreen
           drawerIcon: ({color}) => (
             <Ionicons name="star-outline" size={22} color={color} /> ), 
-            }} />
+            }} />}
         <Drawer.Screen name="Alarm Clock" component={AlarmClock} options={{
           drawerIcon: ({color}) => (
             <Ionicons name="alarm-outline" size={22} color={color} /> ), 
@@ -65,7 +68,7 @@ export default function App() {
           drawerIcon: ({color}) => (
             <Ionicons name="bookmark-outline" size={22} color={color} /> ), 
             }}/>
-        <Drawer.Screen name="ReservedTravel" component={ReservedTravel}  options={{
+        <Drawer.Screen name="Reserved Travels" component={ReservedTravel}  options={{
           drawerIcon: ({color}) => (
             <Ionicons name="bus-outline"size={22} color={color} /> ), 
             }}/>
