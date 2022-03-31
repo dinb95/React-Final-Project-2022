@@ -1,16 +1,29 @@
 import React from "react";
-import { StyleSheet, View, Button, ImageBackground,TouchableOpacity, Text} from "react-native";
+import { StyleSheet, View, ImageBackground,TouchableOpacity, Text} from "react-native";
 import * as Google from "expo-google-app-auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { blue } from "@mui/material/colors";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import SignUpScreen from "./SignUpScreen";
-import LoginUser from "./LoginUser";
 import PushPage from '../PushPage';
 
-
-
 const LoginScreen = ({ route, navigation}) => {
+  const saveToDB = (user) => {
+    data = {
+      Id: user["id"],
+      FirstName: user["givenName"],
+      LastName: user["familyName"],
+      Email: user["email"],
+      Image: user["photoUrl"] 
+    }
+    let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/GoogleUser"
+    fetch(api, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: new Headers({
+          'Content-type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json; charset=UTF-8'
+          })
+    })
+  }
   const signInAsync = async () => {
     console.log("LoginScreen.js 6 | loggin in");
     try {
@@ -22,6 +35,7 @@ const LoginScreen = ({ route, navigation}) => {
         // Then you can use the Google REST API
         console.log("LoginScreen.js 17 | success, navigating to profile");
         console.log(user)
+        saveToDB(user)
         route.params.setLogged(user)
         route.params.setGoogle(true);
         await AsyncStorage.setItem('username', user.name)

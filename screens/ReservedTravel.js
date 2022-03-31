@@ -1,4 +1,4 @@
-import { View, ScrollView, Text, Button, StyleSheet } from 'react-native'
+import { View, ScrollView, Text, Button, StyleSheet, TouchableOpacity } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import { initializeApp } from 'firebase/app';
 import { getDatabase, onValue, ref } from "firebase/database";
@@ -18,14 +18,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
-
-
-const ReservedTravel = () => {
+const ReservedTravel = ({navigation}) => {
   
   const [travels, setTravels] = useState([]);
   const [user, setUser] = useState();
-
-
 
   useEffect(() => {
     getUser()
@@ -51,7 +47,17 @@ const ReservedTravel = () => {
     })
   }
   const renderedTravels = travels.map((travel, index) => {
-    return <Travel data={travel} key={index}/>
+    return (<>
+      <Travel data={travel} key={index}/>
+      <TouchableOpacity style={styles.chatBtnContainer} onPress={() => {navigation.navigate({name:'ChatMenu', params:travel})}}>
+        <Text style={styles.chatBtn}>Route Chat</Text>
+      </TouchableOpacity>
+      </>
+      /* <Travel data={travel} key={index}/>
+      <TouchableOpacity style={styles.chatBtnContainer} onPress={() => {navigation.navigate({name:'ChatScreen', params:travel})}}>
+        <Text style={styles.chatBtn}>Route Chat</Text>
+      </TouchableOpacity> */
+    )
   })
 
   return (
@@ -84,4 +90,17 @@ const styles = StyleSheet.create({
     margin:20,
     marginBottom: 40
 },
+chatBtnContainer:{
+  width:'30%',
+  display:'flex',
+  justifyContent:'center',
+  alignSelf: 'center',
+  marginBottom:10
+},
+chatBtn:{
+  fontSize:15,
+  textAlign:'center',
+  borderWidth:1
+}
+
 })
