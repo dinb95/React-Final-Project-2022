@@ -1,5 +1,5 @@
-import { View,ScrollView, Text, Button,StyleSheet, TouchableOpacity,ImageBackground } from 'react-native'
-import React, {useState, useEffect} from 'react'
+import { View, ScrollView, Text, Button, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import PredictionCard from './PredictionCard';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
 let loopCounter = 0;
 
-export default function Prediction({route, navigation}) {
+export default function Prediction({ route, navigation }) {
     const [cards, setCards] = useState();
     const [btn, setBtn] = useState();
 
@@ -24,11 +24,11 @@ export default function Prediction({route, navigation}) {
         getUserId()
         getPrediction(route_data);
     }, [])
-    const getUserId = async() => {
+    const getUserId = async () => {
         const id = await AsyncStorage.getItem('userid');
-        if(id !== null){
+        if (id !== null) {
             userid = id;
-          }
+        }
     }
     const setAlarmClock = (value) => {
         alarm = value
@@ -51,33 +51,33 @@ export default function Prediction({route, navigation}) {
         }
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/RouteRequest"
         fetch(api, {
-        method: 'POST',
-        body: JSON.stringify(route),
-        headers: new Headers({
-            'Content-type': 'application/json; charset=UTF-8',
-            'Accept': 'application/json; charset=UTF-8'
-          })
-        })
-        .then(res => {
-            return res.json()
-        })
-        .then(
-            (result) => { //add test time to route
-                runPrediction(result, route_data)
+            method: 'POST',
+            body: JSON.stringify(route),
+            headers: new Headers({
+                'Content-type': 'application/json; charset=UTF-8',
+                'Accept': 'application/json; charset=UTF-8'
             })
-        .catch(function(error) {
-          console.log('There has been a problem with your fetch operation: ' + error.message);
-            throw error;
-          });
+        })
+            .then(res => {
+                return res.json()
+            })
+            .then(
+                (result) => { //add test time to route
+                    runPrediction(result, route_data)
+                })
+            .catch(function (error) {
+                console.log('There has been a problem with your fetch operation: ' + error.message);
+                throw error;
+            });
     }
 
     const runPrediction = (p, route_data) => {
         console.log("from p", p.Message)
-        if(p.Message == 'An error has occurred.'){
+        if (p.Message == 'An error has occurred.') {
             alert("No data was found, could not predict route time");
             navigation.goBack()
         }
-        else{
+        else {
             var Predicted_D = Math.ceil(p[0] / 60);
 
             let hm = route_data.departure.split(':');
@@ -92,7 +92,7 @@ export default function Prediction({route, navigation}) {
                 if (p[3] == 0) {
                     console.log("t test failed, searching previous route")
                     //render route
-                    let all_route_data = {arrival: route_arrival, route_data: route_data, status: 1}
+                    let all_route_data = { arrival: route_arrival, route_data: route_data, status: 1 }
                     ProcessArr.push(all_route_data)
 
                     searchPrevRoute(route_data)
@@ -100,32 +100,37 @@ export default function Prediction({route, navigation}) {
                 else {
                     console.log("route good, saving route")
                     //render route and finish
-                    let all_route_data = {arrival: route_arrival, route_data: route_data, status: 0}
+                    let all_route_data = { arrival: route_arrival, route_data: route_data, status: 0 }
                     ProcessArr.push(all_route_data)
                     renderCards(ProcessArr)
                     //setPref({p: p, route:route_data, arrival:route_arrival})
-                    pref = {p: p, route:route_data, arrival:route_arrival}
-                    
-                    setBtn(<View style={{ marginBottom:40 }}>
-                        <View style={{ flexDirection: 'row' ,alignItems: 'center',justifyContent: 'center',alignSelf: 'center',}}> 
-                    <TouchableOpacity style={styles.Btn} onPress={savePrefRoute}>
-                        <Text style={styles.BtnTxt}>Save this route</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.Btn} onPress={() => {navigation.navigate({
-                        name:'AlarmClock', 
-                        params: {setAlarmClock:setAlarmClock}})}}>
-                        <Text style={styles.BtnTxt}>Alarm Clock</Text>
-                    </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity style={styles.Btn} onPress={() => {navigation.navigate({
-                        name:'Map', 
-                        params:{origin:route_data.origin, destination:route_data.destination}
-                        })}}>
+                    pref = { p: p, route: route_data, arrival: route_arrival }
+
+                    setBtn(<View style={{ marginBottom: 40 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', }}>
+                            <TouchableOpacity style={styles.Btn} onPress={savePrefRoute}>
+                                <Text style={styles.BtnTxt}>Save this route</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.Btn} onPress={() => {
+                                navigation.navigate({
+                                    name: 'AlarmClock',
+                                    params: { setAlarmClock: setAlarmClock }
+                                })
+                            }}>
+                                <Text style={styles.BtnTxt}>Alarm Clock</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity style={styles.Btn} onPress={() => {
+                            navigation.navigate({
+                                name: 'Map',
+                                params: { origin: route_data.origin, destination: route_data.destination }
+                            })
+                        }}>
                             <View style={{ flexDirection: 'row' }}>
-                            <Text style={styles.BtnTxt}> Show on Map </Text>
-                            <Icon name="map-marker" size={20} />
+                                <Text style={styles.BtnTxt}> Show on Map </Text>
+                                <Icon name="map-marker" size={20} />
                             </View>
-                            </TouchableOpacity></View>)
+                        </TouchableOpacity></View>)
                     //save route for user
                 }
             }
@@ -135,14 +140,14 @@ export default function Prediction({route, navigation}) {
                 //search for an earlier bus and predict route's arrival time again
                 //////////////+=///////////////////////
                 //render route
-                let all_route_data = {arrival: route_arrival, route_data: route_data, status: 2}
+                let all_route_data = { arrival: route_arrival, route_data: route_data, status: 2 }
                 ProcessArr.push(all_route_data)
 
                 searchPrevRoute(route_data)
             }
         }
     }
-    function searchPrevRoute(route){
+    function searchPrevRoute(route) {
         loopCounter++;
         var origin = route.origin;
         var destination = route.destination;
@@ -151,36 +156,36 @@ export default function Prediction({route, navigation}) {
         var config = {
             method: 'get',
             url: `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&mode=transit&transit_mode=bus&arrival_time=${arrival}&alternatives=true&key=${key}`,
-            headers: { }
-          };
-          
-          axios(config)
-          .then(function (response) {
-              console.log("got new route from google")
-            let user_route_input = {
-                origin:origin,
-                destination:destination,
-                date: route.date,
-                TimeTarget: route.timeTarget
-            }
-            let new_route = getRouteParams(response.data, user_route_input) //get the relevant parameters for route arrival time prediction
-            getPrediction(new_route);
+            headers: {}
+        };
+
+        axios(config)
+            .then(function (response) {
+                console.log("got new route from google")
+                let user_route_input = {
+                    origin: origin,
+                    destination: destination,
+                    date: route.date,
+                    TimeTarget: route.timeTarget
+                }
+                let new_route = getRouteParams(response.data, user_route_input) //get the relevant parameters for route arrival time prediction
+                getPrediction(new_route);
             })
     }
     //get the relevant parameters for route arrival time prediction
     const getRouteParams = (new_route, user_route_input) => {
         let route_dateTime = new Date(user_route_input.date)
-        
+
         current_route = new_route.routes[0].legs[0]
-    
+
         let lines = getLines(current_route);
         let sab = getStopsAndBuses(current_route);
-        let dt = new Date(current_route.arrival_time.value * 1000) 
+        let dt = new Date(current_route.arrival_time.value * 1000)
         let Hour = dt.getHours();
         let Minutes = dt.getMinutes();
         let arrival = formatTime(Hour, Minutes)
-    
-        dt = new Date(current_route.departure_time.value * 1000) 
+
+        dt = new Date(current_route.departure_time.value * 1000)
         Hour = dt.getHours();
         Minutes = dt.getMinutes();
         departure = formatTime(Hour, Minutes)
@@ -226,10 +231,10 @@ export default function Prediction({route, navigation}) {
         let list = [stops, numOfBuses]
         return list;
     }
-    function formatTime(h, m){
-        if (m < 10) 
+    function formatTime(h, m) {
+        if (m < 10)
             return `${h}:0${m}`
-        else 
+        else
             return `${h}:${m}`
     }
     const savePrefRoute = () => {
@@ -240,7 +245,7 @@ export default function Prediction({route, navigation}) {
         let arrival = pref.arrival
 
         let dt = new Date(route.date)
-        let date = `${dt.getMonth()+1}-${dt.getDate()}-${dt.getFullYear()}`
+        let date = `${dt.getMonth() + 1}-${dt.getDate()}-${dt.getFullYear()}`
 
         let data = {
             routeData: {
@@ -269,82 +274,84 @@ export default function Prediction({route, navigation}) {
         }
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/UsersManagement"
         fetch(api, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: new Headers({
-            'Content-type': 'application/json; charset=UTF-8',
-            'Accept': 'application/json; charset=UTF-8'
-          })
-        })
-        .then(
-            () => {
-                alert("Route was saved successfuly!")
-                navigation.navigate('Home');
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: new Headers({
+                'Content-type': 'application/json; charset=UTF-8',
+                'Accept': 'application/json; charset=UTF-8'
             })
-        .catch(function(error) {
-          console.log('There has been a problem with your fetch operation: ' + error.message);
-            throw error;
-          });
+        })
+            .then(
+                () => {
+                    alert("Route was saved successfuly!")
+                    navigation.navigate('Home');
+                })
+            .catch(function (error) {
+                console.log('There has been a problem with your fetch operation: ' + error.message);
+                throw error;
+            });
     }
     const renderCards = (arr) => {
         const cardsArr = arr.map((data, index) => {
-            return <PredictionCard data={data} key={index}/>
+            return <PredictionCard data={data} key={index} />
         })
         setCards(cardsArr)
     }
 
-  return (
-    <ImageBackground source={require('../images/blueWay.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
-    <View style={styles.container}>
-        <ScrollView style={styles.predCard}>
-        {cards}
-        </ScrollView>
-        {btn}
-    </View>
-    </ImageBackground>
-  )
+    return (
+        <ImageBackground source={require('../images/blueWay.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
+            <View style={styles.container}>
+                <ScrollView style={styles.predCard}>
+                    {cards}
+                </ScrollView>
+                {btn}
+            </View>
+        </ImageBackground>
+    )
 }
 const styles = StyleSheet.create({
     container: {
-        width:'100%',
+        width: '100%',
         height: '100%',
-        display:'flex',
-        justifyContent:'center',
+        display: 'flex',
+        justifyContent: 'center',
         alignSelf: 'center',
-    },
-    predCard:{
-        marginLeft:30,
-        marginTop:80,
-      
-    },
-    Btn:{
-    position:'relative',
-    width:'40%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
-    backgroundColor: '#7bbee9',
-    padding: 6,  
-    borderRadius:7,
-    borderStyle:'solid',
-    borderWidth: 1,
-    borderColor:'black',
-    fontSize:18,
-    margin:10,
-    
+        backgroundColor:'#cccccc'
 
     },
-    BtnTxt:{
-        fontSize:18,
-        fontWeight:'bold',
-    
+    predCard: {
+        marginLeft: 30,
+        marginTop: 80,
+
+    },
+    Btn: {
+        position: 'relative',
+        width: '40%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        backgroundColor: '#bddff5',
+        padding: 6,
+        borderRadius: 7,
+        borderStyle: 'solid',
+        borderWidth: 1,
+        borderColor: 'black',
+        fontSize: 18,
+        margin: 10,
+
+
+    },
+    BtnTxt: {
+        fontSize: 18,
+        fontWeight: 'bold',
+
     },
     image: {
-        width:'100%',
-        backgroundColor:'rgba(0,0,0,.6)',
+        width: '100%',
+        backgroundColor: 'rgba(0,0,0,.6)',
     },
-    containerBtn:{
-        marginBottom:40,
+    containerBtn: {
+        marginBottom: 40,
 
-      }
+    }
 })

@@ -7,6 +7,8 @@ import SearchRoute from './SearchRoute';
 import ProfileScreen from '../screens/ProfileScreen';
 import Prediction from './Prediction';
 import AlarmClock from '../screens/AlarmClock';
+import UserLocation from './UserLocation';
+
 
 export default function NavigationComp() {
     const Stack = createNativeStackNavigator();
@@ -18,6 +20,8 @@ export default function NavigationComp() {
       <Stack.Screen name="Map" component={Map} options={{headerShown:true}}/>
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="AlarmClock" component={AlarmClock} />
+      <Stack.Screen name="UserLocation" component={UserLocation} />
+
     </Stack.Navigator>
   )
 }

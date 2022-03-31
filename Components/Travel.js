@@ -6,8 +6,10 @@ const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>
 export default function Travel({data}) {
   return (
       <View>
-        <Text style={styles.dateTitle}>Date: {data.routeDate}</Text>
-        <View style={styles.container}>
+         <View style={styles.container}>
+         <View style={{ flexDirection: 'row',flex:0.8,justifyContent: "center",alignItems: "center"}}> 
+        <Text style={styles.dateTitle}>{data.routeDate}</Text>
+        </View>
             <Text style={styles.Txt}><B>Origin:</B>  {data.Origin}</Text>
             <Text style={styles.Txt}><B>Destination:</B> {data.Destination}</Text>
             <Text style={styles.Txt}><B>Arrival Time: </B>{data.ArrivalTime}</Text>
@@ -19,25 +21,27 @@ export default function Travel({data}) {
 }
 const styles = StyleSheet.create({
     container: {
-        height: 137,
-        width:'100%',
+        height: 160,
+        width:'95%',
         borderColor:'black',
         borderStyle:'solid',
         borderWidth: 1,
-        backgroundColor: '#7bbee9',
-        marginBottom: 10
+        backgroundColor:"white",
+        marginBottom: 10,
+        alignSelf: 'center', 
+        borderRadius:7,
     },
     Txt:{
         margin: 2,
         fontSize:16,
+        paddingLeft:10,
       },
       dateTitle: {
-          width:'100%',
-          justifyContent:'center',
-          alignSelf:'center',
-          display:'flex',
-          backgroundColor: '#bddff5',
-          textAlign: 'center'
+        fontSize:18, 
+        color:'#51aae1',
+        fontWeight: "bold",
+        marginTop:5,
+        textDecorationLine: 'underline'
       }
      
 })

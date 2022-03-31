@@ -94,7 +94,7 @@ export default function SearchRoute({navigation}) {
 
     /////
         <View style={styles.container}>
-          <ImageBackground source={require('../images/blueWay.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
+          <ImageBackground source={require('../images/way.jpeg')} resizeMode="cover" blurRadius={5}  style={styles.image}>
           <View style={{marginTop:30}}>
             <TextInput placeholder='Origin' style={styles.input} value={origin} onChangeText={setOrigin}></TextInput>
             <TextInput placeholder='Destination' style={styles.input} value={destination} onChangeText={setDestination}></TextInput>
@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     image: {
       width:'100%',
       backgroundColor:'rgba(0,0,0,.6)',
+      
     },
     input: {
       height: 50,
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       alignSelf: 'center',
-      fontSize:18
+      fontSize: 18,
     },
     scrollView: {
       height: '100%',

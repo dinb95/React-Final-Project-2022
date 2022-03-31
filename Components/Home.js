@@ -31,7 +31,7 @@ export default function Home({navigation}) {
   },[])
   return (
     <View style={styles.container}>
-       <ImageBackground source={require('../images/way1.jpg')} resizeMode="cover" style={styles.image}>
+       <ImageBackground source={require('../images/way1.jpg')} resizeMode="cover" blurRadius={1} resizeMode="cover" style={styles.image}>
         <View>
             <Text style={styles.timely_title}>Timely</Text>
             <Text style={styles.timely_subtitle}>To the right place at the right time</Text>
@@ -40,6 +40,13 @@ export default function Home({navigation}) {
               onPress={() => {navigation.navigate('Search Route')}}
               >
               <Text style={styles.Txt}>Look For a ride</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.Btn}
+              onPress={() => {navigation.navigate('UserLocation')}}
+              >
+              <Text style={styles.Txt}>location</Text>
             </TouchableOpacity>
         </View>
      </ImageBackground>

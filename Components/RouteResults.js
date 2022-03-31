@@ -81,9 +81,11 @@ const styles = StyleSheet.create({
     container: {
         width:'100%',
         height: '100%',
-        marginLeft:30,
+       // marginLeft:30,
         display:'flex',
         justifyContent:'center',
         alignSelf: 'center',
+        backgroundColor:'#cccccc'
+        
     }
 })

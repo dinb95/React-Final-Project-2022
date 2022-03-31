@@ -13,13 +13,15 @@ export default function Route({data, navigation}) {
     }
   return (
     <View style={styles.container}>
+       <View style={{ flexDirection: 'row',flex:0.8,justifyContent: "center",alignItems: "center"}}> 
+       <Text style={styles.LineTxt}><B></B> {data.lines}</Text>
+       </View>
       <View style={{ flexDirection: 'row' }}>
         <Text style={styles.Txt}><B>Arrival:</B> {data.arrival}</Text>
         <Text style={styles.Txt}><B>Departure:</B> {data.departure}</Text>
       </View>
       <View style={{ flexDirection: 'row' }}>
         <Text style={styles.Txt}><B>Duration:</B> {data.duration}</Text>
-        <Text style={styles.Txt}><B>Lines:</B> {data.lines}</Text>
       </View>
       <TouchableOpacity style={styles.saveBtn} onPress={getPrediction}>
         <Text style={styles.BtnTxt}>Save Route</Text>
@@ -30,7 +32,7 @@ export default function Route({data, navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        height: 137,
+        height: 180,
         width:'90%',
         borderColor:'black',
         borderStyle:'solid',
@@ -38,8 +40,11 @@ const styles = StyleSheet.create({
         margin: 5,
         padding:5,
         borderRadius:10,
-        backgroundColor: '#bddff5'
-    
+        backgroundColor:"white",
+        marginLeft:18,
+        justifyContent: 'center',
+        //backgroundColor: '#bddff5',
+        //backgroundColor:'#cccccc'
     },
     saveBtn: {
         position:'relative',
@@ -47,7 +52,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',
-        backgroundColor: '#7bbee9',
+//        backgroundColor: '#7bbee9',
+        backgroundColor: '#bddff5',
         padding: 6,  
         borderRadius:7,
         borderStyle:'solid',
@@ -57,9 +63,19 @@ const styles = StyleSheet.create({
     Txt:{
       margin: 10,
       fontSize:18,
+      alignItems: "center"
+
     },
     BtnTxt:{
       fontSize:18,
+    },
+    LineTxt:{
+     // margin: 10,
+      fontSize:20, 
+      color:'#51aae1',
+      fontWeight: "bold",
+      marginTop:5,
+      textDecorationLine: 'underline'
     },
 
 })
