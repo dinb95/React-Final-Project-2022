@@ -49,7 +49,7 @@ const ReservedTravel = ({navigation}) => {
   const renderedTravels = travels.map((travel, index) => {
     return (<>
       <Travel data={travel} key={index}/>
-      <TouchableOpacity style={styles.chatBtnContainer} onPress={() => {navigation.navigate({name:'Menu', params:travel})}}>
+      <TouchableOpacity style={styles.chatBtnContainer} onPress={() => {navigation.navigate({name:'ChatScreen', params:travel})}}>
         <Text style={styles.chatBtn}>Route Chat</Text>
       </TouchableOpacity>
       </>

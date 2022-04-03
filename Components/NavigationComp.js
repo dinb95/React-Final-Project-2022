@@ -2,15 +2,13 @@ import { View, Text } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react'
 import Home from './Home';
-import Map from './Map';
 import SearchRoute from './SearchRoute';
 import ProfileScreen from '../screens/ProfileScreen';
-import Prediction from './Prediction';
 import AlarmClock from '../screens/AlarmClock';
 import UserLocation from './UserLocation';
-
 import ChatScreen from '../screens/ChatScreen';
-import Chat from './Chat';
+import Prediction from './Prediction';
+import Map from './Map';
 
 export default function NavigationComp() {
     const Stack = createNativeStackNavigator();
