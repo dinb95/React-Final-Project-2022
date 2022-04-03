@@ -80,7 +80,7 @@ export default function ChatScreen({navigation, route}) {
         }
         console.log(msgArr.length)
         const db = ref(database, `Chats/${line[0]}/${msgArr.length}/`);
-        set(db, messageContent)
+        set(db, messageContent);
         setMessage("");
     }
  
