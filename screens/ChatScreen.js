@@ -59,6 +59,7 @@ export default function ChatScreen({navigation, route}) {
                     _id: msg.id,
                     name: 'Din'
                 }
+
             })
         });
         // let arr = msgs.map((msg, index) => {
@@ -68,7 +69,7 @@ export default function ChatScreen({navigation, route}) {
         // })
         //setMessages(arr);
         console.log(messages)
-        const gifted = <GiftedChat messages={messages}/>
+        const gifted = <GiftedChat messages={messages} inverted={false} renderUsernameOnMessage={true}/>
         setMessages(gifted)
     }
     const postMessage = () => {
