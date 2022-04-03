@@ -1,19 +1,23 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
+import { GiftedChat } from 'react-native-gifted-chat'
 
 export default function ChatMessage({data, userId}) {
-    let sameId = (userId === data.id)
-  return ( sameId ? 
-    <View style={style.containerLeft}>
-        <Text>{data.name}</Text>
-        <Text style={style.message}>{data.message}</Text>
-    </View>
-    :
-    <View style={style.containerRight}>
-        <Text>{data.name}</Text>
-        <Text style={style.message}>{data.message}</Text>
-  </View>
-  )
+    return(
+        ""
+    )
+//     let sameId = (userId === data.id)
+//   return ( sameId ? 
+//     <View style={style.containerLeft}>
+//         <Text>{data.name}</Text>
+//         <Text style={style.message}>{data.message}</Text>
+//     </View>
+//     :
+//     <View style={style.containerRight}>
+//         <Text>{data.name}</Text>
+//         <Text style={style.message}>{data.message}</Text>
+//   </View>
+//  )
 }
 
 const style = StyleSheet.create({

@@ -5,6 +5,7 @@ import { getDatabase, ref, onChildAdded, set } from "firebase/database";
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import ChatMessage from '../Components/ChatMessage';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GiftedChat } from 'react-native-gifted-chat'
 
 
 const firebaseConfig = {
@@ -24,7 +25,7 @@ const firebaseConfig = {
 export default function ChatScreen({navigation, route}) {
     console.log(route)
     const [message, setMessage] = useState();
-    const [useMessages, setMessages] = useState([]);
+    const [useMessages, setMessages] = useState();
     const [msgArr, setMsgArr] = useState([]);
     const [user, setUser] = useState("")
 
@@ -49,12 +50,26 @@ export default function ChatScreen({navigation, route}) {
           })
     }
     function renderMessages(msgs){
-        let arr = msgs.map((msg, index) => {
-            return (
-            <ChatMessage data={msg} key={index} userId={data.userId}/>
-            )
-        })
-        setMessages(arr);
+        let messages = []
+        msgs.forEach((msg, index) => {
+            messages.push({
+                _id: index,
+                text: msg.message,
+                user:{
+                    _id: msg.id,
+                    name: 'Din'
+                }
+            })
+        });
+        // let arr = msgs.map((msg, index) => {
+        //     return (
+        //     <ChatMessage data={msg} key={index} userId={data.userId}/>
+        //     )
+        // })
+        //setMessages(arr);
+        console.log(messages)
+        const gifted = <GiftedChat messages={messages}/>
+        setMessages(gifted)
     }
     const postMessage = () => {
         let messageContent = {
@@ -69,17 +84,21 @@ export default function ChatScreen({navigation, route}) {
     }
  
   return (
+    // <View style={styles.container}>
+    //     <Text style={styles.title}>Line {line} Chat</Text>
+    //     <ScrollView style={styles.messagesContainer}>
+            
+    //     </ScrollView>
+    //     <View style={styles.inputContainer}>
+    //     <TextInput placeholder='Message' style={styles.input} value={message} onChangeText={setMessage}/>
+    //   <TouchableOpacity style={styles.BtnSearch} onPress={() => postMessage()}>
+    //       <Text>Send</Text>
+    //   </TouchableOpacity>
+    //   </View>
+    // </View>
     <View style={styles.container}>
         <Text style={styles.title}>Line {line} Chat</Text>
-        <ScrollView style={styles.messagesContainer}>
-            {useMessages}
-        </ScrollView>
-        <View style={styles.inputContainer}>
-        <TextInput placeholder='Message' style={styles.input} value={message} onChangeText={setMessage}/>
-      <TouchableOpacity style={styles.BtnSearch} onPress={() => postMessage()}>
-          <Text>Send</Text>
-      </TouchableOpacity>
-      </View>
+        {useMessages}
     </View>
   )
 }

@@ -4,10 +4,25 @@ import axios from 'axios';
 import PredictionCard from './PredictionCard';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref, onChildAdded, set } from "firebase/database";
 
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
 let loopCounter = 0;
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4",
+    authDomain: "final-project-din-and-hadar.firebaseapp.com",
+    databaseURL: "https://final-project-din-and-hadar-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "final-project-din-and-hadar",
+    storageBucket: "final-project-din-and-hadar.appspot.com",
+    messagingSenderId: "490950571924",
+    appId: "1:490950571924:web:16a1d3b0896e4b41cfc181",
+    measurementId: "G-4YV91X5FDZ"
+  };
+  
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
 
 export default function Prediction({ route, navigation }) {
     const [cards, setCards] = useState();
@@ -49,6 +64,8 @@ export default function Prediction({ route, navigation }) {
             Rain: 0,
             Hour: route_data.hour
         }
+
+
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/RouteRequest"
         fetch(api, {
             method: 'POST',
@@ -69,6 +86,7 @@ export default function Prediction({ route, navigation }) {
                 console.log('There has been a problem with your fetch operation: ' + error.message);
                 throw error;
             });
+
     }
 
     const runPrediction = (p, route_data) => {
@@ -272,6 +290,10 @@ export default function Prediction({ route, navigation }) {
             alarmClock: alarm,
             userId: userid
         }
+
+        const db = ref(database, `PlannedRoutes/user_${data.userId}}/`);
+        set(db, data)
+
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/UsersManagement"
         fetch(api, {
             method: 'POST',
