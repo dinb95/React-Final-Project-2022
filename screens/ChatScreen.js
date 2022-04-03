@@ -69,7 +69,7 @@ export default function ChatScreen({navigation, route}) {
         // })
         //setMessages(arr);
         console.log(messages)
-        const gifted = <GiftedChat messages={messages} inverted={false} renderUsernameOnMessage={true}/>
+        const gifted = <GiftedChat messages={messages} inverted={false} renderUsernameOnMessage={true} user={{_id: data.userId}}/>
         setMessages(gifted)
     }
     const postMessage = () => {
