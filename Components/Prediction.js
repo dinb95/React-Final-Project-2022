@@ -29,7 +29,7 @@ export default function Prediction({ route, navigation }) {
     const [btn, setBtn] = useState();
 
     var userid;
-    var alarm;
+    var alarm = 0
     var pref;
     var ProcessArr = [];
 
@@ -291,9 +291,9 @@ export default function Prediction({ route, navigation }) {
             userId: userid
         }
 
-        const db = ref(database, `PlannedRoutes/user_${data.userId}}/`);
+        const db = ref(database, `PlannedRoutes/user_${data.userId}`);
         set(db, data)
-
+        console.log(data);
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/UsersManagement"
         fetch(api, {
             method: 'POST',

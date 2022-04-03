@@ -24,8 +24,6 @@ export default function NavigationComp() {
       <Stack.Screen name="AlarmClock" component={AlarmClock} />
       <Stack.Screen name="UserLocation" component={UserLocation} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
-      <Stack.Screen name="Chat" component={Chat} />
-
     </Stack.Navigator>
   )
 }
