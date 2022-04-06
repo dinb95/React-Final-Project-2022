@@ -4,6 +4,7 @@ import PushPage from '../PushPage';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, set, ref } from "firebase/database";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import UserLocation from './UserLocation';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4",
@@ -42,13 +43,14 @@ export default function Home({navigation}) {
               <Text style={styles.Txt}>Look For a ride</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.Btn}
               onPress={() => {navigation.navigate('UserLocation')}}
               >
               <Text style={styles.Txt}>location</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
+        <UserLocation/>
      </ImageBackground>
      <PushPage/>
     </View>

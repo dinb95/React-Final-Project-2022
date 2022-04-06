@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native'
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, onChildAdded, set } from "firebase/database";
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
@@ -21,11 +21,10 @@ const firebaseConfig = {
   
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
-
-export default function ChatScreen({navigation, route}) {
-    console.log(route)
+  let len = 0
+export default function ChatScreen({route}) {
     const [message, setMessage] = useState();
-    const [useMessages, setMessages] = useState();
+    const [useChat, setChat] = useState();
     const [msgArr, setMsgArr] = useState([]);
     const [user, setUser] = useState("")
 
@@ -33,12 +32,21 @@ export default function ChatScreen({navigation, route}) {
     let line = data.LineNumber.split(' ')
 
     useEffect(async () => {
-        getMessages(data);
-        const name = await AsyncStorage.getItem('username');
-        setUser(name);
+        let isMounted = true
+        if(isMounted){
+            getMessages(data);
+            const name = await AsyncStorage.getItem('username');
+            setUser(name.split(" ")[0]); //extract the first name
+        }
+        return () => {isMounted = false}
     }, [])
     useEffect(() => {
+        let isMounted = true
+        if(isMounted){
         renderMessages(msgArr)
+        len = msgArr.length
+        }
+        return () => {isMounted = false}
     }, [msgArr])
 
     const getMessages = (data) => {
@@ -57,49 +65,53 @@ export default function ChatScreen({navigation, route}) {
                 text: msg.message,
                 user:{
                     _id: msg.id,
-                    name: 'Din'
-                }
+                    name: msg.name
+                },
+                createdAt: msg.dtSent 
 
             })
         });
-        // let arr = msgs.map((msg, index) => {
-        //     return (
-        //     <ChatMessage data={msg} key={index} userId={data.userId}/>
-        //     )
-        // })
-        //setMessages(arr);
         console.log(messages)
-        const gifted = <GiftedChat messages={messages} inverted={false} renderUsernameOnMessage={true} user={{_id: data.userId}}/>
-        setMessages(gifted)
+        console.log(user)
+        const gifted = (<GiftedChat 
+            messages={messages} 
+            inverted={false} 
+            renderUsernameOnMessage={true} 
+            user={{_id: data.userId, name: `${user}`}}
+            alwaysShowSend={true}
+            onSend={messages => onSend(messages)}
+            />)
+        setChat(gifted)
     }
-    const postMessage = () => {
+    // const postMessage = () => {
+    //     let messageContent = {
+    //         message: message,
+    //         id: data.userId,
+    //         name: user.split(" ")[0]
+    //     }
+    //     console.log(msgArr.length)
+    //     const db = ref(database, `Chats/${line[0]}/${msgArr.length}/`);
+    //     set(db, messageContent);
+    //     setMessage("");
+    // }
+    const onSend = useCallback((msg) => {
+        console.log(msg)
         let messageContent = {
-            message: message,
-            id: data.userId,
-            name: user.split(" ")[0]
+            message: msg[0].text,
+            id: msg[0].user._id,
+            name: msg[0].user.name,
+            dtSent: `${new Date()}`
         }
-        console.log(msgArr.length)
-        const db = ref(database, `Chats/${line[0]}/${msgArr.length}/`);
+        console.log(messageContent)
+        const db = ref(database, `Chats/${line[0]}/${len}/`);
         set(db, messageContent);
-        setMessage("");
-    }
+        //setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+      }, [])
  
   return (
-    // <View style={styles.container}>
-    //     <Text style={styles.title}>Line {line} Chat</Text>
-    //     <ScrollView style={styles.messagesContainer}>
-            
-    //     </ScrollView>
-    //     <View style={styles.inputContainer}>
-    //     <TextInput placeholder='Message' style={styles.input} value={message} onChangeText={setMessage}/>
-    //   <TouchableOpacity style={styles.BtnSearch} onPress={() => postMessage()}>
-    //       <Text>Send</Text>
-    //   </TouchableOpacity>
-    //   </View>
-    // </View>
     <View style={styles.container}>
         <Text style={styles.title}>Line {line} Chat</Text>
-        {useMessages}
+        {useChat}
     </View>
   )
 }

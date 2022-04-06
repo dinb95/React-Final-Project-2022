@@ -22,10 +22,14 @@ export default function UserLocation() {
         return;
       }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+      let locationInterval = setInterval(getLocation, 10000)
     })();
   }, []);
+
+  const getLocation = async () => {
+    let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+  }
 
   let text = 'Waiting..';
   if (errorMsg) {
@@ -36,9 +40,10 @@ export default function UserLocation() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.paragraph}>{text}</Text>
-    </View>
+    // <View style={styles.container}>
+    //   <Text style={styles.paragraph}>{text}</Text>
+    // </View>
+    <View/>
   );
 }
 
