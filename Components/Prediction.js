@@ -6,9 +6,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, onChildAdded, set } from "firebase/database";
+import openMap from 'react-native-open-maps';
 
-let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
+let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w';
 let loopCounter = 0;
+let rawRoute;
 
 const firebaseConfig = {
     apiKey: "AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4",
@@ -27,7 +29,6 @@ const firebaseConfig = {
 export default function Prediction({ route, navigation }) {
     const [cards, setCards] = useState();
     const [btn, setBtn] = useState();
-
     var userid;
     var alarm;
     var pref;
@@ -62,9 +63,9 @@ export default function Prediction({ route, navigation }) {
             Origin: route_data.origin,
             Destination: route_data.destination,
             Rain: 0,
-            Hour: route_data.hour
+            Hour: route_data.hour,
+            raw_route: route_data.raw_route
         }
-
 
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/RouteRequest"
         fetch(api, {
@@ -127,7 +128,7 @@ export default function Prediction({ route, navigation }) {
                     setBtn(<View style={{ marginBottom: 40 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', }}>
                             <TouchableOpacity style={styles.Btn} onPress={savePrefRoute}>
-                                <Text style={styles.BtnTxt}>Save this route</Text>
+                                <Text style={styles.BtnTxt}><Icon name="save" size={20}/> Save route</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.Btn} onPress={() => {
                                 navigation.navigate({
@@ -135,20 +136,33 @@ export default function Prediction({ route, navigation }) {
                                     params: { setAlarmClock: setAlarmClock }
                                 })
                             }}>
-                                <Text style={styles.BtnTxt}>Alarm Clock</Text>
+                                <Text style={styles.BtnTxt}><Icon name="clock-o" size={20}/> Alarm Clock</Text>
                             </TouchableOpacity>
                         </View>
+                        <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity style={styles.Btn} onPress={() => {
                             navigation.navigate({
                                 name: 'Map',
-                                params: { origin: route_data.origin, destination: route_data.destination }
+                                params: { origin: route_data.origin, destination: route_data.destination, data:route_data }
                             })
                         }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.BtnTxt}> Show on Map </Text>
-                                <Icon name="map-marker" size={20} />
+                            
+                                <Text style={styles.BtnTxt}><Icon name="map-marker" size={20} /> Show on Map </Text>
+                                
+                            
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.Btn} onPress={() => {
+                                navigation.navigate({
+                                    name: 'Instructions',
+                                    params: {route: route_data}
+                                })
+                            }}>
+                                <Text style={styles.BtnTxt}><Icon name="bus" size={20}/> Instructions</Text>
+                                
+                            </TouchableOpacity>
                             </View>
-                        </TouchableOpacity></View>)
+                        </View>
+                        )
                     //save route for user
                 }
             }
@@ -224,6 +238,7 @@ export default function Prediction({ route, navigation }) {
             Rain: 0,
             timeTarget: user_route_input.TimeTarget,
             alarmClock: 0,
+            raw_route: current_route
         }
         return bus_data;
     }

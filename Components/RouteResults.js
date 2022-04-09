@@ -39,6 +39,7 @@ export default function RouteResults({route_results, navigation}) {
             Rain: 0,
             timeTarget: route_data.TimeTarget,
             alarmClock: 0,
+            raw_route: current_route
         }
         return <Route data={bus_data} key={index} navigation={navigation}/>
     })

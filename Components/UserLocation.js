@@ -36,7 +36,7 @@ export default function UserLocation() {
     text = errorMsg;
   } else if (location) {
     text = JSON.stringify(location);
-    console.log(location)
+    //console.log(location)
   }
 
   return (

@@ -80,7 +80,9 @@ export default function ChatScreen({route}) {
             user={{_id: data.userId, name: `${user}`}}
             alwaysShowSend={true}
             onSend={messages => onSend(messages)}
-            />)
+            showUserAvatar={true}
+            />
+            )
         setChat(gifted)
     }
     // const postMessage = () => {

@@ -8,9 +8,9 @@ import ProfileScreen from '../screens/ProfileScreen';
 import Prediction from './Prediction';
 import AlarmClock from '../screens/AlarmClock';
 import UserLocation from './UserLocation';
-
 import ChatScreen from '../screens/ChatScreen';
 import ChatMenu from '../screens/ChatMenu';
+import Instructions from './Instructions';
 
 export default function NavigationComp() {
     const Stack = createNativeStackNavigator();
@@ -25,7 +25,7 @@ export default function NavigationComp() {
       <Stack.Screen name="UserLocation" component={UserLocation} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
       <Stack.Screen name="ChatMenu" component={ChatMenu} />
-
+      <Stack.Screen name="Instructions" component={Instructions}/>
     </Stack.Navigator>
   )
 }

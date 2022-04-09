@@ -68,7 +68,7 @@ export default function SearchRoute({navigation}) {
                 origin:origin,
                 destination:destination,
                 date: date.getTime(),
-                TimeTarget: getTime()
+                TimeTarget: getTime(),
             }
             let route_result = {
               route_data:route_data,
