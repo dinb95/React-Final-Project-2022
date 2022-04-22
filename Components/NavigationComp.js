@@ -5,12 +5,13 @@ import Home from './Home';
 import Map from './Map';
 import SearchRoute from './SearchRoute';
 import ProfileScreen from '../screens/ProfileScreen';
-import Prediction from './Prediction';
+import Prediction from './Prediction/Prediction';
 import AlarmClock from '../screens/AlarmClock';
 import UserLocation from './UserLocation';
 import ChatScreen from '../screens/ChatScreen';
 import ChatMenu from '../screens/ChatMenu';
-import Instructions from './Instructions';
+import Instructions from './Bus Instructions/Instructions';
+import PredParams from './Prediction/PredParams';
 
 export default function NavigationComp() {
     const Stack = createNativeStackNavigator();
@@ -26,6 +27,7 @@ export default function NavigationComp() {
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
       <Stack.Screen name="ChatMenu" component={ChatMenu} />
       <Stack.Screen name="Instructions" component={Instructions}/>
+      <Stack.Screen name="Prediction Parameters" component={PredParams} />
     </Stack.Navigator>
   )
 }

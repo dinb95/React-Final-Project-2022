@@ -71,16 +71,15 @@ export default function ChatScreen({route}) {
 
             })
         });
-        console.log(messages)
-        console.log(user)
-        const gifted = (<GiftedChat 
-            messages={messages} 
-            inverted={false} 
-            renderUsernameOnMessage={true} 
-            user={{_id: data.userId, name: `${user}`}}
-            alwaysShowSend={true}
-            onSend={messages => onSend(messages)}
-            showUserAvatar={true}
+        const gifted = (
+            <GiftedChat 
+                messages={messages} 
+                inverted={false} 
+                renderUsernameOnMessage={true} 
+                user={{_id: data.userId, name: `${user}`}}
+                alwaysShowSend={true}
+                onSend={messages => onSend(messages)}
+                showUserAvatar={true}
             />
             )
         setChat(gifted)

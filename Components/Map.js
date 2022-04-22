@@ -1,10 +1,33 @@
-import React from 'react';
-import {View, StyleSheet, Text} from 'react-native'
-import MapView, { Polyline } from 'react-native-maps';
-import MapViewDirections from 'react-native-maps-directions';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Text, Image} from 'react-native'
+import MapView, {Marker, Callout} from 'react-native-maps';
+import Polyline from '@mapbox/polyline';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function Map({route}){
-  console.log("from map", route.params.data.raw_route.steps.length)
+  const [useLocation, setLocation] = useState(<></>)
+
+  const getLocation = async () => {
+    let l = await AsyncStorage.getItem("UserLocation");
+    l = JSON.parse(l)
+    let coords = { latitude: l.coords.latitude, longitude: l.coords.longitude}
+    console.log(coords)
+    setLocation(
+      <Marker coordinate={coords} title={"Your Location"}>
+      </Marker>
+    )
+  }
+  useFocusEffect(
+    React.useCallback(() => {
+      let interval = setInterval(getLocation, 5000)
+      return (() => {
+        console.log("removing interval")
+        clearInterval(interval)
+      })
+    }, [])
+  )
 
   const colors = {
     0: 'blue',
@@ -12,29 +35,59 @@ export default function Map({route}){
     2: 'orange',
     3: 'red'
   }
-
+  console.log(route.params.data.raw_route.steps.length)
   const directions = route.params.data.raw_route.steps.map((step, index) => {
-    let coords = [];
-    console.log(route.params.data.raw_route.steps[1])
-    // for(let i = 0; i > step.lat_lngs.length; i++){
-    //   coords.push({latitude: step.lat_lngs[i].lat, longitude: step.lat_lngs[i].lng})
+    let points = Polyline.decode(step.polyline.points);
+    let coords = points.map((point) => {
+      return  {
+          latitude : point[0],
+          longitude : point[1]
+      }
+  })
+    // let markerCoords = {
+    //   latitude: coords[(coords.length) / 2].latitude,
+    //   longitude: coords[(coords.length) / 2].longitude
     // }
     return(
-      <Polyline
+      step.travel_mode=== 'WALKING' ? 
+      <>
+      <MapView.Polyline
         coordinates={coords}
         strokeColor={colors[index]}
         strokeWidth={5}
+        lineDashPattern={[1]}
       />
-      // <MapViewDirections
-      //         origin={{latitude: step.start_location.lat, longitude: step.start_location.lng}}
-      //         destination={{latitude: step.end_location.lat, longitude: step.end_location.lng}}
-      //         mode={step.travel_mode}
-      //         apikey='AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4'
-      //         strokeWidth={5}
-      //         strokeColor={colors[index]}
-              
-      // />
-
+      {/* <Marker
+        key={index}
+        coordinate={markerCoords}
+        title={"WALKING"}
+        >
+          <Image source={require('../images/walking.png')} style={{height: 35, width:35 }} />
+        </Marker> */}
+    </>
+      :
+      <>
+      <MapView.Polyline
+      coordinates={coords}
+      strokeColor={colors[index]}
+      strokeWidth={5}
+    />
+      {/* <Marker
+        coordinate={markerCoords}
+        anchor={{x:1.2, y:1.2}}
+        >
+        <View style={styles.bubble}>
+          <Icon name="bus" size={30} />
+          <Text>921</Text>
+          </View>
+        </Marker> */}
+        <Marker
+          coordinate={coords[0]}
+          title={"Bus Station"}
+        >
+          
+        </Marker>
+    </>
     )
   })
     return(
@@ -49,6 +102,7 @@ export default function Map({route}){
             }}
             >
             {directions}
+            {useLocation}
              </MapView>
         </View>
     )
@@ -65,4 +119,11 @@ const styles = StyleSheet.create({
     map: {
       ...StyleSheet.absoluteFillObject,
     },
+    bubble:{
+      flex: 1,
+      backgroundColor: 'rgba(255,255,255,0.7)',
+      paddingHorizontal: 18,
+      paddingVertical: 12,
+      borderRadius: 20,
+    }
    });

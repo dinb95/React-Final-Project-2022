@@ -5,7 +5,7 @@ import PredictionCard from './PredictionCard';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, onChildAdded, set } from "firebase/database";
+import { getDatabase, ref, set } from "firebase/database";
 import openMap from 'react-native-open-maps';
 
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w';
@@ -30,7 +30,7 @@ export default function Prediction({ route, navigation }) {
     const [cards, setCards] = useState();
     const [btn, setBtn] = useState();
     var userid;
-    var alarm;
+    var alarm = 0;
     var pref;
     var ProcessArr = [];
 
@@ -91,7 +91,6 @@ export default function Prediction({ route, navigation }) {
     }
 
     const runPrediction = (p, route_data) => {
-        console.log("from p", p.Message)
         if (p.Message == 'An error has occurred.') {
             alert("No data was found, could not predict route time");
             navigation.goBack()
@@ -102,6 +101,8 @@ export default function Prediction({ route, navigation }) {
             let hm = route_data.departure.split(':');
             let hours = parseInt(hm[0])
             let minutes = parseInt(hm[1])
+
+            route_data["prediction"] = p
 
             let route_arrival = new Date(route_data.date);
             route_arrival.setHours(hours, minutes + Predicted_D) //get route predicted arrival time
@@ -126,7 +127,7 @@ export default function Prediction({ route, navigation }) {
                     pref = { p: p, route: route_data, arrival: route_arrival }
 
                     setBtn(<View style={{ marginBottom: 40 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             <TouchableOpacity style={styles.Btn} onPress={savePrefRoute}>
                                 <Text style={styles.BtnTxt}><Icon name="save" size={20}/> Save route</Text>
                             </TouchableOpacity>
@@ -139,7 +140,7 @@ export default function Prediction({ route, navigation }) {
                                 <Text style={styles.BtnTxt}><Icon name="clock-o" size={20}/> Alarm Clock</Text>
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                         <TouchableOpacity style={styles.Btn} onPress={() => {
                             navigation.navigate({
                                 name: 'Map',
@@ -272,10 +273,14 @@ export default function Prediction({ route, navigation }) {
     }
     const savePrefRoute = () => {
         console.log(pref)
-
         let p = pref.p
         let route = pref.route
         let arrival = pref.arrival
+        let TimeTarget = 0;
+        if(alarm == 0)
+            TestTime = Math.ceil((p[4] * 5 + p[5] + p[6])/60)
+        else TestTime = Math.ceil((p[4] * 3 + p[5] + p[6] + alarm)/60)
+
 
         let dt = new Date(route.date)
         let date = `${dt.getMonth() + 1}-${dt.getDate()}-${dt.getFullYear()}`
@@ -303,12 +308,11 @@ export default function Prediction({ route, navigation }) {
                 Mean: p[6]
             },
             alarmClock: alarm,
-            userId: userid
+            userId: userid,
+            raw_route: JSON.stringify(route.raw_route),
+            
         }
-
-        const db = ref(database, `PlannedRoutes/user_${data.userId}}/`);
-        set(db, data)
-
+        console.log(data)
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/UsersManagement"
         fetch(api, {
             method: 'POST',
@@ -319,10 +323,18 @@ export default function Prediction({ route, navigation }) {
             })
         })
             .then(
-                () => {
-                    alert("Route was saved successfuly!")
-                    navigation.navigate('Home');
+                (res) => {
+                    return res.json()
                 })
+            .then((result) => {
+                console.log(result)
+                data["TestTime"] = TestTime
+                const db = ref(database, `PlannedRoutes/user_${data.userId}/${result}/`);
+                set(db, data)
+
+                alert("Route was saved successfuly!")
+                navigation.navigate('Home');
+            })
             .catch(function (error) {
                 console.log('There has been a problem with your fetch operation: ' + error.message);
                 throw error;
@@ -330,13 +342,14 @@ export default function Prediction({ route, navigation }) {
     }
     const renderCards = (arr) => {
         const cardsArr = arr.map((data, index) => {
-            return <PredictionCard data={data} key={index} />
+            return <PredictionCard data={data} key={index} navigation={navigation}/>
         })
+        cardsArr.reverse()
         setCards(cardsArr)
     }
 
     return (
-        <ImageBackground source={require('../images/blueWay.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
+        <ImageBackground source={require('../../images/blueWay.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
             <View style={styles.container}>
                 <ScrollView style={styles.predCard}>
                     {cards}

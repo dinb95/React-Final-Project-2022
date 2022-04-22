@@ -5,7 +5,7 @@ import NumericInput from 'react-native-numeric-input'
 const AlarmClock = ({navigation, route}) => {
   // const [isEnabled, setIsEnabled] = useState(false);
   // const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-  const [alarm, setAlarm] = useState()
+  const [alarm, setAlarm] = useState(0)
 
   const save = () => {
     route.params.setAlarmClock(alarm)
