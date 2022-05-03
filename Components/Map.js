@@ -35,7 +35,7 @@ export default function Map({route}){
     2: 'orange',
     3: 'red'
   }
-  console.log(route.params.data.raw_route.steps.length)
+  console.log("from map:", route.params.data)
   const directions = route.params.data.raw_route.steps.map((step, index) => {
     let points = Polyline.decode(step.polyline.points);
     let coords = points.map((point) => {

@@ -120,17 +120,32 @@ export default function Home({navigation}) {
           <Text style={styles.Txt}>View On-Going Route</Text>
         </TouchableOpacity>       
       )
-      let dt = new Date(route.date.concat(" ", route.routeData.DepartureTime))
-
+      let date = route.date.split("-")
+      let time = route.routeData.DepartureTime.split(":")
+      let dt = new Date()
+      dt.setMonth(date[0] - 1);
+      dt.setDate(date[1]);
+      dt.setFullYear(date[2])
+      dt.setHours(time[0]);
+      dt.setMinutes(time[1])
+      console.log(date)
       //start the check when the departure time arrives
       let now = new Date()
-      //if(dt - now < 0){ //commented for testing purposes. dont forget to uncomment
+      console.log(dt - now)
+      if(dt - now < 0){
+        
         //route is already finished, move to oldRoutes and end process
-      //}
-      //else{
-      //let checkTimeout = setTimeout(() => {check(route)}, dt.getTime() - (now.getTime())) 
-      check(route)
-    //}
+        let db = ref(database, `OldRoutes/user_${route.userId}/${route.routeId}`); // save route to oldRoutes
+        set(db, route)
+  
+        db = ref(database, `onGoing/user_${route.userId}/${route.routeId}`) //remove route from onGoing
+        remove(db);
+        setOnGoingRoute(<></>)
+      }
+      else{
+      let checkTimeout = setTimeout(() => {check(route)}, dt.getTime() - (now.getTime())) 
+      clearTimeout(checkTimeout)
+      }
     })
   }
   useEffect(()=> {

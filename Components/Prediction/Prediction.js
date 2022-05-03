@@ -64,7 +64,7 @@ export default function Prediction({ route, navigation }) {
             Destination: route_data.destination,
             Rain: 0,
             Hour: route_data.hour,
-            raw_route: route_data.raw_route
+            //raw_route: route_data.raw_route
         }
 
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/RouteRequest"

@@ -29,6 +29,7 @@ export default function ChatScreen({route}) {
     const [user, setUser] = useState("")
 
     let data = route.params;
+    console.log(data)
     let line = data.LineNumber.split(' ')
 
     useEffect(async () => {

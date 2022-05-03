@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, {useEffect} from 'react'
 
 export default function ChatMenu({navigation, route}) {
+    console.log(data)
     let data = route.params;
     let lines = data.LineNumber.split(' ')
     lines.pop(lines.length-1)
