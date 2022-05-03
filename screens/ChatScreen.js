@@ -104,6 +104,13 @@ export default function ChatScreen({route}) {
             name: msg[0].user.name,
             dtSent: `${new Date()}`
         }
+        var Filter = require('bad-words')
+        // filter = new Filter();
+        var filter = new Filter({ regex: /\*|\.|$/gi });
+        //var filter = new Filter({ replaceRegex:  /[A-Za-z0-9가-힣_]/g }); 
+        console.log("--------------"+filter.isProfane(messageContent.message)+"-----------"); //Don't be an ******
+       
+
         console.log(messageContent)
         const db = ref(database, `Chats/${line[0]}/${len}/`);
         set(db, messageContent);
