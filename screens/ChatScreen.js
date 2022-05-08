@@ -1,9 +1,7 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import React, {useState, useEffect, useCallback} from 'react'
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, onChildAdded, set } from "firebase/database";
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-import ChatMessage from '../Components/ChatMessage';
+import { getDatabase, ref, onChildAdded, set, push } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GiftedChat } from 'react-native-gifted-chat'
 
@@ -22,11 +20,12 @@ const firebaseConfig = {
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
   let len = 0
+
 export default function ChatScreen({route}) {
-    const [message, setMessage] = useState();
     const [useChat, setChat] = useState();
     const [msgArr, setMsgArr] = useState([]);
     const [user, setUser] = useState("")
+    const [userStatus, setUserStatus] = useState(1);
 
     let data = route.params;
     console.log(data)
@@ -38,6 +37,8 @@ export default function ChatScreen({route}) {
             getMessages(data);
             const name = await AsyncStorage.getItem('username');
             setUser(name.split(" ")[0]); //extract the first name
+            const status = getStatus(data.userId)
+            setUserStatus(status)
         }
         return () => {isMounted = false}
     }, [])
@@ -57,6 +58,26 @@ export default function ChatScreen({route}) {
             const data = snapshot.val();
             setMsgArr(prev => [...prev, data]);
           })
+    }
+    const getStatus = (id) => {
+        let api = `https://proj.ruppin.ac.il/bgroup54/test2/tar6/Users?id=${toString(id)}&a=a`
+        fetch(api, {
+            method: 'GET',
+            headers: new Headers({
+                'Content-type': 'application/json; charset=UTF-8',
+                'Accept': 'application/json; charset=UTF-8'
+              })
+            })
+            .then(res => {
+                return res.json()
+            })
+            .then((result) => { 
+                  
+            })
+            .catch(function(error) {
+              console.log('There has been a problem with your fetch operation: ' + error.message);
+                throw error;
+            });
     }
     function renderMessages(msgs){
         let messages = []
@@ -85,19 +106,11 @@ export default function ChatScreen({route}) {
             )
         setChat(gifted)
     }
-    // const postMessage = () => {
-    //     let messageContent = {
-    //         message: message,
-    //         id: data.userId,
-    //         name: user.split(" ")[0]
-    //     }
-    //     console.log(msgArr.length)
-    //     const db = ref(database, `Chats/${line[0]}/${msgArr.length}/`);
-    //     set(db, messageContent);
-    //     setMessage("");
-    // }
     const onSend = useCallback((msg) => {
-        console.log(msg)
+        if(userStatus == 0){
+            alert("You are suspended from the chat")
+            return;
+        }
         let messageContent = {
             message: msg[0].text,
             id: msg[0].user._id,
@@ -108,13 +121,18 @@ export default function ChatScreen({route}) {
         // filter = new Filter();
         var filter = new Filter({ regex: /\*|\.|$/gi });
         //var filter = new Filter({ replaceRegex:  /[A-Za-z0-9가-힣_]/g }); 
-        console.log("--------------"+filter.isProfane(messageContent.message)+"-----------"); //Don't be an ******
-       
-
+        //console.log("--------------"+filter.isProfane(messageContent.message)+"-----------"); //
+       if(filter.isProfane(messageContent.message)){
+        const db = ref(database, `Profane/${messageContent.id}/`);
+        push(db, messageContent);
+        alert("Dont Swear!")
+       }
+       else{
         console.log(messageContent)
         const db = ref(database, `Chats/${line[0]}/${len}/`);
         set(db, messageContent);
         //setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+    }
       }, [])
  
   return (
