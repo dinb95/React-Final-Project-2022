@@ -20,25 +20,23 @@ const firebaseConfig = {
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
   let len = 0
+  let status = 1;
 
 export default function ChatScreen({route}) {
     const [useChat, setChat] = useState();
     const [msgArr, setMsgArr] = useState([]);
     const [user, setUser] = useState("")
-    const [userStatus, setUserStatus] = useState(1);
 
     let data = route.params;
-    console.log(data)
     let line = data.LineNumber.split(' ')
-
     useEffect(async () => {
         let isMounted = true
         if(isMounted){
             getMessages(data);
             const name = await AsyncStorage.getItem('username');
             setUser(name.split(" ")[0]); //extract the first name
-            const status = getStatus(data.userId)
-            setUserStatus(status)
+            getStatus(data.userId)
+            
         }
         return () => {isMounted = false}
     }, [])
@@ -52,7 +50,6 @@ export default function ChatScreen({route}) {
     }, [msgArr])
 
     const getMessages = (data) => {
-        console.log(data)
         const db = ref(database, `Chats/${line[0]}`);
         onChildAdded(db, (snapshot) => {
             const data = snapshot.val();
@@ -60,7 +57,8 @@ export default function ChatScreen({route}) {
           })
     }
     const getStatus = (id) => {
-        let api = `https://proj.ruppin.ac.il/bgroup54/test2/tar6/Users?id=${toString(id)}&a=a`
+        console.log("user id:", id)
+        let api = `https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/Users?id=${id}&a=a`
         fetch(api, {
             method: 'GET',
             headers: new Headers({
@@ -71,8 +69,9 @@ export default function ChatScreen({route}) {
             .then(res => {
                 return res.json()
             })
-            .then((result) => { 
-                  
+            .then((result) => {
+                console.log("status: ",result)
+                status = result
             })
             .catch(function(error) {
               console.log('There has been a problem with your fetch operation: ' + error.message);
@@ -107,7 +106,8 @@ export default function ChatScreen({route}) {
         setChat(gifted)
     }
     const onSend = useCallback((msg) => {
-        if(userStatus == 0){
+        console.log(status)
+        if(status == 0){
             alert("You are suspended from the chat")
             return;
         }
