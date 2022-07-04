@@ -10,6 +10,7 @@ export default function Step({data, index}) {
         <View style={styles.container}>
             <Text>{data.html_instructions}</Text>
             <Text>Distance: {data.distance.text}</Text>
+            <Text>Duration: {data.duration.text} </Text>
         </View>
 
     )
@@ -22,7 +23,8 @@ export default function Step({data, index}) {
         // departure time, arrival time, distance
         <View style={styles.container}>
             <Icon name="bus" size={20}/>
-            <Text>{data.html_instructions}</Text>
+            <Text>Take Bus {data.transit_details.line.short_name}</Text>
+            <Text>  To {data.transit_details.arrival_stop.name} </Text>
         </View>
     )
   return (

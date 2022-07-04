@@ -125,14 +125,6 @@ export default function SearchRoute({navigation}) {
                 )}
               </View>
               
-              <View style={styles.viewDateWarning }>
-                {dateWarning && (
-                    <Text style={styles.dateWarning}>{"\t\t\t\t"} WARNING: {"\n"} The date thet you choose is not a future date!  </Text>
-                  )}
-                </View>
-                <TouchableOpacity style={styles.Btn} onPress={showDatepicker}>
-                  <Text style={styles.BtnDateTxt}>Choose Date and Time</Text>
-                </TouchableOpacity>
                 <TouchableOpacity style={styles.BtnSearch} onPress={getDirections}>
                   <Text style={styles.BtnTxt}>Search</Text>
                 </TouchableOpacity>
