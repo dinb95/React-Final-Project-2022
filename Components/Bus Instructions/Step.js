@@ -24,7 +24,7 @@ export default function Step({data, index}) {
         <View style={styles.container}>
             <Icon name="bus" size={20}/>
             <Text>Take Bus {data.transit_details.line.short_name}</Text>
-            <Text>  To {data.transit_details.arrival_stop.name} </Text>
+            <Text>From {data.transit_details.departure_stop.name} To {data.transit_details.arrival_stop.name} </Text>
         </View>
     )
   return (
