@@ -11,6 +11,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
 
 export default function SearchRoute({navigation}) {
+    const [dateWarning, setDateWarning] = useState(false);
 
     const [origin, setOrigin] = useState('Hadera');
     const [destination, setDestination] = useState('Ruppin Academic Center');
@@ -45,7 +46,13 @@ export default function SearchRoute({navigation}) {
         setShow(false)
       }
     const getDate = () => {
-        return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+      // return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+      var dateT = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
+      if(new Date(`${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`) <= new Date() && !dateWarning)
+        setDateWarning(true);
+      else if(new Date(`${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`) > new Date() && dateWarning)
+        setDateWarning(false);
+      return dateT;
     }
     const getTime = () => {
         if(date.getMinutes() < 10)
@@ -98,9 +105,7 @@ export default function SearchRoute({navigation}) {
           <View style={{marginTop:30}}>
             <TextInput placeholder='Origin' style={styles.input} value={origin} onChangeText={setOrigin}></TextInput>
             <TextInput placeholder='Destination' style={styles.input} value={destination} onChangeText={setDestination}></TextInput>
-            <TouchableOpacity style={styles.Btn} onPress={showDatepicker}>
-                <Text style={styles.BtnDateTxt}>Choose Date and Time</Text>
-              </TouchableOpacity>
+
             <View style={{ flexDirection: 'row' }}>
               <View>
                   <Text style={styles.GetFromBtn}>    Time: {getTime()}</Text>
@@ -141,6 +146,22 @@ const styles = StyleSheet.create({
       width:'100%',
       backgroundColor:'rgba(0,0,0,.6)',
       
+    },
+    dateWarning:{
+      color: 'white',
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'center',
+      fontWeight:'bold',
+      backgroundColor:'red',
+
+    },
+    viewDateWarning:{
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'center',
+
     },
     input: {
       height: 50,
