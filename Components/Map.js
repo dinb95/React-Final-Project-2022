@@ -5,10 +5,19 @@ import Polyline from '@mapbox/polyline';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import Step from '../Components/Bus Instructions/Step'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export default function Map({route}){
   const [useLocation, setLocation] = useState(<></>)
 
+    let steps = route.params.data.raw_route.steps
+    const instructions = steps.map((step, index) => {
+      return (
+        <Step data={step} key={index} index={index}/>
+      )
+    })
+  
   const getLocation = async () => {
     let l = await AsyncStorage.getItem("UserLocation");
     l = JSON.parse(l)
@@ -56,6 +65,7 @@ export default function Map({route}){
         strokeColor={colors[index]}
         strokeWidth={5}
         lineDashPattern={[1]}
+        
       />
       {/* <Marker
         key={index}
@@ -71,6 +81,7 @@ export default function Map({route}){
       coordinates={coords}
       strokeColor={colors[index]}
       strokeWidth={5}
+      
     />
       {/* <Marker
         coordinate={markerCoords}
@@ -104,6 +115,10 @@ export default function Map({route}){
             {directions}
             {useLocation}
              </MapView>
+             <View style={styles.card}>
+              <Text style={styles.cardTitle}>Arrival instructions {"\n"} </Text>
+              <Text style={styles.cardInfo}> {instructions}</Text>
+            </View>
         </View>
     )
 }
@@ -125,5 +140,36 @@ const styles = StyleSheet.create({
       paddingHorizontal: 18,
       paddingVertical: 12,
       borderRadius: 20,
-    }
+    },
+    card: {
+      backgroundColor:'#cccccc',
+      height: 200,
+      width: 250,
+      marginVertical: 10,
+      flexDirection: 'row',
+      shadowColor: '#999',
+      shadowOffset: {width: 0, height: 1},
+      shadowOpacity: 0.8,
+      shadowRadius: 2,
+      elevation: 5,
+      position:'absolute',
+      top: 10,
+      left: 10,
+      borderRadius:7,
+
+    },
+    cardTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
+    cardInfo: {
+      fontSize: 18,
+      color: '#444',
+      position:'relative',
+      top: 26,
+      left: -170,
+
+
+    },
+    
    });
