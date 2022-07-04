@@ -2,7 +2,7 @@ import { View, Text, Button, StyleSheet,ImageBackground,TouchableOpacity, Alert 
 import React, {useState, useEffect} from 'react';
 import PushPage from '../PushPage';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, set, ref, onChildAdded, remove } from "firebase/database";
+import { getDatabase, set, ref, onChildAdded, remove, onValue } from "firebase/database";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserLocation from './UserLocation';
 // import {database} from './firebase'
@@ -25,26 +25,112 @@ export default function Home({navigation}) {
   const [onGoingRoute, setOnGoingRoute] = useState(<></>)
 
   const check = async (route) => {
-    let start_location = route.raw_route.start_location
-    let current_location = await getUserLocation()
-    console.log("start: ", start_location, "current: ",current_location)
+  var buses_in_route = [];
+  let steps = route.raw_route.steps;
+  for(let i = 0; i < steps.length; i++){
+    if(steps[i].travel_mode == "TRANSIT")
+      buses_in_route.push(steps[i])
+  }
 
-    if (calculate_distance(start_location, current_location) > 1000){ //if the user's current location is more than 1000 meters away from the start point
-      Alert.alert("Too Far!",
-       "It seems that you're too far from the departure station. Would you like to get a new route from your current location?",
-       [{text:"No", style: "cancel"},
-         {
-           text:"Yes",
-           onPress: () => SuggestNewRoute(current_location, route.routeData.Destination)
-         }])
+  checkArrival(route, buses_in_route, 0, false)
+
+  // let start_location = route.raw_route.start_location
+  // let current_location = await getUserLocation()
+  // console.log("start: ", start_location, "current: ",current_location)
+  // //change to bus location here
+  // if (calculate_distance(start_location, current_location) > 1000){ //if the user's current location is more than 1000 meters away from the start point
+  //   Alert.alert("Too Far!",
+  //     "It seems that you're too far from the departure station. Would you like to get a new route from your current location?",
+  //     [{text:"No", style: "cancel"},
+  //       {
+  //         text:"Yes",
+  //         onPress: () => SuggestNewRoute(current_location, route.routeData.Destination)
+  //       }])
+  // }
+  // else{
+  //   //start measuring time
+  //   let start_time = new Date();
+  //   let checkArrivalInterval = setInterval(() => checkArrival(start_time, route, checkArrivalInterval), 10000)
+  // }
+}
+const checkArrival = async (route, buses_in_route, index, flag) => {
+  var user_location;
+  var buses_locations = []
+
+  if(index < buses_in_route.length){
+    const db = ref(database, `RunningBuses/user_${id}`)
+    onValue(db, (snapshot) => {
+      let data = snapshot.val()
+      for(d in data){
+        buses_locations.push(data[d]);
+      }
+      
+    })
+    user_location = await getUserLocation()
+    let current_step = buses_in_route[index];
+    let current_bus = buses_locations[index]
+
+    if(flag){
+      if(calculate_distance(user_location, current_bus) < 25) // user is on the bus
+        setTimeout(() => {checkArrival(route, buses_in_route, ++index, false)}, 1000)
+      else UserMissedBusAlert(user_location, route.routeData.Destination) // user missed the bus
     }
     else{
-      //start measuring time
-      let start_time = new Date();
-      let checkArrivalInterval = setInterval(() => checkArrival(start_time, route, checkArrivalInterval), 10000)
+      if(calculate_distance(current_step.start_location, current_bus) <= 30){ // bus is near the bus stop
+        if(calculate_distance(current_step.start_location, user_location) <= 20){ //user is near the bus stop
+          //check for a few seconds if the distance between the user and the bus increased
+          setTimeout(() => {checkArrival(route, buses_in_route, index, true)}, 30000)
+        }
+        else UserMissedBusAlert(user_location, route.routeData.Destination) //the user missed the bus
+      }
+      else{
+        // bus did not arrive at the bus stop yet
+        console.log(`user location: ${user_location}, current bus: ${current_bus}, distance: ${calculate_distance(user_location, current_bus)}`)
+        setTimeout(() => {checkArrival(route, buses_in_route, index)}, 1000)
+      }
     }
   }
-  const checkArrival = async (start, route, interval) => {
+  // no more buses are left in the route
+  else if(calculate_distance(user_location, route.raw_route.end_location) <= 20){
+    //the user arrived to the destination
+      end_route(route)
+    }
+    else{
+      setTimeout(() => {checkArrival(route, buses_in_route, index)}, 1000)
+    }
+  }
+
+  const UserMissedBusAlert = (user_location, destination) => {
+    Alert.alert("Too Far!",
+    "It seems that you're too far from the departure station. Would you like to get a new route from your current location?",
+    [{text:"No", style: "cancel"},{text:"Yes", onPress: () => SuggestNewRoute(user_location, destination)}])
+  }
+
+  const end_route = (route) => {
+    let route_summary = route.routeData;
+    let now = new Date();
+    let arrival = `${now.getHours()}:${now.getMinutes()}`;
+
+    let dep_split = route_summary.DepartureTime.split(':'); // convert from "HH:MM" to the actual values
+    let departure_time = new Date()
+    departure_time.setHours(dep_split[0], dep_split[1]);
+    let duration = now.getTime() - departure_time.getTime();
+
+    route_summary["ArrivalTime"] = arrival;
+    route_summary["RouteDuration"] = duration / 1000; 
+
+    let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/RouteData"
+    fetch(api, {
+        method: 'POST',
+        body: JSON.stringify(route_summary),
+        headers: new Headers({
+            'Content-type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8'
+        })
+    })
+  }
+
+  const checkArrival2 = async (start, route, interval) => {
     let end_location = route.raw_route.end_location;
     let current_location = await getUserLocation()
 
@@ -144,7 +230,6 @@ export default function Home({navigation}) {
       }
       else{
       let checkTimeout = setTimeout(() => {check(route)}, dt.getTime() - (now.getTime())) 
-      clearTimeout(checkTimeout)
       }
     })
   }
@@ -154,7 +239,7 @@ export default function Home({navigation}) {
 
   return (
     <View style={styles.container}>
-       <ImageBackground source={require('../images/way1.jpg')} resizeMode="cover" blurRadius={1} resizeMode="cover" style={styles.image}>
+       <ImageBackground source={require('../images/way1.jpg')} resizeMode="cover" blurRadius={1} style={styles.image}>
         <View>
             <Text style={styles.timely_title}>Timely</Text>
             <Text style={styles.timely_subtitle}>To the right place at the right time</Text>

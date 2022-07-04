@@ -119,6 +119,7 @@ export default function SearchRoute({navigation}) {
                   />
                 )}
               </View>
+              
                 <TouchableOpacity style={styles.BtnSearch} onPress={getDirections}>
                   <Text style={styles.BtnTxt}>Search</Text>
                 </TouchableOpacity>
