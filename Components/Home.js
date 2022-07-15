@@ -2,7 +2,7 @@ import { View, Text, Button, StyleSheet,ImageBackground,TouchableOpacity, Alert 
 import React, {useState, useEffect} from 'react';
 import PushPage from '../PushPage';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, set, ref, onChildAdded, remove, onValue } from "firebase/database";
+import { getDatabase, set, ref, onChildAdded, remove, onValue, get, child } from "firebase/database";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserLocation from './UserLocation';
 // import {database} from './firebase'
@@ -18,13 +18,19 @@ const firebaseConfig = {
   measurementId: "G-4YV91X5FDZ"
 };
 
+let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
+
+var user_location;
+var buses_locations = []
+
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 export default function Home({navigation}) {
   const [onGoingRoute, setOnGoingRoute] = useState(<></>)
 
-  const check = async (route) => {
+  const route_setup = async (route) => {
+  console.log("route setup")
   var buses_in_route = [];
   let steps = route.raw_route.steps;
   for(let i = 0; i < steps.length; i++){
@@ -33,62 +39,27 @@ export default function Home({navigation}) {
   }
 
   checkArrival(route, buses_in_route, 0, false)
-
-  // let start_location = route.raw_route.start_location
-  // let current_location = await getUserLocation()
-  // console.log("start: ", start_location, "current: ",current_location)
-  // //change to bus location here
-  // if (calculate_distance(start_location, current_location) > 1000){ //if the user's current location is more than 1000 meters away from the start point
-  //   Alert.alert("Too Far!",
-  //     "It seems that you're too far from the departure station. Would you like to get a new route from your current location?",
-  //     [{text:"No", style: "cancel"},
-  //       {
-  //         text:"Yes",
-  //         onPress: () => SuggestNewRoute(current_location, route.routeData.Destination)
-  //       }])
-  // }
-  // else{
-  //   //start measuring time
-  //   let start_time = new Date();
-  //   let checkArrivalInterval = setInterval(() => checkArrival(start_time, route, checkArrivalInterval), 10000)
-  // }
 }
 const checkArrival = async (route, buses_in_route, index, flag) => {
-  var user_location;
-  var buses_locations = []
-
+  console.log("checking arrival")
+  user_location = await getUserLocation()
   if(index < buses_in_route.length){
-    const db = ref(database, `RunningBuses/user_${id}`)
+    console.log("getting running buses")
+    const db = ref(database, `RunningBuses/user_${route.userId}`)
     onValue(db, (snapshot) => {
-      let data = snapshot.val()
-      for(d in data){
-        buses_locations.push(data[d]);
+      data = snapshot.val()
+      let tmpArr = []
+      for(let line in data){
+        tmpArr.push(data[line])
       }
-      
+      buses_locations = tmpArr;
     })
-    user_location = await getUserLocation()
-    let current_step = buses_in_route[index];
-    let current_bus = buses_locations[index]
-
-    if(flag){
-      if(calculate_distance(user_location, current_bus) < 25) // user is on the bus
-        setTimeout(() => {checkArrival(route, buses_in_route, ++index, false)}, 1000)
-      else UserMissedBusAlert(user_location, route.routeData.Destination) // user missed the bus
+    try{
+      check_locations(route, buses_in_route, index, flag, user_location, buses_locations)
     }
-    else{
-      if(calculate_distance(current_step.start_location, current_bus) <= 30){ // bus is near the bus stop
-        if(calculate_distance(current_step.start_location, user_location) <= 20){ //user is near the bus stop
-          //check for a few seconds if the distance between the user and the bus increased
-          setTimeout(() => {checkArrival(route, buses_in_route, index, true)}, 30000)
-        }
-        else UserMissedBusAlert(user_location, route.routeData.Destination) //the user missed the bus
-      }
-      else{
-        // bus did not arrive at the bus stop yet
-        console.log(`user location: ${user_location}, current bus: ${current_bus}, distance: ${calculate_distance(user_location, current_bus)}`)
-        setTimeout(() => {checkArrival(route, buses_in_route, index)}, 1000)
-      }
-    }
+    catch{
+      setTimeout(() => {checkArrival(route, buses_in_route, index, flag)}, 3000)
+    } 
   }
   // no more buses are left in the route
   else if(calculate_distance(user_location, route.raw_route.end_location) <= 20){
@@ -96,14 +67,46 @@ const checkArrival = async (route, buses_in_route, index, flag) => {
       end_route(route)
     }
     else{
-      setTimeout(() => {checkArrival(route, buses_in_route, index)}, 1000)
+      // user did not reach his destination yet
+      setTimeout(() => {checkArrival(route, buses_in_route, index, true)}, 3000)
     }
   }
+  const check_locations = (route, buses_in_route, index, flag, user_location, buses_locations) => {
+    let current_step = buses_in_route[index];
+    let current_bus = buses_locations[index]
+    console.log(flag)
+    if(flag){
+      if(calculate_distance(user_location, current_bus) < 25) // user is on the bus
+        setTimeout(() => {checkArrival(route, buses_in_route, ++index, false)}, 3000)
+      else UserMissedBusAlert(user_location, route.routeData.Destination) // user missed the bus
+    }
+    else{
+      console.log("distance from the bus to the bus stop:",calculate_distance(current_step.start_location, current_bus))
+      if(calculate_distance(current_step.start_location, current_bus) <= 30){ // bus is near the bus stop
+        if(calculate_distance(current_step.start_location, user_location) <= 20){ //user is near the bus stop
+          //check for a few seconds if the distance between the user and the bus increased
+          setTimeout(() => {checkArrival(route, buses_in_route, index, true)}, 30000)
+        }
+        else UserMissedBusAlert(route.userId, user_location, route.routeData.Destination) //the user missed the bus
+      }
+      else{
+        // bus did not arrive at the bus stop yet
 
+        console.log(`user location: ${user_location}, current bus: ${current_bus}, distance: ${calculate_distance(user_location, current_bus)}`)
+        setTimeout(() => {checkArrival(route, buses_in_route, index, flag)}, 3000)
+      }
+    }
+  }
   const UserMissedBusAlert = (user_location, destination) => {
     Alert.alert("Too Far!",
     "It seems that you're too far from the departure station. Would you like to get a new route from your current location?",
-    [{text:"No", style: "cancel"},{text:"Yes", onPress: () => SuggestNewRoute(user_location, destination)}])
+    [{text:"No", onPress: () => cancel_route() ,style: "cancel"},{text:"Yes", onPress: () => SuggestNewRoute(user_location, destination)}])
+  }
+
+  const cancel_route = (id) => {
+    let db = ref(database, `onGoing/user_${id}`) //remove route from onGoing
+    remove(db);
+    setOnGoingRoute(<></>)
   }
 
   const end_route = (route) => {
@@ -128,67 +131,41 @@ const checkArrival = async (route, buses_in_route, index, flag) => {
             'Accept': 'application/json; charset=UTF-8'
         })
     })
+    let db = ref(database, `OldRoutes/user_${route.userId}/${route.routeId}`); // save route to oldRoutes
+    set(db, route)
+
+    db = ref(database, `onGoing/user_${route.userId}/${route.routeId}`) //remove route from onGoing
+    remove(db);
   }
-
-  const checkArrival2 = async (start, route, interval) => {
-    let end_location = route.raw_route.end_location;
-    let current_location = await getUserLocation()
-
-    if(calculate_distance(end_location, current_location) <= 10){
-      let total_time = (new Date() - start) / 1000 / 60 // calculate total travel time in minutes
-      let db = ref(database, `OldRoutes/user_${route.userId}/${route.routeId}`); // save route to oldRoutes
-      set(db, route)
-
-      db = ref(database, `onGoing/user_${route.userId}/${route.routeId}`) //remove route from onGoing
-      remove(db);
-
-      //save route data with total_time
-
-      clearInterval(interval);
-    }
-
-  }
-
-  const calculate_distance = (start, current) => { // calculates the aerial distance between 2 coordinates
-    let lat1 = start.lat;
-    let lon1 = start.lng;
-    let lat2 = current.lat;
-    let lon2 = current.lng;
-
-    const R = 6371e3; // metres
-    const φ1 = lat1 * Math.PI/180; // φ, λ in radians
-    const φ2 = lat2 * Math.PI/180;
-    const Δφ = (lat2-lat1) * Math.PI/180;
-    const Δλ = (lon2-lon1) * Math.PI/180;
-
-    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-              Math.cos(φ1) * Math.cos(φ2) *
-              Math.sin(Δλ/2) * Math.sin(Δλ/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-    const d = R * c; // in metres
-
-    return d;
-  }
-
-  const getUserLocation = async () => {
-    let l = await AsyncStorage.getItem("UserLocation");
-    l = JSON.parse(l)
-    let coords = { lat: l.coords.latitude, lng: l.coords.longitude}
-    return coords
-  }
+  
   const SuggestNewRoute = (current, destination) => {
-
+    var config = {
+      method: 'get',
+      url: `https://maps.googleapis.com/maps/api/directions/json?origin=${current}&destination=${destination}&mode=transit&transit_mode=bus&key=${key}`,
+      headers: { }
+    };
+    
+    axios(config)
+    .then(function (response) {
+      route = {
+        raw_route: response.data.routes[0].legs
+      }
+      setOnGoingRoute(
+        <TouchableOpacity 
+          style={styles.Btn} 
+          onPress={() => {navigation.navigate({
+            name:"Map",
+            params: { origin: route.routeData.Origin, destination: route.routeData.Destination, data:route }
+          })}}>
+          <Text style={styles.Txt}>View On-Going Route</Text>
+        </TouchableOpacity>       
+      )
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
 
-  const getToken = async() => {
-    const token = await AsyncStorage.getItem('usertoken')
-    const id = await AsyncStorage.getItem('userid')
-    const db = ref(database, `Tokens/${id}/`);
-    set(db, token)
-    console.log("got token for user", id)
-    getOnGoingRoutes(id);
-  }
   const getOnGoingRoutes = (id) => {
     console.log("getting ongoing routes for user", id)
     const db = ref(database, `onGoing/user_${id}`)
@@ -229,9 +206,47 @@ const checkArrival = async (route, buses_in_route, index, flag) => {
         setOnGoingRoute(<></>)
       }
       else{
-      let checkTimeout = setTimeout(() => {check(route)}, dt.getTime() - (now.getTime())) 
+      let checkTimeout = setTimeout(() => {route_setup(route)}, 1000) 
+      //let checkTimeout = setTimeout(() => {route_setup(route)}, dt.getTime() - (now.getTime())) 
       }
     })
+  }
+
+  const calculate_distance = (start, current) => { // calculates the aerial distance between 2 coordinates
+    let lat1 = start.lat;
+    let lon1 = start.lng;
+    let lat2 = current.lat;
+    let lon2 = current.lng;
+
+    const R = 6371e3; // metres
+    const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+    const φ2 = lat2 * Math.PI/180;
+    const Δφ = (lat2-lat1) * Math.PI/180;
+    const Δλ = (lon2-lon1) * Math.PI/180;
+
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    const d = R * c; // in metres
+
+    return d;
+  }
+
+  const getUserLocation = async () => {
+    let l = await AsyncStorage.getItem("UserLocation");
+    l = JSON.parse(l)
+    let coords = { lat: l.coords.latitude, lng: l.coords.longitude}
+    return coords
+  }
+  const getToken = async() => {
+    const token = await AsyncStorage.getItem('usertoken')
+    const id = await AsyncStorage.getItem('userid')
+    const db = ref(database, `Tokens/${id}/`);
+    set(db, token)
+    console.log("got token for user", id)
+    getOnGoingRoutes(id);
   }
   useEffect(()=> {
     getToken();
@@ -250,12 +265,6 @@ const checkArrival = async (route, buses_in_route, index, flag) => {
               <Text style={styles.Txt}>Look For a ride</Text>
             </TouchableOpacity>
             {onGoingRoute}
-            {/* <TouchableOpacity
-              style={styles.Btn}
-              onPress={() => {navigation.navigate('UserLocation')}}
-              >
-              <Text style={styles.Txt}>location</Text>
-            </TouchableOpacity> */}
         </View>
         <UserLocation/>
      </ImageBackground>

@@ -10,7 +10,7 @@ export default function Step({data, index}) {
         <View style={styles.container}>
             <Text>{data.html_instructions}</Text>
             <Text>Distance: {data.distance.text}</Text>
-            <Text>Duration: {data.duration.text} </Text>
+            <Text>Duration: {data.duration.text}</Text>
         </View>
 
     )
@@ -22,9 +22,8 @@ export default function Step({data, index}) {
         // bus agency? 
         // departure time, arrival time, distance
         <View style={styles.container}>
-            <Icon name="bus" size={20}/>
             <Text>Take Bus {data.transit_details.line.short_name}</Text>
-            <Text>From {data.transit_details.departure_stop.name} To {data.transit_details.arrival_stop.name} </Text>
+            <Text>From {data.transit_details.departure_stop.name} {"\n"}To {data.transit_details.arrival_stop.name} </Text>
         </View>
     )
   return (
@@ -36,10 +35,7 @@ export default function Step({data, index}) {
 
 const styles = StyleSheet.create({
     container: {
-      height:'auto',
-      width:'90%',
-      marginBottom:5,
-      alignContent:'center',
-
+      width: "100%",
+      marginBottom: 10,
     }
   })
