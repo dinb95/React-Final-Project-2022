@@ -23,11 +23,14 @@ export default function Step({data, index}) {
         // departure time, arrival time, distance
         <View style={styles.container}>
             <Text>Take Bus {data.transit_details.line.short_name}</Text>
-            <Text>From {data.transit_details.departure_stop.name} {"\n"}To {data.transit_details.arrival_stop.name} </Text>
+            <Text>
+            From {data.transit_details.departure_stop.name} {"\n"}
+            To {data.transit_details.arrival_stop.name}
+             </Text>
         </View>
     )
   return (
-    <View>
+    <View style={styles.border}>
       {inst_step}
     </View>
   )
@@ -35,7 +38,11 @@ export default function Step({data, index}) {
 
 const styles = StyleSheet.create({
     container: {
-      width: "100%",
       marginBottom: 10,
+      marginRight: 10
+    },
+    border: {
+      width: "100%",
+      borderBottomWidth: 1,
     }
   })

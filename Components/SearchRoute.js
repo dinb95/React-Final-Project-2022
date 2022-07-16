@@ -65,7 +65,7 @@ export default function SearchRoute({navigation}) {
 
         var config = {
             method: 'get',
-            url: `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&mode=transit&transit_mode=bus&arrival_time=${arrival}&alternatives=true&key=${key}`,
+            url: `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&mode=transit&transit_mode=bus&arrival_time=${arrival}&alternatives=true&language=en&key=${key}`,
             headers: { }
           };
           

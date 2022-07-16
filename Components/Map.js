@@ -8,19 +8,63 @@ import { useFocusEffect } from '@react-navigation/native';
 import Step from '../Components/Bus Instructions/Step'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { List } from 'react-native-paper';
+import { getDatabase, ref, onValue } from "firebase/database";
+import { initializeApp } from 'firebase/app';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4",
+  authDomain: "final-project-din-and-hadar.firebaseapp.com",
+  databaseURL: "https://final-project-din-and-hadar-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "final-project-din-and-hadar",
+  storageBucket: "final-project-din-and-hadar.appspot.com",
+  messagingSenderId: "490950571924",
+  appId: "1:490950571924:web:16a1d3b0896e4b41cfc181",
+  measurementId: "G-4YV91X5FDZ"
+};
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
 export default function Map({route}){
   const [useShow, setShow]  = useState(false);
   const [useLocation, setLocation] = useState(<></>);
   const [currentIndex, setCurrentIndex] = useState(null);
+  const [busMarkers, setBusMarkers] = useState(<></>);
+  const [busesArr, setBusesArr] = useState([])
+
+
+  useEffect(() => {
+    if(route.params.userId){
+      const db = ref(database, `RunningBuses/user_${route.params.userId}`)
+      onValue(db, (snapshot) => {
+        let data = snapshot.val()
+        let arr = [];
+        console.log("getting buses locations");
+        for(let line in data){
+          arr.push(data[line]);
+        }
+        renderMarkers(arr);
+      })
+    }
+  }, [])
+
+  const renderMarkers = (arr) => {
+    console.log(arr);
+    const markers = arr.map((bus) => {
+      return (<Marker
+      coordinate={{latitude: parseFloat(bus.lat), longitude: parseFloat(bus.lng)}}
+      title={"Bus Location"}
+      >
+    </Marker>
+      )
+    })
+    setBusMarkers(markers)
+  } 
+
 
     let steps = route.params.data.raw_route.steps
     const instructions = steps.map((step, index) => {
       return (
-          <TouchableOpacity style={styles.instructionCard} onPress={() => setCurrentIndex(index)}>
-          <Text>Step {index+1}</Text>
-            {index === currentIndex && (<Step data={step} key={index} index={index}/>)}
-          </TouchableOpacity>
+        <Step data={step} key={index} index={index}/>
       )
     })
   
@@ -44,6 +88,9 @@ export default function Map({route}){
       })
     }, [])
   )
+  useEffect(() => {
+
+  })
 
   const colors = {
     0: 'blue',
@@ -65,7 +112,7 @@ export default function Map({route}){
     //   longitude: coords[(coords.length) / 2].longitude
     // }
     return(
-      step.travel_mode=== 'WALKING' ? 
+      step.travel_mode === 'WALKING' ? 
       <>
       <MapView.Polyline
         coordinates={coords}
@@ -104,6 +151,7 @@ export default function Map({route}){
           title={"Bus Station"}
         >
         </Marker>
+        {busMarkers}
     </>
     )
   })
@@ -125,7 +173,7 @@ export default function Map({route}){
             <View style={styles.card}>
               <Text style={styles.cardTitle}>Arrival instructions</Text>
               <ScrollView>
-                <Text style={styles.cardInfo}> {instructions}</Text>
+                 {instructions}
               </ScrollView>
             </View>
              )}
@@ -157,18 +205,20 @@ const styles = StyleSheet.create({
       borderRadius: 20,
     },
     card: {
-      backgroundColor:'#cccccc',
+      backgroundColor:'white',
       height: 200,
       width: "90%",
       marginVertical: 10,
       shadowColor: '#999',
       shadowOffset: {width: 0, height: 1},
       shadowOpacity: 0.8,
+      opacity: 0.8,
       shadowRadius: 2,
       elevation: 5,
       position:'absolute',
       bottom: 50,
       borderRadius:7,
+      borderWidth: 0.5,
 
     },
     cardTitle: {
@@ -183,6 +233,8 @@ const styles = StyleSheet.create({
       position:'relative',
     },
     instructionCard : {
+      flex: 1,
+      flexDirection: 'row',
       marginLeft:5,
       marginBottom: 10
     },

@@ -5,6 +5,7 @@ import { initializeApp } from 'firebase/app';
 import { getDatabase, set, ref, onChildAdded, remove, onValue, get, child } from "firebase/database";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserLocation from './UserLocation';
+import axios from 'axios';
 // import {database} from './firebase'
 
 const firebaseConfig = {
@@ -37,14 +38,11 @@ export default function Home({navigation}) {
     if(steps[i].travel_mode == "TRANSIT")
       buses_in_route.push(steps[i])
   }
-
   checkArrival(route, buses_in_route, 0, false)
 }
 const checkArrival = async (route, buses_in_route, index, flag) => {
-  console.log("checking arrival")
   user_location = await getUserLocation()
   if(index < buses_in_route.length){
-    console.log("getting running buses")
     const db = ref(database, `RunningBuses/user_${route.userId}`)
     onValue(db, (snapshot) => {
       data = snapshot.val()
@@ -91,8 +89,6 @@ const checkArrival = async (route, buses_in_route, index, flag) => {
       }
       else{
         // bus did not arrive at the bus stop yet
-
-        console.log(`user location: ${user_location}, current bus: ${current_bus}, distance: ${calculate_distance(user_location, current_bus)}`)
         setTimeout(() => {checkArrival(route, buses_in_route, index, flag)}, 3000)
       }
     }
@@ -172,13 +168,12 @@ const checkArrival = async (route, buses_in_route, index, flag) => {
     onChildAdded(db, (snapshot) => {
       let route = snapshot.val()
       route.raw_route = JSON.parse(route.raw_route)
-
       setOnGoingRoute(
         <TouchableOpacity 
           style={styles.Btn} 
           onPress={() => {navigation.navigate({
             name:"Map",
-            params: { origin: route.routeData.Origin, destination: route.routeData.Destination, data:route }
+            params: { origin: route.routeData.Origin, destination: route.routeData.Destination, data:route, userId: id }
           })}}>
           <Text style={styles.Txt}>View On-Going Route</Text>
         </TouchableOpacity>       

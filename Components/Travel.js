@@ -4,6 +4,7 @@ import React from 'react'
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>
 
 export default function Travel({data}) {
+  console.log(data.routeDate)
   return (
       <View>
          <View style={styles.container}>
