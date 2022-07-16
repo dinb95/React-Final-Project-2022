@@ -47,9 +47,7 @@ export default function HistoryTravel() {
       })
     }
     const renderedTravels = travels.map((travel, index) => {
-      if(travel.routeData == undefined)
-        return <Travel data={travel} key={index}/>
-      else return <Travel data={travel.routeData} key={index}/>
+       return <Travel data={travel} key={index}/>
     })
     return (
         <View style={styles.container}>

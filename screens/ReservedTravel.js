@@ -47,12 +47,11 @@ const ReservedTravel = ({navigation}) => {
     })
   }
   const renderedTravels = travels.map((travel, index) => {
-    let data = travel.routeData;
+    let data = travel;
     data["userId"] = travel.userId
-    console.log(travel)
     return (<>
       <Travel data={data} key={index}/>
-      <TouchableOpacity key={index+10} style={styles.chatBtnContainer} onPress={() => {navigation.navigate({name:'ChatMenu', params:data})}}>
+      <TouchableOpacity key={index+10} style={styles.chatBtnContainer} onPress={() => {navigation.navigate({name:'ChatMenu', params:data.routeData})}}>
         <Text style={styles.chatBtn}>Route Chat</Text>
       </TouchableOpacity>
       </>

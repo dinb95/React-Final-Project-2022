@@ -179,7 +179,7 @@ export default function Map({route}){
              )}
             <View style={{position:"absolute", flex:1}}>
               <TouchableOpacity style={styles.instructionsBtn} onPress={() => show_instructions()}> 
-                {!useShow ? <Text>Show Instructions</Text> : <Text>Hide Instructions</Text>}
+                {!useShow ? <Text style={styles.instructionsTxt}>Show Instructions</Text> : <Text>Hide Instructions</Text>}
               </TouchableOpacity>
             </View>
         </View>
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
       bottom: 50,
       borderRadius:7,
       borderWidth: 0.5,
-
+      marginBottom: 20
     },
     cardTitle: {
       fontSize: 20,
@@ -240,6 +240,7 @@ const styles = StyleSheet.create({
     },
     instructionsBtn: {
       position: 'relative',
+      height: 40,
       width: '100%',
       alignItems: 'center',
       justifyContent: 'center',
@@ -252,5 +253,9 @@ const styles = StyleSheet.create({
       borderColor: 'black',
       fontSize: 18,
       margin: 10,
+      marginBottom: 20
+    },
+    instructionsTxt: {
+      fontWeight: 'bold',
     }
    });

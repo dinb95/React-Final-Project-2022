@@ -1,17 +1,21 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
+import { List } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function Step({data, index}) {
+  // <View style={styles.container}>
+  //   <Text></Text>
+  //   <Text>Distance: {data.distance.text}</Text>
+  //   <Text>Duration: {data.duration.text}</Text>
+  // </View>
     const inst_step = data.travel_mode === 'WALKING' ? (
         //render walking instructions
         // walk to X
         // departure time, arrival time, distance
-        <View style={styles.container}>
-            <Text>{data.html_instructions}</Text>
-            <Text>Distance: {data.distance.text}</Text>
-            <Text>Duration: {data.duration.text}</Text>
-        </View>
+        <List.Accordion title={data.html_instructions} id={index}>
+          <List.Item title="Item 1" />
+        </List.Accordion>
 
     )
     :
