@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet, Alert } from 'react-native'
 import React from 'react'
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, remove } from "firebase/database";
+import { getDatabase, ref, remove, set } from "firebase/database";
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import axios from 'axios';
 
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>
 
@@ -20,9 +21,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
+let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
+
 export default function Travel({data, del}) {
-  if(del)
-    console.log(data.routeId)
   let rd;
   let date;
   if(data.routeData == undefined){
@@ -33,6 +34,34 @@ export default function Travel({data, del}) {
     rd = data.routeData;
     date = data.date;
   }
+  function getLines(route) {
+    console.log(route.steps)
+    let lines = ""
+    for (let i = 0; i < route.steps.length; i++) {
+        if (route.steps[i].travel_mode == "TRANSIT")
+            lines += route.steps[i].transit_details.line.short_name + " ";
+    }
+    return lines
+  }
+function getStopsAndBuses(route) {
+    let stops = 0;
+    let numOfBuses = 0;
+    for (let i = 0; i < route.steps.length; i++) {
+        if (route.steps[i].travel_mode == "TRANSIT") {
+            //count the number of stops and buses
+            stops += route.steps[i].transit_details.num_stops;
+            numOfBuses++;
+        }
+    }
+    let list = [stops, numOfBuses]
+    return list;
+  }
+  function formatTime(h, m){
+    if (m < 10) 
+        return `${h}:0${m}`
+    else 
+        return `${h}:${m}`
+}
 
   const alertDelete = () => {
     Alert.alert("Delete Route",
@@ -42,9 +71,75 @@ export default function Travel({data, del}) {
   const deleteRoute = () => {
     let db = ref(database, `PlannedRoutes/user_${data.userId}/${data.routeId}`);
     remove(db);
-    db = ref(database, `OnGoing/user_${data.userId}/${data.routeId}`)
+    db = ref(database, `TestRoutes/user_${data.userId}/${data.routeId}`);
+    remove(db);
+    db = ref(database, `onGoing/user_${data.userId}/${data.routeId}`)
     remove(db);
   }
+  const changeRoute = () => {
+  
+    let routeData;
+    let route;
+    let arrival = new Date();
+    let hm = data.timeTarget.split(":");
+
+    arrival.setHours(hm[0], hm[1])
+    console.log(arrival)
+    arrival = Math.ceil(arrival.getTime() / 1000)
+    var config = {
+      method: 'get',
+      url: `https://maps.googleapis.com/maps/api/directions/json?origin=${rd.Origin}&destination=${rd.Destination}&arrival_time=${arrival}&mode=transit&transit_mode=bus&key=${key}`,
+      headers: { }
+    };
+    console.log(arrival)
+    
+    axios(config)
+    .then(function (response) {
+      let current_route = response.data.routes[0].legs[0]
+      console.log(current_route)
+      let lines = getLines(current_route);
+      let sab = getStopsAndBuses(current_route);
+
+      let dt = new Date(current_route.arrival_time.value * 1000) 
+      let Hour = dt.getHours();
+      let Minutes = dt.getMinutes();
+      let arrival = formatTime(Hour, Minutes)
+  
+      dt = new Date(current_route.departure_time.value * 1000) 
+      Hour = dt.getHours();
+      Minutes = dt.getMinutes();
+      let departure = formatTime(Hour, Minutes)
+
+      routeData = {
+        ArrivalTime: arrival,
+        Day: rd.Day,
+        DepartureTime: departure,
+        Destination: rd.Destination,
+        Hour: Hour,
+        LineNumber: lines,
+        NumOfBuses: sab[1],
+        Origin: rd.Origin,
+        Rain: rd.Rain,
+        RouteDistance: current_route.duration.value,
+        RouteDuration: current_route.distance.value,
+        Stops: sab[0],
+      }
+
+      route = {
+        TestTime: data.TestTime,
+        alarmClock: data.alarmClock,
+        date: date,
+        raw_route: JSON.stringify(current_route),
+        routeData: routeData,
+        timeTarget: data.timeTarget,
+        userId: data.userId,
+      }
+      let db = ref(database, `PlannedRoutes/user_${data.userId}/${data.routeId}_0`);
+      set(db, route);
+      deleteRoute();
+    })
+  }
+
   return (
       <View>
          <View style={styles.container}>
@@ -56,14 +151,25 @@ export default function Travel({data, del}) {
             <Text style={styles.Txt}><B>Arrival Time: </B>{rd.ArrivalTime}</Text>
             <Text style={styles.Txt}><B>Departure Time:</B> {rd.DepartureTime}</Text>
             <Text style={styles.Txt}><B>Lines: </B>{rd.LineNumber}</Text>
-            {del  && rd.ArrivalTime > data.timeTarget &&  (<View style={styles.lateView}>
+            {del  && rd.ArrivalTime > data.timeTarget ?  (
+            <View>
+            <View style={styles.lateView}>
               <Text style={styles.lateTxt}>It seems the bus is running late..</Text>
-              </View>)}
-            {del && (<View style={styles.deleteView}>
+              </View>
+              <View style={styles.deleteView}>
+              <TouchableOpacity style={styles.deleteBtn} onPress={() => {changeRoute()}}>
+                <Text style={styles.deleteTxt}>Change Route</Text>
+              </TouchableOpacity>
+            </View>
+            </View>
+              )
+              :
+              del && (<View style={styles.deleteView}>
               <TouchableOpacity style={styles.deleteBtn} onPress={() => {alertDelete()}}>
                 <Text style={styles.deleteTxt}>Delete Route</Text>
               </TouchableOpacity>
-            </View>)}  
+            </View>)
+            }
         </View>
       </View>
   )

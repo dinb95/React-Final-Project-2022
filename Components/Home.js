@@ -78,7 +78,7 @@ const checkArrival = async (route, buses_in_route, index, flag) => {
       else UserMissedBusAlert(user_location, route.routeData.Destination) // user missed the bus
     }
     else{
-      console.log("distance from the bus to the bus stop:",calculate_distance(current_step.start_location, current_bus))
+      //console.log("distance from the bus to the bus stop:",calculate_distance(current_step.start_location, current_bus))
       if(calculate_distance(current_step.start_location, current_bus) <= 30){ // bus is near the bus stop
         if(calculate_distance(current_step.start_location, user_location) <= 20){ //user is near the bus stop
           //check for a few seconds if the distance between the user and the bus increased
