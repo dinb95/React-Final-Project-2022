@@ -3,9 +3,11 @@ import { StyleSheet, View, ImageBackground,TouchableOpacity, Text} from "react-n
 import * as Google from "expo-google-app-auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import PushPage from '../PushPage';
+import PushPage from '../../PushPage';
 
 const LoginScreen = ({ route, navigation}) => {
+
+  // save a google user to the database
   const saveToDB = (user) => {
     data = {
       Id: user["id"],
@@ -24,6 +26,7 @@ const LoginScreen = ({ route, navigation}) => {
           })
     })
   }
+  // login with google
   const signInAsync = async () => {
     console.log("LoginScreen.js 6 | loggin in");
     try {
@@ -49,7 +52,7 @@ const LoginScreen = ({ route, navigation}) => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={require('../images/way1.jpg')} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require('../../images/way1.jpg')} resizeMode="cover" style={styles.image}>
       <Text style={styles.timely_title}>Timely</Text>
       <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity

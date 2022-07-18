@@ -101,7 +101,7 @@ export default function SearchRoute({navigation}) {
 
     /////
         <View style={styles.container}>
-          <ImageBackground source={require('../images/way.jpeg')} resizeMode="cover" blurRadius={5}  style={styles.image}>
+          <ImageBackground source={require('../../images/way.jpeg')} resizeMode="cover" blurRadius={5}  style={styles.image}>
           <View style={{marginTop:30}}>
             <TextInput placeholder='Origin' style={styles.input} value={origin} onChangeText={setOrigin}></TextInput>
             <TextInput placeholder='Destination' style={styles.input} value={destination} onChangeText={setDestination}></TextInput>

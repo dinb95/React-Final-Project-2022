@@ -15,6 +15,7 @@ export default function LoginUser({route}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
  
+  // log Timely user in (not from google)
   const logUser = () => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if(!reg.test(email)){
@@ -45,10 +46,12 @@ export default function LoginUser({route}) {
       throw error;
     });
   }
+  // save data to local storage for later purposes
   const saveToStorage = async(user) => {
     AsyncStorage.setItem('username', `${user.FirstName} ${user.LastName}`)
     AsyncStorage.setItem('userid', JSON.stringify(user.Id))
-
+    
+    //get user profile picture
     let api = `https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/UserPic/${user.Id}`
     fetch(api, {
     method: 'GET',
@@ -72,7 +75,7 @@ export default function LoginUser({route}) {
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
 
-      <Image source={require("../images/logo3.jpg")}
+      <Image source={require("../../images/logo3.jpg")}
              style={{height: 150, width: 150, borderRadius: 80, marginBottom: 60, justifyContent: 'center', alignItems: 'center'}}
              />
              

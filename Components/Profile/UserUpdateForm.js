@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Button, Image, View, Platform,StyleSheet,Text,TextInput,TouchableOpacity } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { View,StyleSheet,Text,TextInput,TouchableOpacity } from 'react-native';
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

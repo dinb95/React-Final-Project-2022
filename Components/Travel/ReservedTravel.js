@@ -1,9 +1,9 @@
 import { View, ScrollView, Text, Button, StyleSheet, TouchableOpacity } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import { initializeApp } from 'firebase/app';
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, onValue, ref, get } from "firebase/database";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Travel from '../Components/Travel';
+import Travel from './Travel';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4",
@@ -18,6 +18,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+
 const ReservedTravel = ({navigation}) => {
   
   const [travels, setTravels] = useState([]);
@@ -40,25 +41,27 @@ const ReservedTravel = ({navigation}) => {
     console.log('getting user', userId, 'routes')
     const db = ref(database, `PlannedRoutes/user_${userId}/`);
     onValue(db, (snapshot) => {
+      let res_routes = [];
       const data = snapshot.val();
       for (var d in data){
-        setTravels(prev => [...prev, data[d]])
+          let tmp = data[d];
+          tmp["routeId"] = d;
+          res_routes.push(tmp);
       }
+      setTravels(res_routes);
     })
   }
   const renderedTravels = travels.map((travel, index) => {
     let data = travel;
     data["userId"] = travel.userId
-    return (<>
-      <Travel data={data} key={index}/>
-      <TouchableOpacity key={index+10} style={styles.chatBtnContainer} onPress={() => {navigation.navigate({name:'ChatMenu', params:data.routeData})}}>
-        <Text style={styles.chatBtn}>Route Chat</Text>
-      </TouchableOpacity>
-      </>
-      /* <Travel data={travel} key={index}/>
-      <TouchableOpacity style={styles.chatBtnContainer} onPress={() => {navigation.navigate({name:'ChatScreen', params:travel})}}>
-        <Text style={styles.chatBtn}>Route Chat</Text>
-      </TouchableOpacity> */
+    console.log("rendering chat", data.routeData.LineNumber)
+    return (
+      <View key={index}>
+        <Travel data={data} del={true}/>
+        <TouchableOpacity style={styles.chatBtnContainer} onPress={() => {navigation.navigate({name:'ChatMenu', params:data})}}>
+          <Text style={styles.chatBtn}>Route Chat</Text>
+        </TouchableOpacity>
+      </View>
     )
   })
 
@@ -103,7 +106,9 @@ chatBtnContainer:{
 chatBtn:{
   fontSize:15,
   textAlign:'center',
-  borderWidth:1
+  borderWidth:1,
+  borderRadius: 5,
+  backgroundColor: "#51aae1"
 }
 
 })

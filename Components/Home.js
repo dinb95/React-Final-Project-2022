@@ -72,7 +72,6 @@ const checkArrival = async (route, buses_in_route, index, flag) => {
   const check_locations = (route, buses_in_route, index, flag, user_location, buses_locations) => {
     let current_step = buses_in_route[index];
     let current_bus = buses_locations[index]
-    console.log(flag)
     if(flag){
       if(calculate_distance(user_location, current_bus) < 25) // user is on the bus
         setTimeout(() => {checkArrival(route, buses_in_route, ++index, false)}, 3000)

@@ -9,9 +9,7 @@ export default function PredictionCard({data, navigation}) {
         1: 'T-Test failed, prediction not reliable. Searching for a new route...',
         2: 'You will not arrive on time. Searching for a new route...'
     }
-    //data.arrival
-    //data.route_data
-    //data.status
+
     const renderCard = () => {
         var hours = data.arrival.getHours();
         var minutes = data.arrival.getMinutes();

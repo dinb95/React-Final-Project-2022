@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, Image, LayoutAnimation} from 'react-native'
-import MapView, {Marker, Callout} from 'react-native-maps';
+import {View, StyleSheet, Text} from 'react-native'
+import MapView, {Marker} from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
-import Step from '../Components/Bus Instructions/Step'
+import Step from '../Bus Instructions/Step'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { List } from 'react-native-paper';
 import { getDatabase, ref, onValue } from "firebase/database";
@@ -27,10 +27,7 @@ const database = getDatabase(app);
 export default function Map({route}){
   const [useShow, setShow]  = useState(false);
   const [useLocation, setLocation] = useState(<></>);
-  const [currentIndex, setCurrentIndex] = useState(null);
   const [busMarkers, setBusMarkers] = useState(<></>);
-  const [busesArr, setBusesArr] = useState([])
-
 
   useEffect(() => {
     if(route.params.userId){
@@ -38,7 +35,6 @@ export default function Map({route}){
       onValue(db, (snapshot) => {
         let data = snapshot.val()
         let arr = [];
-        console.log("getting buses locations");
         for(let line in data){
           arr.push(data[line]);
         }
@@ -48,25 +44,34 @@ export default function Map({route}){
   }, [])
 
   const renderMarkers = (arr) => {
-    console.log(arr);
-    const markers = arr.map((bus) => {
+    let rr = route.params.data.raw_route
+    let buses = []
+    for(let i = 0; i < rr.steps.length; i++){
+      if(rr.steps[i].travel_mode == "TRANSIT")
+        buses.push(rr.steps[i].transit_details.line.short_name)
+    }
+    const markers = arr.map((bus, index) => {
       return (<Marker
+      key={`bus_${buses[index]}`}
       coordinate={{latitude: parseFloat(bus.lat), longitude: parseFloat(bus.lng)}}
-      title={"Bus Location"}
+      title={`Bus ${buses[index]}`}
       >
+        <View style={styles.bubble}>
+          <Icon name="bus" size={30} />
+          </View>
     </Marker>
       )
     })
     setBusMarkers(markers)
-  } 
+  }
 
 
-    let steps = route.params.data.raw_route.steps
-    const instructions = steps.map((step, index) => {
-      return (
-        <Step data={step} key={index} index={index}/>
-      )
-    })
+  let steps = route.params.data.raw_route.steps
+  const instructions = steps.map((step, index) => {
+    return (
+      <Step data={step} key={index} index={index}/>
+    )
+  })
   
   const getLocation = async () => {
     let l = await AsyncStorage.getItem("UserLocation");
@@ -88,10 +93,6 @@ export default function Map({route}){
       })
     }, [])
   )
-  useEffect(() => {
-
-  })
-
   const colors = {
     0: 'blue',
     1: 'green',
@@ -171,9 +172,11 @@ export default function Map({route}){
             </MapView>
              {useShow && (
             <View style={styles.card}>
-              <Text style={styles.cardTitle}>Arrival instructions</Text>
+              <Text style={styles.cardTitle}>Arrival Instructions</Text>
               <ScrollView>
+               <List.AccordionGroup >
                  {instructions}
+                </List.AccordionGroup>
               </ScrollView>
             </View>
              )}
@@ -199,10 +202,8 @@ const styles = StyleSheet.create({
     },
     bubble:{
       flex: 1,
-      backgroundColor: 'rgba(255,255,255,0.7)',
       paddingHorizontal: 18,
       paddingVertical: 12,
-      borderRadius: 20,
     },
     card: {
       backgroundColor:'white',
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
       bottom: 50,
       borderRadius:7,
       borderWidth: 0.5,
-      marginBottom: 20
+      marginBottom: 20,
     },
     cardTitle: {
       fontSize: 20,

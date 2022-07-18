@@ -1,4 +1,4 @@
-import { View, ScrollView, Text, Button, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import PredictionCard from './PredictionCard';
@@ -6,11 +6,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, set } from "firebase/database";
-import openMap from 'react-native-open-maps';
 
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w';
 let loopCounter = 0;
-let rawRoute;
 
 const firebaseConfig = {
     apiKey: "AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4",
@@ -40,6 +38,7 @@ export default function Prediction({ route, navigation }) {
         getUserId()
         getPrediction(route_data);
     }, [])
+
     const getUserId = async () => {
         const id = await AsyncStorage.getItem('userid');
         if (id !== null) {
@@ -50,6 +49,7 @@ export default function Prediction({ route, navigation }) {
         alarm = value
         console.log(value)
     }
+    // get regression prediction parameters to evaluate route's arrival time
     const getPrediction = (route_data) => {
         var route = {
             LineNumber: route_data.lines,
@@ -64,7 +64,6 @@ export default function Prediction({ route, navigation }) {
             Destination: route_data.destination,
             Rain: 0,
             Hour: route_data.hour,
-            //raw_route: route_data.raw_route
         }
 
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/RouteRequest"
@@ -80,7 +79,7 @@ export default function Prediction({ route, navigation }) {
                 return res.json()
             })
             .then(
-                (result) => { //add test time to route
+                (result) => { 
                     runPrediction(result, route_data)
                 })
             .catch(function (error) {
@@ -90,6 +89,7 @@ export default function Prediction({ route, navigation }) {
 
     }
 
+    // calculate the predicted arrival time
     const runPrediction = (p, route_data) => {
         if (p.Message == 'An error has occurred.') {
             alert("No data was found, could not predict route time");
@@ -147,10 +147,7 @@ export default function Prediction({ route, navigation }) {
                                 params: { origin: route_data.origin, destination: route_data.destination, data:route_data }
                             })
                         }}>
-                            
-                                <Text style={styles.BtnTxt}><Icon name="map-marker" size={20} /> Show on Map </Text>
-                                
-                            
+                            <Text style={styles.BtnTxt}><Icon name="map-marker" size={20} /> Show on Map </Text>    
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.Btn} onPress={() => {
                                 navigation.navigate({
@@ -159,12 +156,10 @@ export default function Prediction({ route, navigation }) {
                                 })
                             }}>
                                 <Text style={styles.BtnTxt}><Icon name="bus" size={20}/> Instructions</Text>
-                                
                             </TouchableOpacity>
                             </View>
                         </View>
                         )
-                    //save route for user
                 }
             }
             else {
@@ -180,6 +175,7 @@ export default function Prediction({ route, navigation }) {
             }
         }
     }
+    // if the predicted arrival time exceeds the user's arrival target time, search for an earlier route
     function searchPrevRoute(route) {
         loopCounter++;
         var origin = route.origin;
@@ -271,12 +267,12 @@ export default function Prediction({ route, navigation }) {
         else
             return `${h}:${m}`
     }
+    // save the selected route
     const savePrefRoute = () => {
         console.log(pref)
         let p = pref.p
         let route = pref.route
         let arrival = pref.arrival
-        let TimeTarget = 0;
         if(alarm == 0)
             TestTime = Math.ceil((p[4] * 5 + p[5] + p[6])/60)
         else TestTime = Math.ceil((p[4] * 3 + p[5] + p[6] + alarm)/60)
@@ -312,7 +308,6 @@ export default function Prediction({ route, navigation }) {
             raw_route: JSON.stringify(route.raw_route),
             
         }
-        console.log(data)
         let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/UsersManagement"
         fetch(api, {
             method: 'POST',

@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react'
 import { initializeApp } from 'firebase/app';
 import { getDatabase, onValue, ref } from "firebase/database";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Travel from '../Components/Travel'
+import Travel from './Travel'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDvDTL7yUQocA1JXW90LtKibG_uRm9z-E4",

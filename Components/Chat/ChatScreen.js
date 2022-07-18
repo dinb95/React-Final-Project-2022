@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native'
-import React, {useState, useEffect, useCallback} from 'react'
+import { View, Text, StyleSheet, ScrollView, ImageBackground } from 'react-native'
+import React, {useState, useEffect, useCallback, useLayoutEffect} from 'react'
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, onChildAdded, set, push } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat, Bubble, InputToolbar, Composer } from 'react-native-gifted-chat'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 const firebaseConfig = {
@@ -21,22 +22,25 @@ const firebaseConfig = {
   const database = getDatabase(app);
   let len = 0
   let status = 1;
+  let pic;
+  let name;
 
-export default function ChatScreen({route}) {
+export default function ChatScreen({navigation, route}) {
     const [useChat, setChat] = useState();
     const [msgArr, setMsgArr] = useState([]);
-    const [user, setUser] = useState("")
 
     let data = route.params;
     let line = data.LineNumber.split(' ')
+
     useEffect(async () => {
         let isMounted = true
         if(isMounted){
-            getMessages(data);
-            const name = await AsyncStorage.getItem('username');
-            setUser(name.split(" ")[0]); //extract the first name
+            getMessages();
+            name = await AsyncStorage.getItem('username');
+            name = name.split(" ")[0]
+            pic = await AsyncStorage.getItem('userpic');
             getStatus(data.userId)
-            
+            navigation.setOptions({title: line})
         }
         return () => {isMounted = false}
     }, [])
@@ -49,13 +53,15 @@ export default function ChatScreen({route}) {
         return () => {isMounted = false}
     }, [msgArr])
 
-    const getMessages = (data) => {
+    // get the messages from all the users for this chat
+    const getMessages = () => {
         const db = ref(database, `Chats/${line[0]}`);
         onChildAdded(db, (snapshot) => {
             const data = snapshot.val();
             setMsgArr(prev => [...prev, data]);
           })
     }
+    // get user's status (banned from sending a message or not)
     const getStatus = (id) => {
         console.log("user id:", id)
         let api = `https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/Users?id=${id}&a=a`
@@ -78,6 +84,33 @@ export default function ChatScreen({route}) {
                 throw error;
             });
     }
+    // changing the message bubble style
+    const renderBubble = (props) => {
+        return (
+          <Bubble
+            {...props}
+            wrapperStyle={{
+              right: {
+                backgroundColor: "#51aae1",
+                marginBottom: 10,
+              },
+              left: {
+                  backgroundColor: "white",
+                  marginBottom: 10
+              }
+            }}
+          />
+        )
+      }
+    // chaning the message input at the bottom's style
+    const renderInputToolbar = (props) => {
+        return <InputToolbar {...props} containerStyle={styles.InputToolbar} /> 
+    }
+    // changing the placeholder text of the message input
+    const renderComposer = (props) => {
+        return <Composer {...props} placeholderTextColor="white"/>
+    }
+    // render the chat with all the messages
     function renderMessages(msgs){
         let messages = []
         msgs.forEach((msg, index) => {
@@ -86,7 +119,8 @@ export default function ChatScreen({route}) {
                 text: msg.message,
                 user:{
                     _id: msg.id,
-                    name: msg.name
+                    name: msg.name,
+                    avatar: msg.avatar
                 },
                 createdAt: msg.dtSent 
 
@@ -97,17 +131,22 @@ export default function ChatScreen({route}) {
                 messages={messages} 
                 inverted={false} 
                 renderUsernameOnMessage={true} 
-                user={{_id: data.userId, name: `${user}`}}
+                user={{_id: data.userId, name: `${name}`, avatar: pic}}
                 alwaysShowSend={true}
                 onSend={messages => onSend(messages)}
                 showUserAvatar={true}
+                showAvatarForEveryMessage={true}
+                renderBubble={renderBubble}
+                renderInputToolbar={renderInputToolbar}
+                renderComposer={renderComposer}
             />
             )
         setChat(gifted)
     }
+    // send message handler
     const onSend = useCallback((msg) => {
-        console.log(status)
-        if(status == 0){
+        console.log(msg);
+        if(status == 0){ // status == 0 => banned from chat
             alert("You are suspended from the chat")
             return;
         }
@@ -115,30 +154,34 @@ export default function ChatScreen({route}) {
             message: msg[0].text,
             id: msg[0].user._id,
             name: msg[0].user.name,
-            dtSent: `${new Date()}`
+            dtSent: `${new Date()}`,
+            avatar: pic
         }
         var Filter = require('bad-words')
-        // filter = new Filter();
         var filter = new Filter({ regex: /\*|\.|$/gi });
-        //var filter = new Filter({ replaceRegex:  /[A-Za-z0-9가-힣_]/g }); 
-        //console.log("--------------"+filter.isProfane(messageContent.message)+"-----------"); //
+
+        // check if the message contains profane words
        if(filter.isProfane(messageContent.message)){
         const db = ref(database, `Profane/${messageContent.id}/`);
         push(db, messageContent);
         alert("Dont Swear!")
        }
        else{
-        console.log(messageContent)
         const db = ref(database, `Chats/${line[0]}/${len}/`);
         set(db, messageContent);
-        //setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
     }
       }, [])
  
   return (
     <View style={styles.container}>
-        <Text style={styles.title}>Line {line} Chat</Text>
+        <TouchableOpacity onPress={() => {navigation.goBack()}}>
+            <View style={styles.titleContainer} onPress>
+                <Text style={styles.title}>Line {line} Chat</Text>
+            </View>
+        </TouchableOpacity>
+    <ImageBackground source={require('../../images/chatBackground.jpeg')} resizeMode="cover" blurRadius={1} style={styles.image}>
         {useChat}
+    </ImageBackground>
     </View>
   )
 }
@@ -150,17 +193,28 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         alignContent:'center',
         display:"flex",
-        backgroundColor: '#bddff5',
-        
+        backgroundColor: 'white',
     },
-    title:{
-        fontSize:40,
-        position:'relative',
+    image: {
+        flex: 1,
+        justifyContent: "center"
+      },
+    titleContainer: {
+        flexDirection: 'row',
+        backgroundColor: "#76b4d8",
+        paddingBottom: 15,
         justifyContent:'center',
         alignContent:'center',
+        alignItems: 'center',
+    },
+    title:{
+        fontSize:20,
+        position:'relative',
         display:"flex",
         textAlign:'center',
-        marginTop:'10%'
+        marginTop:'10%',
+        fontWeight: 'bold',
+        color: "white",
     },
     input: {
         height: 50,
@@ -196,6 +250,10 @@ const styles = StyleSheet.create({
           marginTop:'10%',
           paddingTop:10
       },
-      inputContainer:{
+      InputToolbar: {
+        backgroundColor: "#76b4d8",
+        borderRadius: 15,
+        marginLeft: 10,
+        marginRight: 10,
       }
 })

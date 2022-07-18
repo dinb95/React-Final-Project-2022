@@ -1,4 +1,4 @@
-import { View, Text ,ImageBackground, Image,TouchableOpacity,SafeAreaView, StyleSheet, TextInput } from 'react-native'
+import { View, Text ,ImageBackground, Image, StyleSheet } from 'react-native'
 import React from 'react'
 import {useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -26,7 +26,7 @@ export default function ProfTop({navigation, route}) {
   return (
     <View style={styles.container}>
       <ImageBackground
-          source={require('../images/blueBackjpg.jpg')}
+          source={require('../../images/blueBackjpg.jpg')}
           style={{padding:110,paddingBottom:20,paddingTop:40}}>
           <Image
             source={{uri: userpic}}

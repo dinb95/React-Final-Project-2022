@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Switch } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import React,{ useState } from 'react'
 import NumericInput from 'react-native-numeric-input'
 
@@ -17,18 +17,11 @@ const AlarmClock = ({navigation, route}) => {
         <Text style={styles.title}>AlarmClock</Text>
         <Text style={styles.Txt}>Let us know how long it takes you to get organized and we want to remember you</Text>
         <Image
-         source={require('../images/AlarmClock.png')}
+         source={require('../../images/AlarmClock.png')}
          style={{height: 150, width: 150, marginBottom: 30, justifyContent: 'center', display:'flex', alignItems: 'center'}}/>
         <View style={styles.Btn}>
           <NumericInput minValue={0}  step={5} onChange={value => setAlarm(value) } />
         </View>
-        {/* <Switch style={styles.SwitchBtn}
-        trackColor={{ false: "#767577", true: "#51aae1" }}
-        thumbColor={isEnabled ? "#767577" : "#51aae1"}
-        ios_backgroundColor="#3e3e3e"
-        onValueChange={toggleSwitch}
-        value={isEnabled}
-      /> */}
        <TouchableOpacity style={styles.loginBtn} onPress={() => {save()}}>
         <Text style={styles.loginText}>Save</Text>
       </TouchableOpacity>
