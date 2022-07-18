@@ -2,12 +2,6 @@ const fetch = require("node-fetch");
 var axios = require('axios');
 const lineReader = require('line-reader');
 const http = require('http');
-const https = require("https");
-const agent = new https.Agent({
-    rejectUnauthorized: false
-  })
-var GtfsRealtimeBindings = require('gtfs-realtime-bindings');
-var request = require('request');
 
 const hostname = '127.0.0.1';
 const port = 3000;
@@ -22,32 +16,23 @@ admin.initializeApp({
 });
 
 const { getDatabase } = require('firebase-admin/database');
-const { json } = require("body-parser");
-const route = require("color-convert/route");
-const { short } = require("webidl-conversions");
 var testList = {};
 let simList = [];
-mainFunction()
 
 executeMainFunction = setInterval(mainFunction, 60000)
+
+var GTFS_lines = [];
+var GTFS_Shapes = [];
+var test_routes = [];
 
 // Get a database reference to our blog
 mainFunction();
 function mainFunction(){
-    // let dt = new Date();
-    // //let now = `${dt.getMonth()+1}-${dt.getDate()}-${dt.getFullYear()} ${dt.getHours()}:${dt.getMinutes()}:00.000`
-    // let today = `${dt.getMonth()+1}-${dt.getDate()}-${dt.getFullYear()}`
-
-    // let query = `select * from Timely_Routes where [Date]>='${today}' order by [Datetime]`
-    // saveRoutesFromDB(query, true)
-    // query = `select * from Timely_Routes where [Date]<'${today}' order by [Datetime]`
-    // saveRoutesFromDB(query, false)
     updateRoutes();
     validateRoutes()
 }
 
-var GTFS_lines = [];
-var GTFS_Shapes = [];
+
 bus_simulation();
 async function bus_simulation(){
 
@@ -62,7 +47,6 @@ async function bus_simulation(){
         for(let d in data){
            let steps = JSON.parse(data[d].raw_route).steps
            for(let i = 0; i < steps.length; i++){
-               console.log(steps[i].travel_mode)
                if(steps[i].travel_mode == "TRANSIT"){
                 var short_name = steps[i].transit_details.line.short_name
                 var long_name = steps[i].transit_details.line.name
@@ -90,7 +74,6 @@ async function getShape(short_name, long_name){
                 return false;
             }
         })
-        console.log(route_id);
         lineReader.eachLine('./trips.txt', function(line, last) {
             let sep = line.split(',');
             if(route_id == sep[0]){
@@ -98,7 +81,6 @@ async function getShape(short_name, long_name){
                 return false;
             }
         })
-        console.log(`${shape_id} not included`)
         lineReader.eachLine('./shapes.txt', function(line, last){
         let sep = line.split(',');
         if(sep[0] == shape_id){
@@ -140,48 +122,12 @@ async function get_GTFS(){
 
 }
 
-// async function getRouteId(routeName, short_name){
-//     lineReader.eachLine('./routes.txt', function(line, last) {
-//         let sep = line.split(',');
-//         if(short_name == sep[2]){
-//             getTripId(sep[0], short_name);
-//         }
-//         if(last) {
-//             console.log('Last line printed.');
-//         }
-//     })
-// }
-// function getTripId(route_id, short_name){
-//     lineReader.eachLine('./trips.txt', function(line, last) {
-//         let sep = line.split(',');
-//         if(route_id == sep[0]){
-//             getStopTime(sep[2], short_name);
-//         }
-//         if(last) {
-//             console.log('Last line printed.');
-//         }
-//     })
-// }
-// function getStopTime(trip_id, short_name){
-//     lineReader.eachLine('./stop_times.txt', function(line, last) {
-//         let sep = line.split(',');
-//         if(trip_id == sep[0] && sep[4] == 1){
-//             console.log(trip_id, sep[0]);
-//             const db = getDatabase();
-//             const ref = db.ref(`/GTFS/${short_name}/`);
-//             ref.push({depTime: sep[1]});
-//         }
-//         if(last) {
-//             console.log('Last line printed from stop times.');
-//         }
-//     })
-// }
-
 function updateRoutes(){
-    //move to here maybe?
     const db = getDatabase()
     const ref = db.ref("/PlannedRoutes/")
-    ref.on("child_added", snapshot =>{ //get the routes in TestRoutes
+    // get the routes in TestRoutes
+    ref.on("child_added", snapshot =>{ 
+        console.log("updating routes")
         let routes = snapshot.val()
         let today = new Date()
         for(r in routes){
@@ -189,9 +135,17 @@ function updateRoutes(){
             let date = new Date(route.date);
             if(date.getMonth() == today.getMonth()){
                 if(date.getDate() == today.getDate()){
-                    if(startTest(route)){ //if true, need to start checking the route
+                    if(startTest(route) && !(test_routes.includes(r))){ // if true, need to start checking the route
+                        test_routes.push(r);
                         saveToFb("TestRoutes", route, r) //save routes we need to test now
-                        deleteFromFb("PlannedRoutes", route, r)
+                        console.log(test_routes);
+                        let [h, m] = route.routeData.ArrivalTime.split(":")
+                        let arrival = new Date()
+                        arrival.setHours(h, m)
+
+                        setTimeout(() => {
+                            deleteFromFb("PlannedRoutes", route, r.routeId)
+                        }, arrival.getTime() - new Date().getTime()); 
                 }}}
             if(date.getMonth() <= today.getMonth() && date.getDate() < today.getDate())
                 deleteFromFb("PlannedRoutes", route, r)
@@ -199,37 +153,6 @@ function updateRoutes(){
 }
 
 
-function startTest(route){
-    //get the hours and minutes of the bus' departure time
-    let time = route.routeData.DepartureTime.split(':');
-    console.log(route.routeData.DepartureTime)
-    //set depTime according to the departure hours and minutes
-    let depTime = new Date();
-    depTime = depTime.setHours(time[0], time[1]);
-
-    //get the time to start testing the route
-    let now = new Date();
-    let testTime = new Date(now.getTime() + route.TestTime * 60 * 1000);
-    //if departure time is smaller than test time --> we need to start checking
-    //add the route to testList
-    console.log(new Date(depTime), testTime)
-    if(depTime <= testTime)
-        return true;
-    else return false;
-}
-//save route to firebase, according to the user's id and route id
-function saveToFb(collection, route, routeId){
-    const db = getDatabase();
-    const ref = db.ref(`/${collection}/user_${route.userId}/${routeId}/`);
-    ref.set(route)
-    console.log("saved route", routeId, "to", collection)
-}
-function deleteFromFb(collection, route, routeId){
-    const db = getDatabase()
-    const ref = db.ref(`/${collection}/user_${route.userId}/${routeId}`)
-    ref.remove()
-    console.log("deleted route", routeId, "to", collection)
-}
 //if route is already over, delete route from testRoutes and move it to oldRoutes
 function validateRoutes(){ 
     //list?
@@ -260,7 +183,6 @@ function validateRoutes(){
                     dt.setHours(t[0], t[1])
                     r["routeId"] = route;
                     testRoute(r, dt, user);
-                    console.log(simList)
                     if(!simList.includes(user.split('_')[1])){
                         simulate_route(r, user)
                         simList.push(user.split('_')[1])
@@ -273,11 +195,8 @@ function validateRoutes(){
         }
     })
 }
-const LT = 10000;
-const L = 420000;
-const M = 300000
-const S = 120000
 
+//simulate buses for a route
 function simulate_route(route, user){
     let buses_in_route = []
     let shapes_for_route = []
@@ -286,8 +205,10 @@ function simulate_route(route, user){
         if(steps[i].travel_mode == "TRANSIT"){
             buses_in_route.push({
                 name: steps[i].transit_details.line.name,
+                short_name: steps[i].transit_details.line.short_name,
                 departure_time: steps[i].transit_details.departure_time.value, 
-                departure_location: steps[i].transit_details.departure_location.location
+                departure_location: steps[i].transit_details.departure_stop.location,
+                route: steps[i]
             })
         }
     }
@@ -308,39 +229,86 @@ function simulate_route(route, user){
                 }
             }
         }
-        console.log("line 305:", shapes.length, buses_in_route, shapes_for_route.length)
-        // let now = new Date()
-        // let departure_time = new Date(buses_in_route[0].departure_time * 1000)
-        // console.log((departure_time - now) / JSON.parse(shapes_for_route[0].shape).length)
-        run_buses(buses_in_route, shapes_for_route, user)
+        run_buses(buses_in_route, shapes_for_route, user, route)
     })
 }
-function run_buses(buses, shapes, user){
+// simulate the buses according to the shapes and buses the route has
+function run_buses(buses, shapes, user, route){
     var intervals = []
-    for(let i = 0; i < buses.length; i++){
-        let shape = JSON.parse(shapes[i].data.shape);
-        let now = new Date()
-        let departure_time = new Date(buses[i].departure_time * 1000)
-        console.log(departure_time)
-        let stop_index = find_stop_index(shape, buses[i])
-        intervals.push(setInterval(function (){
-            if(shape.length == 0){
-                clearInterval(intervals[i]);
+    var delays = [];
+    try{
+        for(let i = 0; i < buses.length; i++){
+            let shape = JSON.parse(shapes[i].data.shape);
+            let now = new Date()
+            let departure_time = new Date(buses[i].departure_time * 1000)
+    
+            let stop_index = find_stop_index(shape, buses[i])
+            //let random = (Math.random() * (0.3) + 0.9)
+            let random = 2;
+            if (random > 1)
+                delays.push({random: random, bus: buses[i]});
+            intervals.push(setInterval(function (){
+                if(shape.length == 0){
+                    clearInterval(intervals[i]);
+                    const db = getDatabase();
+                    const ref = db.ref(`/RunningBuses/${user}/${shapes[i].route_id}/`);
+                    ref.remove();
+                    let index = simList.indexOf(user.split("_")[0])
+                    if(index != -1)
+                        simList.splice(index, 1);
+                }
+                else{
                 const db = getDatabase();
-                const ref = db.ref(`/RunningBuses/${user}/${shapes[i].route_id}/`);
-                ref.remove();
-            }
-            else{
-            const db = getDatabase();
-            const ref = db.ref(`/RunningBuses/${user}/${[i]}/`);
-            ref.set(shape.shift())
-            }
-        }, (departure_time - now) / stop_index))//* Math.random() * (0.3) + 0.9) // add random parameter 0.90 - 1.20 
+                const ref = db.ref(`/RunningBuses/${user}/${[i]}/`);
+                ref.set(shape.shift())
+                }
+            }, ((departure_time - now) / stop_index)) * random)//Math.random() * (0.3) + 0.9) // add random delay multiplier 0.90 - 1.20 
+        }
+        handleDelays(delays, user, route);
+    }
+    catch(err){
+        console.log("297: ",err)
+        setTimeout(() => {run_buses(buses, shapes, user, route)}, 10000)
     }
 }
+// update the new arrival time (delay) in the firebase
+function handleDelays(delays, userId, route){
+    let total_delay = 0;
+    for(let i = 0; i < delays.length; i++){
+        total_delay += delays[i].bus.route.duration.value * delays[i].random
+    }
+
+    raw_route = JSON.parse(route.raw_route)
+    let arrival_date = new Date((raw_route.arrival_time.value + total_delay) * 1000);
+
+    const db = getDatabase()
+    arrival_date = formatTime(arrival_date.getHours(), arrival_date.getMinutes())
+
+    if(route.timeTarget < arrival_date){
+        console.log("sending delay notification")
+
+        let id = userId.split('_')
+
+        const ref = db.ref(`/Tokens/${id[1]}`)
+        ref.once("value", snapshot =>{
+            let token = snapshot.val();
+            sendPushNotification(token, 'We Detected a Delay in your route!');
+        })
+}
+    let update = {}
+    update[`/PlannedRoutes/${userId}/${route.routeId}/routeData/ArrivalTime`] = arrival_date
+    console.log(update)
+
+    db.ref().update(update)
+}
+//approximating the index in the shape where the relevant bus stop is located
 function find_stop_index(shape, bus){
     for(let i = 0; i < shape.length; i++){
-        if(calculate_distance(shape, bus.departure_location) <= 20){
+        let coords = {
+            lat: parseFloat(shape[i].lat),
+            lng: parseFloat(shape[i].lng)
+        }
+        if(calculate_distance(coords, bus.departure_location) <= 30){
             return i;
         }
     }
@@ -366,91 +334,109 @@ const calculate_distance = (start, current) => { // calculates the aerial distan
   return d;
 }
 
+const LT = 10000;
+const L = 420000;
+const M = 300000
+const S = 120000
+
+// set an testing interval for each route.
 function testRoute(route, depTime, user){
     let now = new Date();
     let timeDiff = Math.ceil((depTime - now) / 60 / 1000)
-    console.log(route.routeId)
-    try{
-        if(timeDiff > 60){
-            if(testList[route.routeId].intervalTime != L){
-                console.log("-------------7 minutes------------- ", route.routeId)
-                clearInterval(testList[route.routeId].intervalId);
-                testList[route.routeId] = {
-                    intervalId: setInterval(function() {getPrediction(route, false);}, L),
-                    intervalTime: L
+
+    if(!route.routeId.includes("_")){
+        try{
+            if(timeDiff > 60){
+                if(testList[route.routeId].intervalTime != L){
+                    console.log("-------------7 minutes------------- ", route.routeId)
+                    clearInterval(testList[route.routeId].intervalId);
+                    testList[route.routeId] = {
+                        intervalId: setInterval(function() {getPrediction(route, false);}, L),
+                        intervalTime: L
+                    }
+                    saveToFb("/onGoing/", route, route.routeId)
+                    getPrediction(route, false)
                 }
-                saveToFb("/onGoing/", route, route.routeId)
-                getPrediction(route, false)
             }
-        }
-        else if(timeDiff > 30){
-            if(testList[route.routeId].intervalTime != M){
-                console.log("-------------5 minutes------------- ", route.routeId)
-                clearInterval(testList[route.routeId].intervalId);
-                testList[route.routeId] = {
-                    intervalId: setInterval(function() {getPrediction(route, false);}, M),
-                    intervalTime: M
+            else if(timeDiff > 30){
+                if(testList[route.routeId].intervalTime != M){
+                    console.log("-------------5 minutes------------- ", route.routeId)
+                    clearInterval(testList[route.routeId].intervalId);
+                    testList[route.routeId] = {
+                        intervalId: setInterval(function() {getPrediction(route, false);}, M),
+                        intervalTime: M
+                    }
+                    saveToFb("/onGoing/", route, route.routeId)
+                    getPrediction(route, false);
                 }
-                saveToFb("/onGoing/", route, route.routeId)
-                getPrediction(route, false);
             }
-        }
-        else if(timeDiff > 10){
-            if(testList[route.routeId].intervalTime != S){
-                console.log("-------------2 minutes------------- ", route.routeId)
-                clearInterval(testList[route.routeId].intervalId);
-                testList[route.routeId] = {
-                    interval: setInterval(function() {getPrediction(route, false);}, S),
-                    intervalTime: S
+            else if(timeDiff > 10){
+                if(testList[route.routeId].intervalTime != S){
+                    console.log("-------------2 minutes------------- ", route.routeId)
+                    clearInterval(testList[route.routeId].intervalId);
+                    testList[route.routeId] = {
+                        interval: setInterval(function() {getPrediction(route, false);}, S),
+                        intervalTime: S
+                    }
+                    saveToFb("/onGoing/", route, route.routeId)
+                    getPrediction(route, false);
                 }
-                saveToFb("/onGoing/", route, route.routeId)
-                getPrediction(route, false);
-          }
-        }
-        else{
-            let id = user.split('_')
-            const db = getDatabase()
-            const ref = db.ref(`/Tokens/${id[1]}`)
-            ref.once("value", snapshot =>{
-                let token = snapshot.val();
-                sendPushNotification(token, 'You will need to leave your house in 10 Minutes!');
-            })
-            deleteFromFb("/TestRoutes/", route, route.routeId)
-            saveToFb("/onGoing/", route, route.routeId)
-        }
-        if(route.alarmClock != 0){
-            let alarmTime = new Date(depTime - (route.alarmClock * 60 * 1000))
-            if(now > alarmTime){
+            }
+            // the route is about to start. send a notification to the user and delete from "TestRoutes"
+            else{
                 let id = user.split('_')
                 const db = getDatabase()
                 const ref = db.ref(`/Tokens/${id[1]}`)
                 ref.once("value", snapshot =>{
                     let token = snapshot.val();
-                    sendPushNotification(token, `You need to leave the house in ${route.alarmClock} minutes. Time to get ready!`);
+                    sendPushNotification(token, 'You will need to leave your house in 10 Minutes!');
                 })
+                clearInterval(testList[route.routeId].intervalId);
                 deleteFromFb("/TestRoutes/", route, route.routeId)
                 saveToFb("/onGoing/", route, route.routeId)
-                route.alarmClock = 0;
             }
-    }
-
-    } catch{
-        // let id = user.split('_')
-        // const db = getDatabase()
-        // const ref = db.ref(`/Tokens/${id[1]}`)
-        // ref.once("value", snapshot =>{
-        //     let token = snapshot.val();
-        //     sendPushNotification(token);
-        // })
-        console.log("-------------7 minutes------------- ", route.routeId)
-        testList[route.routeId] = {
-            interval: setInterval(function() {getPrediction(route, false);}, LT),
-            intervalTime: L
+            // if user defined an alarm clock
+            if(route.alarmClock != 0){
+                let alarmTime = new Date(depTime - (route.alarmClock * 60 * 1000))
+                if(now > alarmTime){
+                    let id = user.split('_')
+                    const db = getDatabase()
+                    const ref = db.ref(`/Tokens/${id[1]}`)
+                    ref.once("value", snapshot =>{
+                        let token = snapshot.val();
+                        sendPushNotification(token, `You need to leave the house in ${route.alarmClock} minutes. Time to get ready!`);
+                    })
+                    deleteFromFb("/TestRoutes/", route, route.routeId)
+                    saveToFb("/onGoing/", route, route.routeId)
+                    route.alarmClock = 0;
+            }
         }
-        //saveToFb("/onGoing/", route, route.routeId)
-        getPrediction(route, false);
+        //default state, will be executed if "testList" does not contain the corresponding interval
+        } catch{
+            console.log("-------------7 minutes------------- from catch ", route.routeId)
+            testList[route.routeId] = {
+                interval: setInterval(function() {getPrediction(route, false);}, LT),
+                intervalTime: L
+            }
+            //saveToFb("/onGoing/", route, route.routeId)
+            getPrediction(route, false);
+        }
+    }
+    else{
+        saveToFb("/onGoing/", route, route.routeId)
+        if(timeDiff < 10){
+            let id = user.split('_')
+            const db = getDatabase()
+            const ref = db.ref(`/Tokens/${id[1]}`)
+            ref.once("value", snapshot =>{
+                let token = snapshot.val();
+                sendPushNotification(token, `You need to leave the house in ${route.alarmClock} minutes. Time to get ready!`);
+            })
+            deleteFromFb("/TestRoutes/", route, route.routeId)
+        } 
     }
 }
+// send notification to the user
 async function sendPushNotification(expoPushToken, body) {
         const message = {
             to: expoPushToken,
@@ -473,7 +459,8 @@ function get_Date(stringDate){
     let [hours, minutes] = stringDate.split(':');
     return d.setHours(hours, minutes);
 }
-   
+
+// get the prediction parameters from the c# server
 function getPrediction(route, flag){
     let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/api/RouteRequest"
     fetch(api, {
@@ -489,8 +476,6 @@ function getPrediction(route, flag){
       .then(
           (result) => { //add test time to route
             route["TestTime"] = calculateTestTime(route.alarmClock, result);
-            //console.log(result, route.routeId, route.DepartureTime, Math.ceil(result[0]/60))
-            //console.log("T test result:", Math.ceil(result[3]))
             if(result[3] == 0 || get_Date(route.timeTarget) < get_Date(route.routeData.DepartureTime) + Math.ceil(result[0] * 1000)){
                 console.log("------- need to change a bus -------");
                 getNewDirections(route);
@@ -514,7 +499,7 @@ function getPrediction(route, flag){
               console.log("err post=", error);
           });
 }
-
+// if the bus wont arrive on time to the target, search for a new route
 function getNewDirections(route){
     console.log("getting a new direction")
     let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
@@ -644,6 +629,39 @@ function getNewWeather(route, flag) {
             });
     return rain;
 }
+function startTest(route){
+    //get the hours and minutes of the bus' departure time
+    let time = route.routeData.DepartureTime.split(':');
+    //set depTime according to the departure hours and minutes
+    let depTime = new Date();
+    depTime = depTime.setHours(time[0], time[1]);
+
+    //get the time to start testing the route
+    let now = new Date();
+    let testTime = new Date(now.getTime() + route.TestTime * 60 * 1000);
+    //if departure time is smaller than test time --> we need to start checking
+    //add the route to testList
+    if(depTime <= testTime && depTime > now)
+        return true;
+    else return false;
+}
+//save route to firebase, according to the user's id and route id
+function saveToFb(collection, route, routeId){
+    const db = getDatabase();
+    const ref = db.ref(`/${collection}/user_${route.userId}/${routeId}/`);
+    ref.set(route)
+    console.log("saved route", routeId, "to", collection)
+}
+// delete route from firebase
+function deleteFromFb(collection, route, routeId){
+    console.log(routeId)
+    console.log("deleting...")
+    const db = getDatabase()
+    const ref = db.ref(`/${collection}/user_${route.userId}/${routeId}`)
+    ref.remove()
+    console.log("deleted route", routeId, "to", collection)
+}
+// old, not currently in use.
 function saveRoutesFromDB(queryString, flag){
     //get all routes scheduled for today from DB
     //save the routes in firebase
