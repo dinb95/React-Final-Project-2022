@@ -3,21 +3,21 @@ import React, {useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, LogBox } from 'react-native';
 import CustomDrawer from  './screens/CustomDrawer'
-import LoginScreen from './screens/LoginScreen';
-import ReservedTravel from  './screens/ReservedTravel'
-import SearchRoute from  './Components/SearchRoute'
-import ProfTop from  './Components/ProfTop'
-import LoginUser from './screens/LoginUser'
-import SignUpScreen from './screens/SignUpScreen'
+import LoginScreen from './Components/Login/LoginScreen';
+import ReservedTravel from  './Components/Travel/ReservedTravel'
+import SearchRoute from './Components/Route/SearchRoute'
+import ProfTop from  './Components/Profile/ProfTop'
+import LoginUser from './Components/Login/LoginUser'
+import SignUpScreen from './Components/Sign Up/SignUpScreen'
 import NavigationComp from './Components/NavigationComp'; 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import CameraComp from './Components/CameraComp';
-import SelectPictureScreen from './screens/SelectPictureScreen';
-import HistoryTravel from './screens/HistoryTravel';
+import CameraComp from './Components/Sign Up/CameraComp';
+import SelectPictureScreen from './Components/Sign Up/SelectPictureScreen';
+import HistoryTravel from './Components/Travel/HistoryTravel'
 
-
+LogBox.ignoreAllLogs()
 
 export default function App() {
   const [isLogged, setLogged] = useState(false);
