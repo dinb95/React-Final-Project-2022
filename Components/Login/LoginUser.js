@@ -64,7 +64,8 @@ export default function LoginUser({route}) {
         return res.json()
     })
     .then(
-        (result) => { 
+        (result) => {
+          console.log("user pic:",result)
           AsyncStorage.setItem('userpic', JSON.stringify(result))
           route.params.setLogged();
         })

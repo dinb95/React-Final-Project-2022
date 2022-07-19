@@ -1,12 +1,10 @@
-import { View, Text, TextInput, StyleSheet,ImageBackground, Button, TouchableOpacity} from 'react-native';
+import { View, Text, TextInput, StyleSheet,ImageBackground, TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import React, {useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RouteResults from './RouteResults';
 import { ScrollView } from 'react-native-gesture-handler';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-
-
 
 let key = 'AIzaSyCCwWKnfacKHx3AVajstMk6Ist1VUoNt9w'
 

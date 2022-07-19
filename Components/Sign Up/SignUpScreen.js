@@ -71,6 +71,7 @@ export default function SignUpScreen({navigation}) {
     });
   }
   const imageUpload = (picName, id) => {
+    console.log(picName);
     console.log(image);
     let api = "https://proj.ruppin.ac.il/bgroup54/test2/tar6/uploadpicture"
     let data = new FormData();
@@ -85,7 +86,7 @@ export default function SignUpScreen({navigation}) {
     }
     fetch(api, config)
     .then((res) => {
-      console.log(res.status)
+      console.log(res)
       if (res.status == 201) {return res.json(); }
       else {return "err"; }
       })

@@ -24,17 +24,17 @@ const firebaseConfig = {
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
 
-  var userid;
-  var alarm = 0;
-  var pref;
-  var ProcessArr = [];
-  var route_data
+
 
 
 export default function Prediction({ route, navigation }) {
     const [cards, setCards] = useState();
     const [btn, setBtn] = useState();
-
+    var userid;
+    var alarm = 0;
+    var pref;
+    var ProcessArr = [];
+    var route_data
     route_data = route.params.route_data
 
     console.log(route_data == undefined)
