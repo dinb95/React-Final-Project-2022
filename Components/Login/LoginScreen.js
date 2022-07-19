@@ -3,7 +3,7 @@ import { StyleSheet, View, ImageBackground,TouchableOpacity, Text} from "react-n
 import * as Google from "expo-google-app-auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import PushPage from '../../PushPage';
+import PushPage from '../PushPage';
 
 const LoginScreen = ({ route, navigation}) => {
 

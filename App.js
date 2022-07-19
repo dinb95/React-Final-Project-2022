@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, LogBox } from 'react-native';
 import CustomDrawer from  './screens/CustomDrawer'
 import LoginScreen from './Components/Login/LoginScreen';
 import ReservedTravel from  './Components/Travel/ReservedTravel'
@@ -17,7 +17,7 @@ import CameraComp from './Components/Sign Up/CameraComp';
 import SelectPictureScreen from './Components/Sign Up/SelectPictureScreen';
 import HistoryTravel from './Components/Travel/HistoryTravel'
 
-
+LogBox.ignoreAllLogs()
 
 export default function App() {
   const [isLogged, setLogged] = useState(false);

@@ -1,6 +1,6 @@
 import { View, Text, Button, StyleSheet,ImageBackground,TouchableOpacity, Alert } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import PushPage from '../PushPage';
+import PushPage from './PushPage';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, set, ref, onChildAdded, remove, onValue, get, child } from "firebase/database";
 import AsyncStorage from '@react-native-async-storage/async-storage';
