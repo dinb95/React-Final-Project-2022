@@ -28,7 +28,7 @@ export default function NavigationComp() {
       <Stack.Screen name="ChatScreen" component={ChatScreen}  />
       <Stack.Screen name="ChatMenu" component={ChatMenu} options={{headerShown: true, headerStyle: {backgroundColor: "#76b4d8"}, headerTitleStyle: {color: "white"}}}/>
       <Stack.Screen name="Instructions" component={Instructions}/>
-      <Stack.Screen name="Prediction Parameters" component={PredParams} />
+      <Stack.Screen name="Prediction Parameters" component={PredParams} options={{headerShown: true}} />
     </Stack.Navigator>
   )
 }

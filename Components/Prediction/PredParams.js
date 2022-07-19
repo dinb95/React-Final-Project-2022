@@ -8,12 +8,11 @@ export default function PredParams({route}) {
 
     useEffect(() => {
         let data = route.params.data
-        delete data.route_data["raw_route"]
+        //delete data.route_data["raw_route"]
         renderParams(data)
     }, [])
     
     const renderParams = (data) => {
-        console.log("from render: ", data)
         let p = data.route_data.prediction
         let rd = data.route_data
 

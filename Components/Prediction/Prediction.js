@@ -24,16 +24,20 @@ const firebaseConfig = {
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
 
+  var userid;
+  var alarm = 0;
+  var pref;
+  var ProcessArr = [];
+  var route_data
+
+
 export default function Prediction({ route, navigation }) {
     const [cards, setCards] = useState();
     const [btn, setBtn] = useState();
-    var userid;
-    var alarm = 0;
-    var pref;
-    var ProcessArr = [];
 
-    var route_data = route.params.route_data
+    route_data = route.params.route_data
 
+    console.log(route_data == undefined)
     useEffect(() => {
         getUserId()
         getPrediction(route_data);
@@ -273,6 +277,7 @@ export default function Prediction({ route, navigation }) {
         let p = pref.p
         let route = pref.route
         let arrival = pref.arrival
+        let TestTime;
         if(alarm == 0)
             TestTime = Math.ceil((p[4] * 5 + p[5] + p[6])/60)
         else TestTime = Math.ceil((p[4] * 3 + p[5] + p[6] + alarm)/60)
